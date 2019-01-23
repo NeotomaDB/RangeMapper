@@ -1,5 +1,5 @@
 # This code downloads datasets from Neotoma
-
+# Written by Anna George, 2019
 # Loads packages
 library(neotoma)
 
