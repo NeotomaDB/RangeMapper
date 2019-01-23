@@ -1,10 +1,19 @@
 # This code downloads datasets from Neotoma
 # Written by Anna George, 2019
+
 # Loads packages
 library(neotoma)
 
-# Figure out your bounding box on https://boundingbox.klokantech.com/
-# Choose taxa
+# Figure out your bounding box:
+  # You can use https://boundingbox.klokantech.com/
+  # North America bounding box: loc = c(-130, 24, -34, 65)
+  # Europe bounding box: loc = c(-11, 35, 47, 72)
+
+# Choose interesting taxa:
+  # NA pollen taxa: Fagus, Picea, Quercus, Spruce, Tsuga
+  # European pollen taxa: Alnus, Fagus, Picea, Quercus, Spruce
+  # Australian pollen taxa: Nothofagus, Eucalyptus, Casuarina, Callitris, Pyllocladus
+  # Mammal taxa: Bison, Smilodon/Panthera, Equus, Rodentia, Mammut, Mammuthus
 
 # Records dataset metadata for the below taxon in specifiied location and 
 picea_datasets <- get_dataset(taxonname = 'Picea*',
@@ -49,9 +58,6 @@ site_dataset_numbers <- append(site_dataset_numbers, c(quercus_dataset_numbers,
 
 # Removes duplicate dataset numbers
 all_dataset_numbers <- as.numeric(unique(site_dataset_numbers))
-
-# Creates empty list 
-#tree_downloads = list()
 
 # Downloads datasets
 tree_downloads <- get_download(all_dataset_numbers)

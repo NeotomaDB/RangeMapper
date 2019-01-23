@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+    <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Animation control elements -->
+    <aside>
+        <header>
+            <h1>Animation controls</h1>
+        </header>
+        <section>
+            <p>Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+        </section>
+        <section>
+            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+        </section>
+        <section>
+            <button id="js-play-button">Play</button>
+            <button id="js-pause-button">Pause</button>
+            <input type="range" id="js-duration-range" min="1" max="21" step="1">
+        </section>
+
+    </aside>
+
+    <!-- Add map container -->
+    <div id="map"></div>
+
+    <script>
+
+
+        // Add basemap and set properties
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: carto.basemaps.voyager,
+            center: [30, 50],
+            zoom: 2.5
+        });
+
+        //** CARTO VL functionality begins here **//
+
+        // Define user
+        carto.setDefaultAuth({
+            username: 'aegeorge2',
+            apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
+        });
+
+        // Define source
+        const source = new carto.source.Dataset('cartoinput_eur_v2');
+
+        // Define Viz object and custom style
+        const viz = new carto.Viz(`
+            @animation: animation($time, 42, fade(,1))
+            filter: @animation
+            color: green
+            width: $quercus
+        `);
+
+        // Define map layer
+        const layer = new carto.Layer('layer', source, viz);
+
+        // Add map layer
+        layer.addTo(map);
+
+        // Get animation control elements
+        const $progressRange = document.getElementById('js-progress-range');
+        const $playButton = document.getElementById('js-play-button');
+        const $pauseButton = document.getElementById('js-pause-button');
+        const $durationRange = document.getElementById('js-duration-range');
+        const $currentTime = document.getElementById('js-current-time');
+
+        // Listen to interaction events with the UI
+        $playButton.addEventListener('click', () => {
+            viz.variables.animation.play();
+        });
+
+        $pauseButton.addEventListener('click', () => {
+            viz.variables.animation.pause();
+        });
+
+        $durationRange.addEventListener('change', () => {
+            viz.variables.duration = parseInt($durationRange.value, 10);
+        });
+
+        // Update progress bar each 100 milliseconds
+        function updateProgress () {
+            $progressRange.value = viz.variables.animation.getProgressPct();
+            $currentTime.innerText = viz.variables.animation.getProgressValue();
+        }
+
+        setInterval(updateProgress, 100);
+
+    </script>
+</body>
+</html>
