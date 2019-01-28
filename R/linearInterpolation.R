@@ -1,5 +1,6 @@
 # This code does linearly interpolates taxa data downloaded from Neotoma
 # Written by Anna George, 2019
+#Australia, by syd, 1/28
 
 # Loads necessary packages
 library(neotoma)
@@ -8,7 +9,8 @@ library(httr)
 
 # Loads downloaded RData object
 # See downloadDatasets.R to download datasets
-load("tree_downloads_NA.RData")
+
+tree_downloads <- readRDS("~/Desktop/DataForSyd/Australia_sites.RData")
 
 # Creates one spreadsheet of all downloads
 comp_dl <- compile_downloads(tree_downloads)
@@ -16,15 +18,17 @@ comp_dl <- compile_downloads(tree_downloads)
 # Gets total counts for each observation at each site
 tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
 
+# Australian pollen taxa: Nothofagus, Eucalyptus, Casuarina, (Callitris), Phyllocladus
 # Linearly interpolates each taxa in bins of 500 years
+
 interp_dl <- data.frame(comp_dl[,1:10],
                         time = - (round(comp_dl$age / 500, 0) * 500),
-                        fagus = rowSums(comp_dl[, grep("Fagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        quercus = rowSums(comp_dl[, grep("Quercus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        picea = rowSums(comp_dl[, grep("Picea*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        alnus = rowSums(comp_dl[, grep("Alnus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts) %>%
+                        nothofagus = rowSums(comp_dl[, grep("Nothofagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        #eucalyptus = rowSums(comp_dl[, grep("Eucalyptus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        #casuarina = rowSums(comp_dl[, grep("Casuarina*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        phyllocladus = rowSums(comp_dl[, grep("Phyllocladus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts) %>%
   group_by(time, lat, long, site.name) %>%
-  summarize(fagus = mean (fagus) * 100, quercus = mean (quercus) * 100, picea = mean (picea) * 100, alnus = mean (alnus) * 100)
+  summarize( nothofagus = mean ( nothofagus) * 100, phyllocladus = mean ( phyllocladus) * 100) #casuarina = mean (casuarina) * 100) #eucalyptus = mean (eucalyptus) * 100
 
 # Removes any observations from over 21,000 years ago
 timefltr_output <- dplyr::filter(interp_dl, time >= -21000)

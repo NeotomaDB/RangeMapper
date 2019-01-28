@@ -2,6 +2,9 @@
 # Written by Anna George, 2019
 # Europe by Syd, 1/25.
 
+install.packages("neotoma")
+no
+search()
 # Loads packages
 library(neotoma)
 
