@@ -1,0 +1,26 @@
+.Rproj.user
+## backup files
+*~
+# history
+.Rhistory
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+ggmapTemp.png
+neotoma.Rproj
+file.notes.csv
+Diagram1.dia
+Diagram1.dia.autosave
+.RData
+neotoma_ropensci.Rproj
+inst/doc
+download.out
+..Rcheck
+R/dev_Bchron.R
