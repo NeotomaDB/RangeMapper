@@ -1,10 +1,8 @@
 # This code downloads datasets from Neotoma
 # Written by Anna George, 2019
 # Europe by Syd, 1/25.
+#seems like there are some problems with spruce? maybe these should be picea?
 
-install.packages("neotoma")
-no
-search()
 # Loads packages
 library(neotoma)
 

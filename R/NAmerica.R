@@ -1,6 +1,6 @@
 # This code downloads datasets from Neotoma
 # Written by Anna George, 2019
-#North America attempted by Syd, 1/25. be wary out there!
+#North America, done! 2/1 -syd
 
 # Loads packages
 library(neotoma)
@@ -74,6 +74,6 @@ tree_downloads <- get_download(all_dataset_numbers)
 
 # Saves datasets as an R dataset file
 # So you won't have to redownload all the sites
-saveRDS(tree_downloads, file = "NorthAmerica_sites.RData")
+saveRDS(tree_downloads, file = "~/Desktop/DataForSyd/NorthAmericaSites.RData")
 
 #you can move this by creating a folder and moving it. 
