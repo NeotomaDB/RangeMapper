@@ -37,27 +37,27 @@
         const map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.voyager,
-            center: [30, 50],
-            zoom: 2.5
+            center: [140, -38],
+            zoom: 2.9
         });
 
         //** CARTO VL functionality begins here **//
 
         // Define user
         carto.setDefaultAuth({
-            username: 'aegeorge2',
-            apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
+            username: 'widell',
+            apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
         });
 
         // Define source
-        const source = new carto.source.Dataset('cartoinput_eur_v2');
+        const source = new carto.source.Dataset('cartoinput_aus');
 
         // Define Viz object and custom style
         const viz = new carto.Viz(`
             @animation: animation($time, 42, fade(1,1))
             filter: @animation
             color: green
-            width: $alnus
+            width: $casuarina
         `);
 
         // Define map layer

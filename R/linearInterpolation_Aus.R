@@ -26,7 +26,7 @@ interp_dl <- data.frame(comp_dl[,1:10],
                         nothofagus = rowSums(comp_dl[, grep("Nothofagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         eucalyptus = rowSums(comp_dl[, grep("Eucalyptus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         casuarina = rowSums(comp_dl[, grep("Casuarina*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        callitris = rowSums(comp_dl[, grep("callitris*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        callitris = rowSums(comp_dl[, grep("Callitris*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         phyllocladus = rowSums(comp_dl[, grep("Phyllocladus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts) %>%
   group_by(time, lat, long, site.name) %>%
   summarize( nothofagus = mean ( nothofagus) * 100, phyllocladus = mean ( phyllocladus) * 100, casuarina = mean (casuarina) * 100, callitris = mean (callitris) * 100, eucalyptus = mean (eucalyptus) * 100)
