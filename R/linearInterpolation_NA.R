@@ -1,6 +1,7 @@
 # This code does linearly interpolates taxa data downloaded from Neotoma
 # Written by Anna George, 2019
 #N. America, by syd, 2/1
+#Syd added upload 2/25
 
 # Loads necessary packages
 library(neotoma)
@@ -37,13 +38,16 @@ final_output <- na.omit(timefltr_output)
 
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
-write.csv(final_output, file = "CartoInput_NA_V3.csv")
+write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv")
 
-#apiurl <- "https://documentation.carto.com/api/v1/imports/?api_key=2b8175051e465979cce3424b18b49846d1461e48"
+#https://"YOUR CARTO ACCOUNT".carto.com/api/v1/imports/?api_key="YOUR API KEY"
+apiurl <- "https://wisc.carto.com/u/widell/api/v1/imports/?api_key=7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
 
-#inputfile <- "CartoInput_NA_V3.csv"
+inputFile <- "CartoInput_NA.csv"
 
-#writeLines(addresses , addresseFile )
+#writeLines(addresses, addressFile)
 
-#resp<-POST(apiurl, body=upload_file("CartoInput_NA_V3.csv"), encode="multipart")
-#content(resp)
+writeLines(inputFile)
+
+resp<-POST(apiurl, body=upload_file("CartoInput_NA.csv"), encode="multipart")
+content(resp)

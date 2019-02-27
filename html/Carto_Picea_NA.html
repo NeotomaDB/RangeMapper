@@ -7,13 +7,37 @@
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-</head>
+
+    <style type="text/css">
+            aside.toolbox {
+                left: 96px;
+                position: absolute;
+              }
+
+            .box {
+                width: 300px;
+                background: #F4F7EF;
+            }
+            section {
+            display: inherit;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+
+   </style>
+
+  </head>
 
 <body>
     <!-- Animation control elements -->
-    <aside>
+    <aside class = toolbox>
+        <div class="box">
         <header>
-            <h1>Animation controls</h1>
+            <h1>Picea</h1>
+             <!--Prehaps display "Animation Controls" also? -->
         </header>
         <section>
             <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
@@ -44,55 +68,67 @@
 
         // Define user
         carto.setDefaultAuth({
-            username: 'aegeorge2',
-            apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
+            username: 'widell',
+            apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
         });
 
         // Define source
-        const source = new carto.source.Dataset('cartoinput_na_v2');
+        const iceSource = new carto.source.Dataset('icesheets');
+        const pollenSource = new carto.source.Dataset('cartoinput_na_v3');
 
         // Define Viz object and custom style
-        const viz = new carto.Viz(`
+        const pollenViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1))
             filter: @animation
-            color: green
+            color: #608c25
             width: $picea
-        `);
+
+            `);
+
+
+      const iceViz = new carto.Viz(`
+      color: #68abb8;
+
+    `);
 
         // Define map layer
-        const layer = new carto.Layer('layer', source, viz);
 
+        const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
+        const pollenLayer = new carto.Layer('pollen', pollenSource, pollenViz);
+</script>
+
+ <script>
         // Get animation control elements
         const $progressRange = document.getElementById('js-progress-range');
         const $playButton = document.getElementById('js-play-button');
         const $pauseButton = document.getElementById('js-pause-button');
         const $durationRange = document.getElementById('js-duration-range');
         const $currentTime = document.getElementById('js-current-time');
-
         // Listen to interaction events with the UI
         $playButton.addEventListener('click', () => {
-            viz.variables.animation.play();
+            pollenViz.variables.animation.play();
         });
 
         $pauseButton.addEventListener('click', () => {
-            viz.variables.animation.pause();
+            pollenViz.variables.animation.pause();
         });
 
         $durationRange.addEventListener('change', () => {
-            viz.variables.duration = parseInt($durationRange.value, 10);
+            pollenViz.variables.duration = parseInt($durationRange.value, 10);
         });
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
-            $progressRange.value = viz.variables.animation.getProgressPct();
-            $currentTime.innerText = viz.variables.animation.getProgressValue();
+            $progressRange.value = pollenViz.variables.animation.getProgressPct();
+            $currentTime.innerText = pollenViz.variables.animation.getProgressValue();
         }
 
         setInterval(updateProgress, 100);
 
 
         // Add map layer
-        layer.addTo(map);
+        pollenLayer.addTo(map);
+        iceLayer.addTo(map);
     </script>
 </body>
 </html>

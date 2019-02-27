@@ -1,6 +1,7 @@
 # This code does linearly interpolates taxa data downloaded from Neotoma
 # Written by Anna George, 2019
 #Australia, by syd, 2/1
+#added upload 2/25, syd
 
 # Loads necessary packages
 library(neotoma)
@@ -26,10 +27,14 @@ interp_dl <- data.frame(comp_dl[,1:10],
                         nothofagus = rowSums(comp_dl[, grep("Nothofagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         eucalyptus = rowSums(comp_dl[, grep("Eucalyptus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         casuarina = rowSums(comp_dl[, grep("Casuarina*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        callitris = rowSums(comp_dl[, grep("Callitris*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        #callitris = rowSums(comp_dl[, grep("Callitris*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         phyllocladus = rowSums(comp_dl[, grep("Phyllocladus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts) %>%
   group_by(time, lat, long, site.name) %>%
-  summarize( nothofagus = mean ( nothofagus) * 100, phyllocladus = mean ( phyllocladus) * 100, casuarina = mean (casuarina) * 100, callitris = mean (callitris) * 100, eucalyptus = mean (eucalyptus) * 100)
+  summarize( nothofagus = mean ( nothofagus) * 100, 
+             phyllocladus = mean ( phyllocladus) * 100, 
+             casuarina = mean (casuarina) * 100, 
+            # callitris = mean (callitris) * 100, 
+             eucalyptus = mean (eucalyptus) * 100)
 
 # Removes any observations from over 21,000 years ago
 timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
@@ -37,13 +42,17 @@ final_output <- na.omit(timefltr_output)
 
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
-write.csv(final_output, file = "CartoInput_Aus.csv")
+write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Aus.csv")
 
-#apiurl <- "https://documentation.carto.com/api/v1/imports/?api_key=2b8175051e465979cce3424b18b49846d1461e48"
+#https://"YOUR CARTO ACCOUNT".carto.com/api/v1/imports/?api_key="YOUR API KEY"
+apiurl <- "https://wisc.carto.com/u/widell/api/v1/imports/?api_key=7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
 
-#inputfile <- "CartoInput_NA_V3.csv"
+inputFile <- "CartoInput_Aus.csv"
 
-#writeLines(addresses , addresseFile )
+#writeLines(addressFile)
 
-#resp<-POST(apiurl, body=upload_file("CartoInput_NA_V3.csv"), encode="multipart")
-#content(resp)
+writeLines(inputFile)
+
+resp<-POST(apiurl, body=upload_file("CartoInput_Aus.csv"), encode="multipart")
+content(resp)
+
