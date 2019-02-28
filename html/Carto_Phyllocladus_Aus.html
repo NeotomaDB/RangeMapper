@@ -16,7 +16,7 @@
               }
 
             .box {
-                width: 300px;
+                width: 275px;
                 background: #F4F7EF;
             }
             section {
@@ -44,26 +44,28 @@
 
  <!-- This is the name of the species -->
         <header>
-          <h1 style="color:green;"> <font size = ";"> <img src="neotoma.jpeg" alt="neotoma"
-          style="width:45px;height:40px;"> Phyllocladus  </h1>
+          <h1 style="color:green; position: relative; left: 45px;"> <font size = "5;">  Phyllocladus </h1>
+        <section>
+          <img src="neotoma.jpeg" alt="neotoma"
+          style="width:45px;height:40px;left: 10px; margin-top:-10px;
+          position: absolute;">
+        </section>
         </header>
-<section>
-  <p class="description open-sans">Control animations by issuing "play", "pause" and "set" commands</p>
-  </section>
+
   <!-- This is where you manipulate control elements -->
         <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+            <p style = "position: relative; margin-top: px;"> <font size = 3;>
+              Progress: <input style = "position: relative; margin-top: px;"
+               type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
         </section>
         <section>
-            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+            <p style =" position: relative; margin-top: -4px">Current: <span id="js-current-time" class="open-sans"></span></p>
         </section>
-        <section>
-          <section style="margin-top: 15px;">
-          </section>
-         <section style="margin-top: 15px;">
-             <input type="button" id="js-play-button">
+
+         <section style = "position: relative; up: 10px;">
+             <input  type="button" id="js-play-button">
              <input type="button" id="js-pause-button">
-             <input type="range" id="js-duration-range" min="0" max="42" step="1000">
+             <input type="range" id="js-duration-range" min="1" max="42" step="1000">
          </section>
     </aside>
 

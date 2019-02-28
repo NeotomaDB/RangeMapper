@@ -7,14 +7,35 @@
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-</head>
+    <style type="text/css">
+            aside.toolbox {
+                left: 96px;
+                position: absolute;
+              }
 
-<body>
+            .box {
+                width: 300px;
+                background: #F4F7EF;
+            }
+            section {
+            display: inherit;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
 
+
+
+    </style>
+
+    </head>
+
+    <body>
     <!-- Animation control elements -->
-    <aside>
+    <aside class = toolbox>
+        <div class="box">
         <header>
-            <h1>Animation controls</h1>
+            <h1>Quercus</h1>
         </header>
         <section>
             <p>Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
