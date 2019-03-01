@@ -34,21 +34,34 @@
     <!-- Animation control elements -->
     <aside class = toolbox>
         <div class="box">
-        <header>
-            <h1>Fagus</h1>
-        </header>
-        <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
-        </section>
-        <section>
-            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
-        </section>
-        <section>
-            <button id="js-play-button">Play</button>
-            <button id="js-pause-button">Pause</button>
-            <input type="range" id="js-duration-range" min="0" max="42" step="1000">
-        </section>
-    </aside>
+          <header>
+            <h1 style=" position: relative; left: 50px; margin-top: 10px"> <font size = "4pt;">
+               Fagus </h1>
+          <section>
+            <img src="neotoma.jpeg" alt="neotoma"
+            style="width:45px;height:40px;left: 10px; margin-bottom: -2px;
+            position: absolute;">
+          </section>
+          </header>
+
+    <!-- This is where you manipulate control elements -->
+          <section>
+              <p style = "position: relative; margin-top: px;"> <font size = 3;>
+                Progress: <input style = "position: relative; margin-top: px;"
+                 type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+          </section>
+          <section>
+              <p style =" position: relative; margin-top: -4px">Current: <span style = "color: white;" id="js-current-time"
+                class="open-sans"></span></p>
+          </section>
+
+           <section style = "position: relative;">
+               <input  type="button" id="js-play-button">
+               <input type="button" id="js-pause-button">
+               <input type="range" id="js-duration-range" min="1" max="42" step="1000">
+           </section>
+      </aside>
+
     <!-- Add map container -->
     <div id="map"></div>
 
@@ -111,7 +124,7 @@
         // Update progress bar each 100 milliseconds
         function updateProgress () {
             $progressRange.value = viz.variables.animation.getProgressPct();
-            $currentTime.innerText = viz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
         }
 
         setInterval(updateProgress, 100);

@@ -113,7 +113,7 @@
         // Update progress bar each 100 milliseconds
         function updateProgress () {
             $progressRange.value = viz.variables.animation.getProgressPct();
-            $currentTime.innerText = viz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
         }
 
         setInterval(updateProgress, 100);

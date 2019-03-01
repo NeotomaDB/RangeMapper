@@ -15,7 +15,7 @@
 
             .box {
                 width: 300px;
-                background: #F4F7EF;
+                background: #82a083;
             }
             section {
             display: inherit;
@@ -38,10 +38,11 @@
             <h1>Alnus</h1></head>
         </header>
         <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+            <p> Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
         </section>
         <section>
-            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+            <p>Years before Present: <span type = "integer" style = "color: black;" id="js-current-time"
+              class="open-sans" step = "100"></span></p>
         </section>
         <section>
             <button id="js-play-button">Play</button>
@@ -95,6 +96,7 @@
         const $durationRange = document.getElementById('js-duration-range');
         const $currentTime = document.getElementById('js-current-time');
 
+
         // Listen to interaction events with the UI
         $playButton.addEventListener('click', () => {
             viz.variables.animation.play();
@@ -111,7 +113,7 @@
         // Update progress bar each 100 milliseconds
         function updateProgress () {
             $progressRange.value = viz.variables.animation.getProgressPct();
-            $currentTime.innerText = viz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
         }
 
         setInterval(updateProgress, 100);

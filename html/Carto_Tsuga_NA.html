@@ -35,20 +35,29 @@
     <aside class = toolbox>
         <div class="box">
         <header>
-            <h1>Tsuga</h1>
-        </header>
-        <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
-        </section>
-        <section>
-            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
-        </section>
-        <section>
-            <button id="js-play-button">Play</button>
-            <button id="js-pause-button">Pause</button>
-            <input type="range" id="js-duration-range" min="1" max="42" step="2">
-        </section>
-    </aside>
+            <h1 style="color:green; position: relative; left: 45px;"> <font size = "5;">  Tsuga </h1>
+          <section>
+            <img src="neotoma.jpeg" alt="neotoma"
+            style="width:45px;height:40px;left: 10px; margin-top:-10px;
+            position: absolute;">
+          </section>
+            </header>
+            <section>
+                <p style = "position: relative; margin-top: px;"> <font size = 3;>
+                  Progress: <input style = "position: relative; margin-top: px;"
+                   type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+            </section>
+            <section>
+                <p style =" position: relative; margin-top: -4px">Current: <span id="js-current-time" class="open-sans"></span></p>
+            </section>
+
+             <section style = "position: relative; up: 10px;">
+                 <input  type="button" id="js-play-button">
+                 <input type="button" id="js-pause-button">
+                 <input type="range" id="js-duration-range" min="1" max="42" step="1000">
+             </section>
+        </aside>
+
     <!-- Add map container -->
     <div id="map">
 </div>
@@ -112,7 +121,7 @@
         // Update progress bar each 100 milliseconds
         function updateProgress () {
             $progressRange.value = viz.variables.animation.getProgressPct();
-            $currentTime.innerText = viz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
         }
 
         setInterval(updateProgress, 100);
