@@ -7,6 +7,7 @@
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+
     <style type="text/css">
             aside.toolbox {
                 left: 96px;
@@ -23,38 +24,35 @@
             justify-content: space-between;
             align-items: center;
         }
-
-
-
-    </style>
+      </style>
 
     </head>
 
     <body>
     <!-- Animation control elements -->
-    <aside class = toolbox>
-        <div class="box">
-        <header>
-            <h1>Alnus</h1></head>
-        </header>
-        <section>
-            <p> Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
-        </section>
-        <section>
-            <p>Years before Present: <span type = "integer" style = "color: black;" id="js-current-time"
+      <aside class = toolbox>
+          <div class="box">
+            <header>
+              <h1>Alnus</h1></head>
+            </header>
+            <section>
+              <p> Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+            </section>
+            <section>
+              <p>Years before Present: <span type = "integer" style = "color: black;" id="js-current-time"
               class="open-sans" step = "100"></span></p>
-        </section>
-        <section>
-            <button id="js-play-button">Play</button>
-            <button id="js-pause-button">Pause</button>
-            <input type="range" id="js-duration-range" min="1" max="42" step="1000">
-        </section>
-    </aside>
+            </section>
+            <section>
+              <button id="js-play-button">Play</button>
+              <button id="js-pause-button">Pause</button>
+              <input type="range" id="js-duration-range" min="1" max="42" step="1000">
+            </section>
+          </aside>
+  \
     <!-- Add map container -->
     <div id="map"></div>
 
     <script>
-
 
         // Add basemap and set properties
         const map = new mapboxgl.Map({
@@ -80,8 +78,7 @@
             @animation: animation($time, 42, fade(1,1))
             filter: @animation
             color: green
-            width: $alnus
-        `);
+            width: $alnus`);
 
         // Define map layer
         const layer = new carto.Layer('layer', source, viz);
@@ -95,7 +92,6 @@
         const $pauseButton = document.getElementById('js-pause-button');
         const $durationRange = document.getElementById('js-duration-range');
         const $currentTime = document.getElementById('js-current-time');
-
 
         // Listen to interaction events with the UI
         $playButton.addEventListener('click', () => {

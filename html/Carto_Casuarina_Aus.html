@@ -7,7 +7,7 @@
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-    <style type="text/css">
+      <style type="text/css">
             aside.toolbox {
                 left: 96px;
                 position: absolute;
@@ -23,8 +23,6 @@
             justify-content: space-between;
             align-items: center;
         }
-
-
 
     </style>
 
@@ -54,7 +52,6 @@
 
     <script>
 
-
         // Add basemap and set properties
         const map = new mapboxgl.Map({
             container: 'map',
@@ -79,8 +76,7 @@
             @animation: animation($time, 42, fade(1,1))
             filter: @animation
             color: green
-            width: $casuarina
-        `);
+            width: $casuarina`);
 
         // Define map layer
         const layer = new carto.Layer('layer', source, viz);

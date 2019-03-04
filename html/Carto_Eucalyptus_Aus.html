@@ -8,7 +8,6 @@
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
 
-  <!-- Where do you want control box? What should it look like? -->
   <!-- HTML colors https://htmlcolorcodes.com/ -->
         <style type="text/css">
             aside.toolbox {
@@ -30,39 +29,28 @@
 
 </head>
 
-
 <body>
     <!-- Animation control elements -->
     <aside class = toolbox>
       <div class="box">
-
-<script>
-
-</script>
-
- <!-- This is the name of the species -->
         <header>
           <h1 style="color:green;"> <font size = ";"> Eucalyptus  </h1>
         </header>
-<section>
-  <p class="description open-sans">Control animations by issuing "play", "pause" and "set" commands</p>
-  </section>
-  <!-- This is where you manipulate control elements -->
         <section>
-          <p>Progress: <input type="range" id="js-progress-range" min="0" max="12000" step="500"></p>
+            <p class="description open-sans">Control animations by issuing "play", "pause" and "set" commands</p>
+          </section>
+        <section>
+            <p>Progress: <input type="range" id="js-progress-range" min="0" max="12000" step="500"></p>
         </section>
         <section>
             <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+        <section style="margin-top: 15px;">
         </section>
-        <section>
-          <section style="margin-top: 15px;">
-          </section>
          <section style="margin-top: 15px;">
            <button id="js-play-button">Play</button>
           <button id="js-pause-button">Pause</button>
           <input type="range" id="js-duration-range" min="1" max="42" step="1000">
-
-    </section>
+        </section>
     </aside>
 
     <!-- Add map container -->
@@ -70,8 +58,7 @@
 
     <script>
 
-
-        // Add basemap and set properties
+      // Add basemap and set properties
         const map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.voyager,
@@ -134,9 +121,7 @@
     $progressRange.value = viz.variables.animation.getProgressPct();
     $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
 }
-
         setInterval(updateProgress, 100);
-
 
     </script>
 </body>
