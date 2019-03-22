@@ -5,56 +5,100 @@ date: "2/27/2019"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Introduction
 
-## R Markdown
+-what this is
+  -(Neotoma background)
+-why we built it
+-how this guide will be structured
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Retrieving Data 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
+Downloading the neotoma package
 ```{r pollen_mapper}
 library(neotoma)
 ```
 
-
+pulling data by species, setting bounding boxes, setting time range, creating data set
 ```{r pollen_mapper}
-fagus_datasets <- get_dataset(taxonname = 'Fagus*',
-                              loc = c(-130, 24, -34, 65), 
-                              ageyoung = 0, 
-                              ageold = 21000)
+species_datasets <- get_dataset(taxonname = 'Species*',
+                             #  loc = c(add coordinates), 
+                             #  ageyoung = set age, 
+                             #  ageold = set age)
+)
 
-fagus_dataset_numbers <- as.numeric(names(fagus_datasets))
+species_dataset_numbers <- as.numeric(names(species_datasets))
 ```
 
+concatonating all species data sets by location within a single data set
 
 ```{r pollen_mapper}
-site_dataset_numbers <- append(site_dataset_numbers, c(fagus_dataset_numbers)
-```
+site_dataset_numbers <- append(site_dataset_numbers, c(species_dataset_numbers))
 
-
-```{r pollen_mapper}
 all_dataset_numbers <- as.numeric(unique(site_dataset_numbers))
+
+data_downloads <- get_download(all_dataset_numbers)
 ```
 
+Creating a local R data file
 
 ```{r pollen_mapper}
-tree_downloads <- get_download(all_dataset_numbers)
+saveRDS(data_downloads, file = "File_Path.RDS")
 ```
 
+Interpolating Data
 
+Loading your libraries, and what they do
+```{r pollen mapper}
+library(neotoma)
+library(dplyr)
+library(httr)
+```
+
+Retrieving local data file
+```{r pollen mapper}
+data_downloads <- readRDS("FILE_PATH.")
+```
+
+compiling data set on one spreadsheet
+```{r pollen mapper}
+comp_dl <- compile_downloads(data_downloads)
+```
+
+geting total counts for all observations at each location
+```{r pollen mapper}
+tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
+```
+
+Linerally interpolates all data in bins of 500 years
+```{r pollen mapper}
+interp_dl <- data.frame(comp_dl[,1:10],
+                        time = - (round(comp_dl$age / 500, 0) * 500),
+                        species = rowSums(comp_dl[, grep("Species*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts)
+
+  group_by(time, lat, long, site.name) %>%
+  summarize( species = mean ( species) * 100)
+
+```
+
+Cleans data by removing any observations from beyond the maxiumim time
 ```{r pollen_mapper}
-saveRDS(tree_downloads, file = "~/Desktop/DataForSyd/NorthAmericaSites.RData")
+timefltr_output <- dplyr::filter #(interp_dl, time >= - add max time)
+final_output <- na.omit(timefltr_output)
 ```
 
-## Including Plots
+Upload File to Carto
+```{r pollen_mapper}
+write.csv(final_output, file = "FILE_PATH")
+apiurl <- "https://wisc.carto.com/u/widell/api/v1/imports/?api_key=7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
+inputFile <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Aus.csv"
 
-You can also embed plots, for example:
+writeLines(inputFile)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+resp<-POST(apiurl, body=upload_file(inputFile), encode="")
+
+content(resp) 
+verbose()
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Next Steps

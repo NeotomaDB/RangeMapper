@@ -3,10 +3,16 @@
 #Australia, by syd, 2/1
 #added upload 2/25, syd
 
-# Loads necessary packages
+
 library(neotoma)
 library(dplyr)
 library(httr)
+
+#SW added, 3/11 for using the r2carto package (https://dracodoc.github.io/rCartoAPI/)
+library(devtools)
+library(rCartoAPI)
+
+apiurl <- "https://wisc.carto.com/u/widell/api/v1/imports/?api_key=7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
 
 # Loads downloaded RData object
 # See downloadDatasets.R to download datasets
@@ -43,16 +49,26 @@ final_output <- na.omit(timefltr_output)
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
 write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Aus.csv")
+inputFile <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Aus.csv"
+
+
+
+#local_import(inputFile)
+
+
 
 #https://"YOUR CARTO ACCOUNT".carto.com/api/v1/imports/?api_key="YOUR API KEY"
-apiurl <- "https://wisc.carto.com/u/widell/api/v1/imports/?api_key=7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
 
-inputFile <- "CartoInput_Aus.csv"
 
-#writeLines(addressFile)
+
 
 writeLines(inputFile)
 
-resp<-POST(apiurl, body=upload_file("CartoInput_Aus.csv"), encode="multipart")
-content(resp)
+response <- POST(apiurl, body=upload_file(inputFile), encode= "multipart")
+
+content(response)
+#verbose()
+
+
+
 
