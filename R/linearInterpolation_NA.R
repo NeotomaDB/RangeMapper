@@ -1,13 +1,38 @@
 # This code does linearly interpolates taxa data downloaded from Neotoma
 # Written by Anna George, 2019
 #N. America, by syd, 2/1
-#Syd added upload 2/25
+#Syd fixed upload 3/25
 
 # Loads necessary packages
 library(neotoma)
 library(dplyr)
 library(httr)
 
+#If you don't have these next two packages, here's how to get them!
+#They'll be useful for uploading local files to Carto, based on 
+#(https://dracodoc.github.io/2017/01/21/rCarto/)
+
+#install.packages("devtools")
+#devtools::install_github("dracodoc/rCartoAPI")
+
+#If that doesn't work, try
+
+#install.packages("remotes")
+#remotes::install_github("dracodoc/rCartoAPI")
+
+library(devtools)
+library(rCartoAPI)
+
+#This section saves your account info in the R environment. 
+#It's not working for me, so I skipped it. If you think there's a 
+#security risk in having the api key out and about we can try to make 
+#this work. Code will run without it.
+
+#file.edit("~/.Renviron")
+#setup_key()
+
+
+#This section creates the file
 # Loads downloaded RData object
 # See downloadDatasets.R to download datasets
 
@@ -38,16 +63,22 @@ final_output <- na.omit(timefltr_output)
 
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
+
 write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv")
+inputFile <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv"
 
-#https://"YOUR CARTO ACCOUNT".carto.com/api/v1/imports/?api_key="YOUR API KEY"
-apiurl <- "https://wisc.carto.com/u/widell/api/v1/imports/?api_key=7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
+#This section posts the file you just created and saved locally to R
 
-inputFile <- "CartoInput_NA.csv"
+#your carto info
+carto_acc = "widell"
+carto_api = "7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
 
-#writeLines(addresses, addressFile)
+#optional:
+#test_connection()
 
-writeLines(inputFile)
+#Post the file!
 
-resp<-POST(apiurl, body=upload_file("CartoInput_NA.csv"), encode="multipart")
-content(resp)
+local_import(inputFile)
+
+
+
