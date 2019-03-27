@@ -50,7 +50,7 @@
 <section>
     <button id="js-play-button">Play</button>
     <button id="js-pause-button">Pause</button>
-    <input type="range" id="js-duration-range" min="1" max="21" step="1">
+    <input type="range" id="js-duration-range" min="1" max="42" step="2">
 </section>
 </aside>
 
@@ -119,9 +119,9 @@
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
-    $progressRange.value = viz.variables.animation.getProgressPct();
-    $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
-}
+            $progressRange.value = viz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
+        }
 
         setInterval(updateProgress, 100);
 

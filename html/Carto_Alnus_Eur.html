@@ -43,7 +43,7 @@
         <section>
             <button id="js-play-button">Play</button>
             <button id="js-pause-button">Pause</button>
-            <input type="range" id="js-duration-range" min="1" max="21" step="1">
+            <input type="range" id="js-duration-range" min="1" max="42" step="2">
         </section>
     </aside>
 
@@ -74,7 +74,7 @@
         // Define Viz object and custom style
         const viz = new carto.Viz(`
             @currentFeatures: viewportCount()
-            @animation: animation($time, 42, fade(,1))
+            @animation: animation($time, 10, fade(,1))
             filter: @animation
             color: green
             width: $alnus
