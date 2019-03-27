@@ -1,8 +1,24 @@
 ---
 title: "Pollen_Mapper"
-author: "Williams Lab"
+author: "Williams Lab" 
+- affiliation: University of Wisconsin - Madison
 date: "2/27/2019"
-output: html_document
+bibliography: 
+output:
+  html_document:
+    code_folding: {show?}
+    fig_caption: {yes/no}
+    keep_md: {yes/no}
+    self_contained: {yes/no}
+    theme: {readable?}
+    toc: {yes/no}
+    toc_float: {yes/no}
+dev: {svg?}
+highlight: {tango?}
+keywords: {chronology, geochronology, paleoecology, age-models,
+  Bacon, 210Pb, 14C, radiocarbon, biostratigraphy, Bayesian}
+csl: styles/elsevier-harvard.csl
+
 ---
 
 Introduction

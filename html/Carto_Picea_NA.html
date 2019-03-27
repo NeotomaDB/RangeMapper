@@ -30,6 +30,7 @@
   </head>
 
 <body>
+
     <!-- Animation control elements -->
     <aside class = toolbox>
         <div class="box">
@@ -48,6 +49,7 @@
             <input type="range" id="js-duration-range" min="1" max="42" step="2">
         </section>
     </aside>
+
     <!-- Add map container -->
     <div id="map"></div>
     <script>
@@ -75,23 +77,41 @@
 
         // Define Viz object and custom style
         const pollenViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1))
-            filter: @animation
-            color: #608c25
-            width: $picea
 
-            `);
+            @animation: animation($time, 42, fade(1,1))
+            color: opacity(#608c25,0.2)
+            strokeColor: opacity(#608c25,0.8)
 
+            // animate both the width and strokeWidth of the symbol over time by multiplying by the animation variable you don't need the animation on the filter:
 
+            width: $picea * @animation
+
+            // a note here using $picea/30 is just a visual way to get the stokeWeight proportional to the width (you could do any calculation here, ramp the strokeWidth, or just have a static value):
+
+            strokeWidth: $picea/30 * @animation
+
+            //set the draw order of points to ascending. right now, this can only be done with points and only the options of asc and desc are available:
+
+            order: desc(width())
+
+        `);
+
+      //add animation to the ice sheet layer
       const iceViz = new carto.Viz(`
-      color: #68abb8;
 
-    `);
+            //the value "hold" for fade out keeps the previously animated feature on the map to get a cumulative effect. If you want the features to fade out, replace hold with a fade out value:
+
+            @animation: animation($age,42, fade(0.5,hold))
+
+            color: opacity(#78B1BF,0.2)
+            strokeWidth: 0
+            filter: @animation
+      `);
 
         // Define map layer
-
-        const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
         const pollenLayer = new carto.Layer('pollen', pollenSource, pollenViz);
+        const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
+
 </script>
 
  <script>
@@ -114,18 +134,19 @@
             pollenViz.variables.duration = parseInt($durationRange.value, 10);
         });
 
-        // Update progress bar each 100 milliseconds
-        function updateProgress () {
-            $progressRange.value = viz.variables.animation.getProgressValue();
-            $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
-        }
+        //Update progress bar each 100 milliseconds
+          function updateProgress () {
+              $progressRange.value = viz.variables.animation.getProgressValue();
+              $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
+          }
 
         setInterval(updateProgress, 100);
 
 
         // Add map layer
-        pollenLayer.addTo(map);
         iceLayer.addTo(map);
+        pollenLayer.addTo(map);
+
     </script>
 </body>
 </html>
