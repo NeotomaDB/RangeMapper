@@ -24,8 +24,6 @@
             align-items: center;
         }
 
-
-
         </style>
     </head>
 
@@ -37,7 +35,7 @@
             <h1>Picea</h1>
         </header>
         <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+            <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
         </section>
         <section>
             <p>Current: <span id="js-current-time" class="open-sans"></span></p>
@@ -45,10 +43,9 @@
         <section>
             <button id="js-play-button">Play</button>
             <button id="js-pause-button">Pause</button>
-            <input type="range" id="js-duration-range" min="0" max="42" step="1000">
+            <input type="range" id="js-duration-range" min="1" max="21" step="1">
         </section>
     </aside>
-
     <!-- Add map container -->
     <div id="map"></div>
 
@@ -108,7 +105,7 @@
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
-            $progressRange.value = viz.variables.animation.getProgressPct();
+            $progressRange.value = viz.variables.animation.getProgressValue();
             $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
         }
 

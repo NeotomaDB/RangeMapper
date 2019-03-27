@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,8 @@
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
 
-  <!-- HTML colors: https://htmlcolorcodes.com/ -->
+  <!-- Where do you want control box? What should it look like? -->
+  <!-- HTML colors https://htmlcolorcodes.com/ -->
         <style type="text/css">
             aside.toolbox {
                 left: 96px;
@@ -16,7 +17,7 @@
               }
 
             .box {
-                width: 275px;
+                width: 300px;
                 background: #F4F7EF;
             }
             section {
@@ -26,35 +27,32 @@
             align-items: center;
         }
    </style>
-</head>
 
+</head>
 
 <body>
     <!-- Animation control elements -->
     <aside class = toolbox>
       <div class="box">
         <header>
-          <h1 style="color:green; position: relative; left: 45px;"> <font size = "5;">  Phyllocladus </h1>
-        <section>
-          <img src="neotoma.jpeg" alt="neotoma"
-          style="width:45px;height:40px;left: 10px; margin-top:-10px;
-          position: absolute;">
-        </section>
+          <h1 style="color:green;"> <font size = ";"> <img src="neotoma.jpeg" alt="neotoma"
+          style="width:45px;height:40px;"> Phyllocladus  </h1>
         </header>
-        <section>
-            <p style = "position: relative; margin-top: px;"> <font size = 3;>
-              Progress: <input style = "position: relative; margin-top: px;"
-               type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
-        </section>
-        <section>
-            <p style =" position: relative; margin-top: -4px">Current: <span id="js-current-time" class="open-sans"></span></p>
-        </section>
-         <section style = "position: relative; up: 10px;">
-             <input  type="button" id="js-play-button">
-             <input type="button" id="js-pause-button">
-             <input type="range" id="js-duration-range" min="1" max="42" step="1000">
-         </section>
-    </aside>
+<section>
+  <p class="description open-sans">Control animations by issuing "play", "pause" and "set" commands</p>
+  </section>
+<section>
+    <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
+</section>
+<section>
+    <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+</section>
+<section>
+    <button id="js-play-button">Play</button>
+    <button id="js-pause-button">Pause</button>
+    <input type="range" id="js-duration-range" min="1" max="21" step="1">
+</section>
+</aside>
 
     <!-- Add map container -->
     <div id="map"></div>
@@ -81,15 +79,19 @@
         const source = new carto.source.Dataset('cartoinput_aus');
 
         // Define Viz object and custom style
+        //there is a problem in the animation filter, related to linear$tpep_pickup_datetime
+        //do you want to manipulte progress or just duration?
         const viz = new carto.Viz(`
-            @animation: animation((linear$tpep_pickup_datetime $time, 42, fade(1,1))
-            filter: @animation
-            color: green
-            width: $phyllocladus
-        `);
+          @animation: animation($time, @duration, fade(,1))
+          filter: @animation
+          color: green
+          width: $nothofagus
+          @duration: 42
+      `);
 
         // Define map layer
         const layer = new carto.Layer('layer', source, viz);
+
 
         // Add map layer
         layer.addTo(map);
@@ -100,6 +102,7 @@
         const $pauseButton = document.getElementById('js-pause-button');
         const $durationRange = document.getElementById('js-duration-range');
         const $currentTime = document.getElementById('js-current-time');
+        //const $progressBanner = document.getElementById('js-progress-banner')
 
         // Listen to interaction events with the UI
         $playButton.addEventListener('click', () => {
@@ -111,16 +114,18 @@
         });
 
         $durationRange.addEventListener('change', () => {
-            viz.variables.duration = parseInt($durationRange.value, 10);
+            viz.variables.duration = parseInt($durationRange.value, 42);
         });
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
-            $progressRange.value = viz.variables.animation.getProgressPct();
+            $progressRange.value = viz.variables.animation.getProgressValue();
             $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
         }
 
+
         setInterval(updateProgress, 100);
+
 
     </script>
 </body>

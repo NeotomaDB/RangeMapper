@@ -31,25 +31,22 @@
 
 <body>
     <!-- Animation control elements -->
+    <!-- Animation control elements -->
     <aside class = toolbox>
-      <div class="box">
+        <div class="box">
         <header>
-          <h1 style="color:green;"> <font size = ";"> Eucalyptus  </h1>
+            <h1>Eucalyptus</h1>
         </header>
         <section>
-            <p class="description open-sans">Control animations by issuing "play", "pause" and "set" commands</p>
-          </section>
-        <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="0" max="12000" step="500"></p>
+            <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
         </section>
         <section>
             <p>Current: <span id="js-current-time" class="open-sans"></span></p>
-        <section style="margin-top: 15px;">
         </section>
-         <section style="margin-top: 15px;">
-           <button id="js-play-button">Play</button>
-          <button id="js-pause-button">Pause</button>
-          <input type="range" id="js-duration-range" min="1" max="42" step="1000">
+        <section>
+            <button id="js-play-button">Play</button>
+            <button id="js-pause-button">Pause</button>
+            <input type="range" id="js-duration-range" min="1" max="21" step="1">
         </section>
     </aside>
 
@@ -118,9 +115,10 @@
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
-    $progressRange.value = viz.variables.animation.getProgressPct();
-    $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
-}
+            $progressRange.value = viz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
+        }
+
         setInterval(updateProgress, 100);
 
     </script>

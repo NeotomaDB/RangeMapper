@@ -41,7 +41,7 @@
             <section>
                 <p style = "position: relative; margin-top: px;"> <font size = 3;>
                   Progress: <input style = "position: relative; margin-top: px;"
-                   type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+                   <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
             </section>
             <section>
                 <p style =" position: relative; margin-top: -4px">Current: <span id="js-current-time" class="open-sans"></span></p>
@@ -115,7 +115,7 @@
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
-            $progressRange.value = viz.variables.animation.getProgressPct();
+            $progressRange.value = viz.variables.animation.getProgressValue();
             $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
         }
 

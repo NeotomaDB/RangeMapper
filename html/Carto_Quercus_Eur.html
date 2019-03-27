@@ -32,10 +32,10 @@
     <aside class = toolbox>
         <div class="box">
         <header>
-            <h1>Quercus</h1>
+            <h1>Fagus</h1>
         </header>
         <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-12000" max="0" step="500"></p>
+            <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
         </section>
         <section>
             <p>Current: <span id="js-current-time" class="open-sans"></span></p>
@@ -107,9 +107,10 @@
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
-            $progressRange.value = viz.variables.animation.getProgressPct();
+            $progressRange.value = viz.variables.animation.getProgressValue();
             $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
         }
+
 
         setInterval(updateProgress, 100);
 

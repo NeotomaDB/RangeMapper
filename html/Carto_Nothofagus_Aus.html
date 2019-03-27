@@ -34,8 +34,6 @@
     <!-- Animation control elements -->
     <aside class = toolbox>
       <div class="box">
-
- <!-- This is the name of the species -->
         <header>
           <h1 style="color:green;"> <font size = ";"> <img src="neotoma.jpeg" alt="neotoma"
           style="width:45px;height:40px;"> Nothofagus  </h1>
@@ -43,23 +41,18 @@
 <section>
   <p class="description open-sans">Control animations by issuing "play", "pause" and "set" commands</p>
   </section>
-  <!-- This is where you manipulate control elements -->
-        <section>
-          <p>Progress: <input type="range" id="js-progress-range" min="0" max="12000" step="500"></p>
-        </section>
-        <section>
-            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
-        </section>
-        <section>
-          <section style="margin-top: 15px;">
-          </section>
-         <section style="margin-top: 15px;">
-           <button id="js-play-button">Play</button>
-          <button id="js-pause-button">Pause</button>
-          <input type="range" id="js-duration-range" min="1" max="42" step="1000">
-
-    </section>
-    </aside>
+<section>
+    <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
+</section>
+<section>
+    <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+</section>
+<section>
+    <button id="js-play-button">Play</button>
+    <button id="js-pause-button">Pause</button>
+    <input type="range" id="js-duration-range" min="1" max="21" step="1">
+</section>
+</aside>
 
     <!-- Add map container -->
     <div id="map"></div>
