@@ -78,7 +78,7 @@
         // Define Viz object and custom style
         const pollenViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(2.75,0.5)),
+            @animation: animation($time, 42, fade(6,4)),
             color: opacity(#608c25,0.2)
             strokeColor: opacity(#608c25,0.2)
 
@@ -92,12 +92,13 @@
             //stokeWeight proportional to the width (you could do any calculation
             //here, ramp the strokeWidth, or just have a static value):
 
-            strokeWidth: $picea/30 * @animation
+            //strokeWidth: $picea/30 * @animation
+            strokeWidth: 0
 
             //set the draw order of points to ascending. right now, this can only
             //be done with points and only the options of asc and desc are available:
 
-            order: asc(width())
+            order: desc(width())
 
         `);
 
@@ -108,7 +109,8 @@
             // on the map to get a cumulative effect. If you want the features to
             //fade out, replace hold with a fade out value:
 
-            @animation: animation($age,42, fade(6,4))
+            @animation: animation($age,42, fade(hold,1))
+            //@animation: animation($age,42, fade(6,4))
 
             color: opacity(#78B1BF,0.2)
             strokeWidth: 0
