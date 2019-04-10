@@ -16,7 +16,7 @@
 
             .box {
                 width: 300px;
-                background: #F4F7EF;
+                background: #F0F8E2;
             }
             section {
             display: inherit;
@@ -78,9 +78,10 @@
         // Define Viz object and custom style
         const pollenViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(6,4)),
+            @animation: animation($time, 42, fade(,1)),
             color: opacity(#608c25,0.2)
             strokeColor: opacity(#608c25,0.2)
+
 
             // animate both the width and strokeWidth of the symbol over time by
             //multiplying by the animation variable you don't need the animation
@@ -92,8 +93,8 @@
             //stokeWeight proportional to the width (you could do any calculation
             //here, ramp the strokeWidth, or just have a static value):
 
-            //strokeWidth: $picea/30 * @animation
-            strokeWidth: 0
+            strokeWidth: $picea/30 * @animation
+            //strokeWidth: 0
 
             //set the draw order of points to ascending. right now, this can only
             //be done with points and only the options of asc and desc are available:
@@ -109,10 +110,10 @@
             // on the map to get a cumulative effect. If you want the features to
             //fade out, replace hold with a fade out value:
 
-            @animation: animation($age,42, fade(hold,1))
-            //@animation: animation($age,42, fade(6,4))
+            //@animation: animation($age,42, fade(hold,1))
+            @animation: animation($age,42, fade(6,4))
 
-            color: opacity(#78B1BF,0.2)
+            color: opacity(#78B1BF,0.8)
             strokeWidth: 0
             filter: @animation
 
@@ -147,8 +148,8 @@
 
         //Update progress bar each 100 milliseconds
           function updateProgress () {
-              $progressRange.value = viz.variables.animation.getProgressValue();
-              $currentTime.innerText = parseInt(viz.variables.animation.getProgressValue());
+              $progressRange.value =   pollenViz.variables.animation.getProgressValue();
+              $currentTime.innerText = parseInt(  pollenViz.variables.animation.getProgressValue());
           }
 
         setInterval(updateProgress, 100);
