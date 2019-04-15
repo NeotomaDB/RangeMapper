@@ -1,33 +1,33 @@
 ---
 title: "Pollen_Mapper"
 author: "Williams Lab" 
-- affiliation: University of Wisconsin - Madison
+affiliation: "University of Wisconsin - Madison"
 date: "2/27/2019"
-bibliography: 
-output:
-  html_document:
-    code_folding: {show?}
-    fig_caption: {yes/no}
-    keep_md: {yes/no}
-    self_contained: {yes/no}
-    theme: {readable?}
-    toc: {yes/no}
-    toc_float: {yes/no}
-dev: {svg?}
-highlight: {tango?}
-keywords: {chronology, geochronology, paleoecology, age-models,
-  Bacon, 210Pb, 14C, radiocarbon, biostratigraphy, Bayesian}
-csl: styles/elsevier-harvard.csl
+#bibliography: 
+#output:
+  #html_document:
+    #code_folding: {show?}
+    #fig_caption: {yes/no}
+    #keep_md: {yes/no}
+    #self_contained: {yes/no}
+    #theme: {readable?}
+    #toc: {yes/no}
+    #toc_float: {yes/no}
+#dev: {svg?}
+#highlight: {tango?}
+#keywords: {chronology, geochronology, paleoecology, age-models,
+  #Bacon, 210Pb, 14C, radiocarbon, biostratigraphy, Bayesian}
+#csl: styles/elsevier-harvard.csl
 
 ---
 
 ##Introduction
 
-Welcome to (what are you calling this lol), a repository (is this the right word?) designed to allow researchers, web developers and other users to extract species-specifc(can it?), spatiotemporal data from the Neotoma Paleoecology Database [@williams2017neotoma]. This code also creates a channel between Neotoma and Carto, an online platform where Neotoma data can now be visualized and transformed through Carto's user interface.  [https://carto.com/attribution/] (NOTE FOR ANNA-- how/what do we site here? Is this what's happening?). 
+Welcome to (what are you calling this lol), a repository (is this the right word?) designed to allow researchers, web developers and other users to extract species-specifc(can it?), spatiotemporal data from the Neotoma Paleoecology Database [@williams2017neotoma]. This code also creates a channel between Neotoma and Carto, an online platform where Neotoma data can now be visualized and transformed through Carto's user interface.[https://carto.com/attribution/] (NOTE FOR ANNA-- how/what do we site here? Is this what's happening?). 
 
-Building this R pathway was helpful to us in our attempts to model global forest turnover over the last 21,000 years, based on pollen records archived in Neotoma. Our models are a few of many that could be possible with code that links Neotoma's deep paleoecological data repository to Carto's intuitive and vibrant mapping technology.
+Building this R pathway was helpful to us in our attempts to model global forest turnover over the last 21,000 years based on pollen records archived in Neotoma. Our models are a few of many that could be possible with code that links Neotoma's deep paleoecological data repository to Carto's intuitive and vibrant mapping technology.
 
-Our code integrates previous methods established in @williams2017neotoma and @goring2018bulk-baconizing for extracting and interpolating Neotoma data on R with a quick solution for moving that data to Carto, developed in @dracodoc2017rCartoAPI. In this guide, we will provide step-by-step instructions for running all parts of this code.(@anna, what am I not citing here?)
+Our code integrates previous methods established in @williams2017neotoma and @goring2018bulk-baconizing for extracting and interpolating Neotoma data on R with a quick solution for moving that data to Carto, developed in @dracodoc2017rCartoAPI. In this guide, we will provide step-by-step instructions for running all parts of the code.(@anna, what am I not citing here?)
 
 #### RStudio ----I coppied this part straight from bulk baconizing. Is this standard? do I need to cite?
 
@@ -37,12 +37,12 @@ Many people working with R may choose to use [RStudio](http://rstudio.com).  If 
 
 Users who use the R Console without any other editor can move to the appropriate working directory (using `setwd()`) and then run the entire document using the following command:
 
-```R
-library(rmarkdown)
-render('Pollen_Mapper.Rmd')
+```{r}
+#library(rmarkdown)
+#render('Pollen_Mapper.Rmd')
 ```
 
-This can be shortened to: `rmarkdown::render('Pollen_Mapper.Rmd')`.
+
 
 #### Terminal
 
@@ -70,9 +70,9 @@ Is there a begining step that had to procede through terminal? I seem to remembe
 
 The neotoma package is used during interactions between R and the database. The dplyr package supports that process through functions that allow you to filter the extracted data by factors like site and age.
 
-Later on, rCartoAPI relocates the data you've downloaded to Carto. It depends on httr and devtools, but you won't need to use those libraries directly.  
+Later on, rCartoAPI pushes the data you've downloaded to Carto. It depends on httr and devtools, but you won't reference those libraries directly.  
 
-```{r pollen_mapper}
+```{r library}
 library(neotoma)
 library(dplyr)
 
@@ -83,115 +83,120 @@ library(rCartoAPI)
 
 ## Retrieving Neotoma data
 
-Now that you're all set up, you'll be ready to extract your first dataset. 
+With this set up complete, you'll be ready to extract your first dataset. 
 
-First, replace "Taxon" with the name of a taxon you're interested in. It might be helpful to browse Neotoma at this point, just to make sure that what you're looking for exists in its database.  
+First, replace all instances of "taxon" with the taxon you'd like to explore. Be aware that these values are case-sensitive. It might be helpful to browse Neotoma at this point, just to make sure that what you're looking for exists in its database.  
 
 Second, select the geographical bounds of your querry and express them as coordinates. ttps://boundingbox.klokantech.com/ is a useful way to generate your own bounding regions. Otherwise, these sets of coordinates worked well for us:
 
- North American bounding box: loc = c(-130, 24, -34, 65)
- European bounding box: loc = c(-11, 35, 47, 72)
+ North American bounding box: loc = c(-130, 24, -34, 65),
+ European bounding box: loc = c(-11, 35, 47, 72),
  Australian bounding box: loc = c(105, -51, 177, 10)
  
-Third, set your boundary ages where indicated by "set age."
 
-Combined, these parameters record dataset metadata for the taxon in specified location.
+It's also possible to select data from a geopolitical region. That code is recorded in lines 114-116. Pick whichever of these methods work best for you. 
 
-Finally, replace both instances of "taxon" in the last line with the name of the taxon you originally selected. 
+Third, set your boundary ages. We use a minimum of 21,000 years ago and set our maximum to 0. 
 
-This last step creates a list of all the taxon dataset numbers.
+Combined, these parameters are recorded in the metadata for the taxon in a specified location.
 
-By running this chunk several times in a row with different Taxon values (but keeping other parameters constant!), it is possible to generate many lists of data. All of these lists will be written together as one file in the following section.
+The last step creates a list of all the taxon dataset numbers.
 
-```{r pollen_mapper}
-species_datasets <- get_dataset(taxonname = 'Taxon*',
-                             #  loc = c(add coordinates), 
+By running this chunk several times in a row with different Taxon values (but keeping other parameters constant!), it is possible to generate lists for many taxa. All of these lists will be written together as one file in the following section.
+
+```{r data_query}
+
+#taxon_datasets <- get_dataset(taxonname = 'Taxon*',
+                             # loc = c(set location here), 
                              #  ageyoung = set age, 
                              #  ageold = set age)
-)
+ 
+#can_datasets <- neotoma::get_dataset(datasettype = 'pollen', 
+                                     #ageold = 15000, ageyoung = -100,
+                                     #gpid = "Canada")
 
-taxon_dataset_numbers <- as.numeric(names(taxon_datasets))
+#taxon_dataset_numbers <- as.numeric(names(taxon_datasets))
 ```
 
 ## Appending and downloading your lists
 
-The first line in this dataset prepares the empty list you'll work with soon. Nothing to add to this line!
+The first line in this dataset prepares the empty list you'll work with later. Nothing to add to this line!
 
-The second line combines lists of different taxa dataset numbers. Here, you should substitute "taxon" with whatever taxon you've pulled. Add comma-separated arguments for each taxa you referenced in the previous chunk. 
+The second line combines lists of different taxa dataset numbers. Here again, you should substitute "taxon" with whatever taxa you've pulled thus far. Add comma-separated arguments to this vector for each taxon you've referenced previously.
 
 The third line removes duplicate dataset numbers from your new list. Again, nothing to update here.
 
-The last two lines download all your datasets as RDS files. You may want to change the name "data_downloads" to something more specific, especially if you plan downloading multiple datasets. Set the file path to a pre-existing, local file. 
+The last two lines download all your datasets as RDS files. You may want to change the name "data_downloads" to something more specific, especially if you plan on downloading multiple datasets. Set the file path to a pre-existing, local file. 
 
-```{r pollen_mapper}
-site_dataset_numbers = list()
+```{r download}
+#site_dataset_numbers = list()
 
-site_dataset_numbers <- append(site_dataset_numbers, c(taxon_dataset_numbers))
+#site_dataset_numbers <- append(site_dataset_numbers, c(taxon_dataset_numbers))
 
-all_dataset_numbers <- as.numeric(unique(site_dataset_numbers))
+#all_dataset_numbers <- as.numeric(unique(site_dataset_numbers))
 
-data_downloads <- get_download(all_dataset_numbers)
+#data_downloads <- get_download(all_dataset_numbers)
 
-saveRDS(data_downloads, file = "File_Path.RDS")
+#saveRDS(data_downloads, file = "FILE_PATH")
 ```
 
-## Interpolating Data
+## Compliling Data
 
-In this next section, you'll be working with data you've already downloaded from Neotoma and stored in a local file. Now, you'll retrieve that data via the proper file path and compile it. Note that data_downloads may be a generic name, if you've chosen to call your download something more specific.
+In this next section, you'll be working with data you've already downloaded from Neotoma and stored in a local file. Now, you'll retrieve that data via the proper file path and compile it. Note that data_downloads may be a generic name, if you've chosen to call your file something more specific.
 
-```{r pollen mapper}
-data_downloads <- readRDS("FILE_PATH.")
+```{r compile}
+#data_downloads <- readRDS("FILE_PATH.")
 
-comp_dl <- compile_downloads(data_downloads)
+#comp_dl <- compile_downloads(data_downloads)
 ```
 
 ## Linear Interpolation
 
-This chuck fetches total counts for all taxon observations at every location and linerally interpolates all the data into bins of 500 years. 
+This chuck fetches total counts for all taxa observations at every location and linerally interpolates all the data into bins of 500 years. 
 
-In line 158 and 161, replace every instance of taxon with the specific names of the taxa you've examined, being mindful that taxon names are case-sensitive (and dependent) in this code Run subsequent itterations of lines 158 and 161 for each taxon you've observed.
+In lines 164 and 167, replace every instance of Taxon with the specific names of the taxa you've examined, being mindful that taxon names are case-sensitive in this code. Run additional itterations of lines 164 and 167 for each taxon you've observed.
 
-```{r pollen mapper}
-tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
+```{r linear interpolation}
+#tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
 
-interp_dl <- data.frame(comp_dl[,1:10],
-                   time = - (round(comp_dl$age / 500, 0) * 500),
-                   taxon = rowSums(comp_dl[, grep("Taxon*", colnames(comp_dl))], na.rm = TRUE)/tot_cnts)
+#interp_dl <- data.frame(comp_dl[,1:10],
+               #time = - (round(comp_dl$age / 500, 0) * 500),
+               #taxon = rowSums(comp_dl[, grep("Taxon*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts)
 
-  group_by(time, lat, long, site.name) %>%
-  summarize( species = mean (taxon) * 100)
+  #group_by(time, lat, long, site.name) %>%
+  #summarize(taxon = mean(taxon) * 100)
 
 ```
 
 ## Clean your data
 
-These next lines remove any observations from beyond your maxiumim time recorded in your file.
+These next lines remove any observations from beyond the maxiumim age you recorded in your file.
 
-```{r pollen_mapper}
-timefltr_output <- dplyr::filter #(interp_dl, time >= - add max time)
-final_output <- na.omit(timefltr_output)
+```{r filter}
+#timefltr_output <- dplyr::filter (interp_dl, time >= min year, time < max year)
+#final_output <- na.omit(timefltr_output)
 ```
 
 ## Create CSV and upload it to Carto
 
 This chunk takes the final output you generated above, converts it to a CSV and then imediatly posts it to Carto. All you have to do is provide a file path and carto user information where prompted. If you are not sure if you are able to access Carto, we've included an optional test conection, which you may uncomment and run as you'd like. 
 
-Double check your Carto data library to make sure yuour file has posted. Now you're ready to generate some rad visualizations.
+Double check your Carto data library to make sure yuour file has posted. Now you're ready to generate some rad visualizations!
 
-```{r pollen_mapper}
-write.csv(final_output, file = "FILE_PATH.csv")
-inputFile <- "FILE_PATH.csv"
+```{r to_Carto}
+#write.csv(final_output, file = "FILE_PATH.csv")
+#inputFile <- "FILE_PATH.csv"
 
 
 #This section posts the file you just created and saved locally to R
 
 #your carto info
-carto_acc = "username"
-carto_api = "api key"
+#carto_acc = "username"
+#carto_api = "api key"
 
 #optional:
 #test_connection()
 
 #Post the file!
-local_import(inputFile)
+#local_import(inputFile)
 ```
