@@ -50,12 +50,27 @@ tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
 
 interp_dl <- data.frame(comp_dl[,1:10],
                         time = - (round(comp_dl$age / 500, 0) * 500),
+                        alnus = rowSums(comp_dl[, grep("Alnus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         fagus = rowSums(comp_dl[, grep("Fagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         picea = rowSums(comp_dl[, grep("Picea*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        pinus = rowSums(comp_dl[, grep("Pinus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         quercus = rowSums(comp_dl[, grep("Quercus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        tsuga = rowSums(comp_dl[, grep("Tsuga*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts) %>%
+                        tsuga = rowSums(comp_dl[, grep("Tsuga*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        ulmus = rowSums(comp_dl[, grep("Ulmus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        ambrosia = rowSums(comp_dl[, grep("Ambrosia*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        cyperaceae = rowSums(comp_dl[, grep("Cyperaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        poaceae = rowSums(comp_dl[, grep("Poaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts)%>%
   group_by(time, lat, long, site.name) %>%
-  summarize( fagus = mean ( fagus) * 100, picea = mean ( picea) * 100, quercus = mean (quercus) * 100, tsuga = mean (tsuga) * 100)
+  summarize( alnus = mean ( alnus) * 100, 
+             fagus = mean ( fagus) * 100, 
+             picea = mean ( picea) * 100,
+             pinus = mean ( pinus) * 100, 
+             quercus = mean (quercus) * 100, 
+             tsuga = mean (tsuga) * 100,
+             ulmus = mean ( ulmus) * 100,
+             ambrosia = mean ( ambrosia) * 100, 
+             cyperaceae = mean ( cyperaceae) * 100,
+             poaceae = mean ( poaceae) * 100)
 
 # Removes any observations from over 21,000 years ago
 timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
