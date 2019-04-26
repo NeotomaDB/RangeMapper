@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+    <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+
+      <style type="text/css">
+            aside.toolbox {
+                left: 96px;
+                position: absolute;
+              }
+
+            .box {
+                width: 300px;
+                background: #F4F7EF;
+            }
+            section {
+            display: inherit;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+          }
+        </style>
+    </head>
+
+    <body>
+    <!-- Animation control elements -->
+    <aside class = toolbox>
+        <div class="box">
+        <header>
+            <h1>Animations</h1>
+        </header>
+        <section>
+            <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
+        </section>
+        <section>
+            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+        </section>
+        <section>
+            <button id="js-play-button">Play</button>
+            <button id="js-pause-button">Pause</button>
+            <input type="range" id="js-duration-range" min="1" max="42" step="2">
+        </section>
+    </aside>
+
+    <!-- Add map container -->
+    <div id="map"></div>
+
+    <script>
+
+        // Add basemap and set properties
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: carto.basemaps.voyager,
+            center: [30, 50],
+            zoom: 2.5
+        });
+
+        //** CARTO VL functionality begins here **//
+
+        // Define user
+        carto.setDefaultAuth({
+            username: 'aegeorge2',
+            apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
+        });
+
+        // Define source
+        const pollenSource = new carto.source.Dataset('cartoinput_eur_v2');
+
+        // Define Viz object and custom style
+        const alnusViz = new carto.Viz(`
+            @animation: animation($time, 42, fade(,1)),
+            filter: @animation
+            color: opacity(#134c05,0.4)
+            strokeColor: opacity(#134c05,0.2)
+            width: $alnus
+        `);
+
+        const fagusViz = new carto.Viz(`
+            @animation: animation($time, 42, fade(,1)),
+            filter: @animation
+            color: opacity(#c6af02,0.4)
+            strokeColor: opacity(#c6af02,0.2)
+            width: $fagus
+        `);
+
+        const piceaViz = new carto.Viz(`
+            @animation: animation($time, 42, fade(,1)),
+            filter: @animation
+            color: opacity(#c43636,0.4)
+            strokeColor: opacity(#c43636,0.2)
+            width: $picea
+        `);
+
+        const quercusViz = new carto.Viz(`
+            @animation: animation($time, 42, fade(,1)),
+            filter: @animation
+            color: opacity(#becc08,0.4)
+            strokeColor: opacity(#becc08,0.2)
+            width: $quercus
+        `);
+
+        // Define map layer
+        const alnusLayer = new carto.Layer('alnus', pollenSource, alnusViz);
+        const fagusLayer = new carto.Layer('fagus', pollenSource, fagusViz);
+        const piceaLayer = new carto.Layer('picea', pollenSource, piceaViz);
+        const quercusLayer = new carto.Layer('quercus', pollenSource, quercusViz);
+
+
+        // Get animation control elements
+        const $progressRange = document.getElementById('js-progress-range');
+        const $playButton = document.getElementById('js-play-button');
+        const $pauseButton = document.getElementById('js-pause-button');
+        const $durationRange = document.getElementById('js-duration-range');
+        const $currentTime = document.getElementById('js-current-time');
+
+        // Listen to interaction events with the UI
+        $playButton.addEventListener('click', () => {
+            alnusViz.variables.animation.play();
+            fagusViz.variables.animation.play();
+            piceaViz.variables.animation.play();
+            quercusViz.variables.animation.play();
+
+        });
+
+        $pauseButton.addEventListener('click', () => {
+            alnusViz.variables.animation.pause();
+            fagusViz.variables.animation.pause();
+            piceaViz.variables.animation.pause();
+            quercusViz.variables.animation.pause();
+
+        });
+
+        $durationRange.addEventListener('change', () => {
+            alnusViz.variables.duration = parseInt($durationRange.value, 10);
+            fagusViz.variables.duration = parseInt($durationRange.value, 10);
+            piceaViz.variables.duration = parseInt($durationRange.value, 10);
+            quercusViz.variables.duration = parseInt($durationRange.value, 10);
+
+        });
+
+        // Update progress bar each 100 milliseconds
+        function updateProgress () {
+            $progressRange.value = alnusViz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(alnusViz.variables.animation.getProgressValue());
+        }
+
+        setInterval(updateProgress, 100);
+
+        alnusLayer.addTo(map);
+        fagusLayer.addTo(map);
+        piceaLayer.addTo(map);
+        quercusLayer.addTo(map);
+
+    </script>
+</body>
+</html>
