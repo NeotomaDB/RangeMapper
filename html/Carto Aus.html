@@ -7,7 +7,6 @@
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-
       <style type="text/css">
             aside.toolbox {
                 left: 96px;
@@ -16,23 +15,26 @@
 
             .box {
                 width: 300px;
-                background: #F4F7EF;
+                background: #c4c631;
             }
             section {
             display: inherit;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-          }
-        </style>
+        }
+
+    </style>
+
     </head>
 
     <body>
     <!-- Animation control elements -->
+
     <aside class = toolbox>
         <div class="box">
         <header>
-            <h1>Animations</h1>
+            <h1>Animation</h1>
         </header>
         <section>
             <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
@@ -56,7 +58,7 @@
         const map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.voyager,
-            center: [30, 50],
+            center: [125, -30],
             zoom: 2.5
         });
 
@@ -64,52 +66,50 @@
 
         // Define user
         carto.setDefaultAuth({
-            username: 'aegeorge2',
-            apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
+            username: 'widell',
+            apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
         });
 
         // Define source
-        const pollenSource = new carto.source.Dataset('cartoinput_eur_v2');
+        const pollenSource = new carto.source.Dataset('cartoinput_aus');
 
         // Define Viz object and custom style
-        const alnusViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
+        const casuarinaViz = new carto.Viz(`
+            @animation: animation($time, 42, fade(1,1))
             filter: @animation
-            color: opacity(#d19112,0.4)
-            strokeColor: opacity(#d19112,0.2)
-            width: $alnus
-        `);
+            color: #0a7069
+            width: $casuarina
+            `);
 
-        const fagusViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
+        const eucalyptusViz = new carto.Viz(`
+            @animation: animation($time, 42, fade(1,1))
             filter: @animation
-            color: opacity(#163f04,0.4)
-            strokeColor: opacity(#163f04,0.2)
-            width: $fagus
-        `);
+            color: #0b6018
+            width: $eucalyptus
 
-        const piceaViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
+
+                `);
+        const nothofagusViz = new carto.Viz(`
+            @animation: animation($time, 42, fade(1,1))
             filter: @animation
-            color: opacity(#4d788c,0.4)
-            strokeColor: opacity(#4d788c,0.2)
-            width: $picea
-        `);
+            color: #d67304
+            width: $nothofagus
 
-        const quercusViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
+
+                `);
+        const phyllocladusViz = new carto.Viz(`
+            @animation: animation($time, 42, fade(1,1))
             filter: @animation
-            color: opacity(#915511,0.4)
-            strokeColor: opacity(#915511,0.2)
-            width: $quercus
-        `);
+            color: #915511
+            width: $phyllocladus
 
+
+                            `);
         // Define map layer
-        const alnusLayer = new carto.Layer('alnus', pollenSource, alnusViz);
-        const fagusLayer = new carto.Layer('fagus', pollenSource, fagusViz);
-        const piceaLayer = new carto.Layer('picea', pollenSource, piceaViz);
-        const quercusLayer = new carto.Layer('quercus', pollenSource, quercusViz);
-
+        const casuarinaLayer = new carto.Layer('casaurina', pollenSource, casuarinaViz);
+        const eucalyptusLayer = new carto.Layer('eucalyptus', pollenSource, eucalyptusViz);
+        const nothofagusLayer = new carto.Layer('nothofagus', pollenSource, nothofagusViz);
+        const phyllocladusLayer = new carto.Layer('phyllocladus', pollenSource, phyllocladusViz);
 
         // Get animation control elements
         const $progressRange = document.getElementById('js-progress-range');
@@ -120,41 +120,45 @@
 
         // Listen to interaction events with the UI
         $playButton.addEventListener('click', () => {
-            alnusViz.variables.animation.play();
-            fagusViz.variables.animation.play();
-            piceaViz.variables.animation.play();
-            quercusViz.variables.animation.play();
+            casuarinaViz.variables.animation.play();
+            eucalyptusViz.variables.animation.play();
+            nothofagusViz.variables.animation.play();
+            phyllocladusViz.variables.animation.play();
+
 
         });
 
         $pauseButton.addEventListener('click', () => {
-            alnusViz.variables.animation.pause();
-            fagusViz.variables.animation.pause();
-            piceaViz.variables.animation.pause();
-            quercusViz.variables.animation.pause();
+            casuarinaViz.variables.animation.pause();
+            eucalyptusViz.variables.animation.pause();
+            nothofagusViz.variables.animation.pause();
+            phyllocladusViz.variables.animation.pause();
+
 
         });
 
         $durationRange.addEventListener('change', () => {
-            alnusViz.variables.duration = parseInt($durationRange.value, 10);
-            fagusViz.variables.duration = parseInt($durationRange.value, 10);
-            piceaViz.variables.duration = parseInt($durationRange.value, 10);
-            quercusViz.variables.duration = parseInt($durationRange.value, 10);
+            casuarinaViz.variables.duration = parseInt($durationRange.value, 10);
+            eucalyptusViz.variables.duration = parseInt($durationRange.value, 10);
+            nothofagusViz.variables.duration = parseInt($durationRange.value, 10);
+            phyllocladusViz.variables.duration = parseInt($durationRange.value, 10);
 
         });
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
-            $progressRange.value = alnusViz.variables.animation.getProgressValue();
-            $currentTime.innerText = parseInt(alnusViz.variables.animation.getProgressValue());
+            $progressRange.value = casuarinaViz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(casuarinaViz.variables.animation.getProgressValue());
         }
 
         setInterval(updateProgress, 100);
 
-        alnusLayer.addTo(map);
-        fagusLayer.addTo(map);
-        piceaLayer.addTo(map);
-        quercusLayer.addTo(map);
+        // Add map layer
+        casuarinaLayer.addTo(map);
+        eucalyptusLayer.addTo(map);
+        nothofagusLayer.addTo(map);
+        phyllocladusLayer.addTo(map);
+
 
     </script>
 </body>
