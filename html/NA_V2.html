@@ -25,12 +25,12 @@
     <style type="text/css">
             aside.toolbox {
                 left: 96px;
-                position: absolute;
+                position: left;
               }
 
             .box {
                 width: 300px;
-                background: #F0F8E2;
+                background: #E9E9E9;
             }
 
             section {
@@ -58,11 +58,11 @@ is a key as well. -->
 
   <style>
   #menu {
-  background: #fcf4ff;
-  position: fixed;
+  background: #E9E9E9;
   z-index: 1;
   top: 10px;
-  right: 10px;
+  left: 1050px;
+  position: relative;
   border-radius: 3px;
   width: 120px;
   border: 1px solid rgba(0,0,0,0.4);
@@ -73,7 +73,7 @@ is a key as well. -->
 
   #menu genus {
   font-size: 13px;
-  color: #4e4451;
+  color: #E9E9E9;
   display: block;
   margin: 0;
   padding: 0;
@@ -88,7 +88,7 @@ is a key as well. -->
   }
 
   #menu genus.active {
-  background-color: #fcf4ff;
+  background-color: #E9E9E9;
   color: #070500;
   }
 
@@ -577,7 +577,7 @@ is a key as well. -->
       //add animation to the ice sheet layer
       const iceViz = new carto.Viz(`
             @animation: animation($age,42, fade(hold,.75))
-            color: opacity(#78B1BF,0.8)
+            color: opacity(#88BBD6,0.8)
             strokeWidth: 0
             filter: @animation
 
