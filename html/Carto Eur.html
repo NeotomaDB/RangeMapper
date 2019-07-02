@@ -3,10 +3,15 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
+        <title>Europe | Pollen Mapper</title>
     <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+      <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+      <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
 
       <style type="text/css">
             aside.toolbox {
@@ -25,9 +30,170 @@
             align-items: center;
           }
         </style>
-    </head>
+        <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+        </head>
 
-    <body>
+        <body>
+          <div id="map"></div>
+<style>
+#menu {
+  background: #fcf4ff;
+  position: fixed;
+  z-index: 1;
+  top: 10px;
+  right: 10px;
+  border-radius: 3px;
+  width: 120px;
+  border: 1px solid rgba(0,0,0,0.4);
+  font-family: 'Open Sans', sans-serif;
+  }
+
+
+
+#menu genus {
+  font-size: 13px;
+  color: #4e4451;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,.25);
+  text-align: center;
+  }
+
+#menu genus:last-child {
+  border: none;
+  }
+
+#menu genus.active {
+background-color: #fcf4ff;
+color: #070500;
+}
+
+#menu alnus {
+  font-size: 13px;
+  color: #4e4451;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+#menu alnus:last-child {
+  border: none;
+  }
+
+#menu alnus:hover {
+  background-color: #fcf4ff;
+color: #ddab66;
+}
+
+#menu alnus.active {
+background-color: #d19112;
+color: #f9f0e3;
+}
+
+#menu alnus.active:hover {
+background: #ceb88c;
+}
+
+#menu fagus {
+  font-size: 13px;
+  color: #4e4451;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+#menu fagus:last-child {
+  border: none;
+        background-color: #7fa384;
+  }
+
+#menu fagus:hover {
+  background-color: #fcf4ff;
+color: #ddab66;
+}
+
+#menu fagus.active {
+background-color: #163f04;
+color: #f9f0e3;
+}
+
+#menu fagus.active:hover {
+background: #73846b;
+}
+
+#menu picea {
+  font-size: 13px;
+  color: #4e4451;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+#menu picea:last-child {
+  border: none;
+  }
+
+#menu picea:hover {
+  background-color: #fcf4ff;
+color: #ddab66;
+}
+
+#menu picea.active {
+background-color: #4d788c;
+color: #f9f0e3;
+}
+
+#menu picea.active:hover {
+background: #b5c4d1;
+}
+
+#menu quercus {
+  font-size: 13px;
+  color: #4e4451;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+#menu quercus:last-child {
+  border: none;
+  }
+
+#menu quercus:hover {
+  background-color: #fcf4ff;
+color: #ddab66;
+}
+
+#menu quercus.active {
+background-color: #915511;
+color: #f9f0e3;
+}
+
+#menu quercus.active:hover {
+background: #cc9d68;
+}
+
+</style>
+  <div id="menu"></div>
     <!-- Animation control elements -->
     <aside class = toolbox>
         <div class="box">
@@ -47,6 +213,11 @@
         </section>
     </aside>
 
+
+
+
+
+
     <!-- Add map container -->
     <div id="map"></div>
 
@@ -56,7 +227,7 @@
         const map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.voyager,
-            center: [30, 50],
+            center: [30, 55],
             zoom: 2.5
         });
 
@@ -64,12 +235,13 @@
 
         // Define user
         carto.setDefaultAuth({
-            username: 'aegeorge2',
-            apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
+            username: 'widell',
+            apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
         });
 
         // Define source
-        const pollenSource = new carto.source.Dataset('cartoinput_eur_v2');
+        const pollenSource = new carto.source.Dataset('cartoinputeuro');
+        const iceSource = new carto.source.Dataset('euroice');
 
         // Define Viz object and custom style
         const alnusViz = new carto.Viz(`
@@ -104,11 +276,21 @@
             width: $quercus
         `);
 
+        const iceViz = new carto.Viz(`
+            @animation: animation($av_time,42, fade(6,4))
+            color: opacity(#78B1BF,0.8)
+              strokeWidth: 0
+              filter: @animation
+
+                `);
+
         // Define map layer
         const alnusLayer = new carto.Layer('alnus', pollenSource, alnusViz);
         const fagusLayer = new carto.Layer('fagus', pollenSource, fagusViz);
         const piceaLayer = new carto.Layer('picea', pollenSource, piceaViz);
         const quercusLayer = new carto.Layer('quercus', pollenSource, quercusViz);
+
+        const iceLayer = new carto.Layer('euroice', iceSource, iceViz);
 
 
         // Get animation control elements
@@ -125,6 +307,9 @@
             piceaViz.variables.animation.play();
             quercusViz.variables.animation.play();
 
+            iceViz.variables.animation.play();
+
+
         });
 
         $pauseButton.addEventListener('click', () => {
@@ -132,6 +317,8 @@
             fagusViz.variables.animation.pause();
             piceaViz.variables.animation.pause();
             quercusViz.variables.animation.pause();
+
+            iceViz.variables.animation.pause();
 
         });
 
@@ -141,12 +328,23 @@
             piceaViz.variables.duration = parseInt($durationRange.value, 10);
             quercusViz.variables.duration = parseInt($durationRange.value, 10);
 
+            iceViz.variables.duration = parseInt($durationRange.value, 10);
+
         });
 
         // Update progress bar each 100 milliseconds
         function updateProgress () {
             $progressRange.value = alnusViz.variables.animation.getProgressValue();
             $currentTime.innerText = parseInt(alnusViz.variables.animation.getProgressValue());
+
+            $progressRange.value = fagusViz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(fagusViz.variables.animation.getProgressValue());
+
+            $progressRange.value = piceaViz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(piceaViz.variables.animation.getProgressValue());
+
+            $progressRange.value = quercusViz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(quercusViz.variables.animation.getProgressValue());
         }
 
         setInterval(updateProgress, 100);
@@ -156,6 +354,161 @@
         piceaLayer.addTo(map);
         quercusLayer.addTo(map);
 
+        iceLayer.addTo(map);
+
+      var toggleableMapIds = [ 'genus'
+                                 ];
+
+        for (var i = 0; i < toggleableMapIds.length; i++) {
+        var id = toggleableMapIds[i];
+
+        var link = document.createElement('genus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+
+        var toggleableAlnusIds = [
+                                   'alnus'
+                                 ];
+
+        for (var i = 0; i < toggleableAlnusIds.length; i++) {
+        var id = toggleableAlnusIds[i];
+
+        var link = document.createElement('alnus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleableFagusIds = ['fagus'];
+
+        for (var i = 0; i < toggleableFagusIds.length; i++) {
+        var id = toggleableFagusIds[i];
+
+        var link = document.createElement('fagus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleablePiceaIds = ['picea'];
+
+        for (var i = 0; i < toggleablePiceaIds.length; i++) {
+        var id = toggleablePiceaIds[i];
+
+        var link = document.createElement('picea');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleableQuercusIds = ['quercus'];
+
+        for (var i = 0; i < toggleableQuercusIds.length; i++) {
+        var id = toggleableQuercusIds[i];
+
+        var link = document.createElement('quercus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
     </script>
 </body>
 </html>

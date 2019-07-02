@@ -249,7 +249,7 @@ library(rCartoAPI)</code></pre>
 <p>With this set up complete, you’ll be ready to extract your first dataset.</p>
 <p>First, replace all instances of “taxon” with the taxon you’d like to explore. Be aware that these values are case-sensitive. It might be helpful to browse Neotoma at this point, just to make sure that what you’re looking for exists in its database.</p>
 <p>Second, select the geographical bounds of your querry and express them as coordinates. ttps://boundingbox.klokantech.com/ is a useful way to generate your own bounding regions. Otherwise, these sets of coordinates worked well for us:</p>
-<p>North American bounding box: loc = c(-130, 24, -34, 65) European bounding box: loc = c(-11, 35, 47, 72) Australian bounding box: loc = c(105, -51, 177, 10)</p>
+<p>North American bounding box: loc = c(-130, 24, -34, 65), European bounding box: loc = c(-11, 35, 47, 72), Australian bounding box: loc = c(105, -51, 177, 10)</p>
 <p>It’s also possible to select data from a geopolitical region. That code is recorded in lines 114-116. Pick whichever of these methods work best for you.</p>
 <p>Third, set your boundary ages. We use a minimum of 21,000 years ago and set our maximum to 0.</p>
 <p>Combined, these parameters are recorded in the metadata for the taxon in a specified location.</p>

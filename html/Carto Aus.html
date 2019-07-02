@@ -3,32 +3,205 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
-    <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-      <style type="text/css">
-            aside.toolbox {
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Australia | Pollen Mapper</title>
+          <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
+          <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+          <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
+          <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+          <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+            <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+            <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+
+<!--BUILDING TOOLBOX-->
+
+<style type="text/css">
+        aside.toolbox {
                 left: 96px;
-                position: absolute;
-              }
+                position: relative;
+                }
 
             .box {
-                width: 300px;
-                background: #c4c631;
+              width: 300px;
+              background: #c4c631;
             }
             section {
-            display: inherit;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-        }
+              display: inherit;
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+              }
+</style>
 
-    </style>
-
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
     </head>
 
     <body>
+      <div id="map"></div>
+
+    <style>
+    #menu {
+      background: #fcf4ff;
+      position: absolute;
+      z-index: 1;
+      top: 10px;
+      right: 10px;
+      border-radius: 3px;
+      width: 120px;
+      border: 1px solid rgba(0,0,0,0.4);
+      font-family: 'Open Sans', sans-serif;
+      }
+
+
+
+    #menu genus {
+      font-size: 13px;
+      color: #4e4451;
+      display: block;
+      margin: 0;
+      padding: 0;
+      padding: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,.25);
+      text-align: center;
+      }
+
+    #menu genus:last-child {
+      border: none;
+      }
+
+    #menu genus.active {
+    background-color: #fcf4ff;
+    color: #070500;
+    }
+
+    #menu casuarina {
+      font-size: 13px;
+      color: #4e4451;
+      display: block;
+      margin: 0;
+      padding: 0;
+      padding: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.25);
+      text-align: center;
+      }
+
+    #menu casuarina:last-child {
+      border: none;
+      }
+
+    #menu casuarina:hover {
+      background-color: #fcf4ff;
+    color: #ddab66;
+    }
+
+    #menu casuarina.active {
+    background-color: #844b7a;
+    color: #f9f0e3;
+    }
+
+    #menu casuarina.active:hover {
+    background: #a698ad;
+    }
+
+    #menu eucalyptus {
+      font-size: 13px;
+      color: #4e4451;
+      display: block;
+      margin: 0;
+      padding: 0;
+      padding: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.25);
+      text-align: center;
+      }
+
+    #menu eucalyptus:last-child {
+      border: none;
+            background-color: #7fa384;
+      }
+
+    #menu eucalyptus:hover {
+      background-color: #fcf4ff;
+    color: #ddab66;
+    }
+
+    #menu eucalyptus.active {
+    background-color: #0b6018;
+    color: #f9f0e3;
+    }
+
+    #menu eucalyptus.active:hover {
+    background: #a2bfa6;
+    }
+
+    #menu nothofagus {
+      font-size: 13px;
+      color: #4e4451;
+      display: block;
+      margin: 0;
+      padding: 0;
+      padding: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.25);
+      text-align: center;
+      }
+
+    #menu nothofagus:last-child {
+      border: none;
+      }
+
+    #menu nothofagus:hover {
+      background-color: #fcf4ff;
+    color: #ddab66;
+    }
+
+    #menu nothofagus.active {
+    background-color: #d67304;
+    color: #f9f0e3;
+    }
+
+    #menu nothofagus.active:hover {
+    background: #dbbe9d;
+    }
+
+    #menu phyllocladus {
+      font-size: 13px;
+      color: #4e4451;
+      display: block;
+      margin: 0;
+      padding: 0;
+      padding: 10px;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0,0,0,0.25);
+      text-align: center;
+      }
+
+    #menu phyllocladus:last-child {
+      border: none;
+      }
+
+    #menu phyllocladus:hover {
+      background-color: #fcf4ff;
+    color: #ddab66;
+    }
+
+    #menu phyllocladus.active {
+    background-color: #497296;
+    color: #f9f0e3;
+    }
+
+    #menu phyllocladus.active:hover {
+    background: #b5c4d1;
+    }
+    </style>
+
+    <div id="menu"></div>
+
+
+
+
     <!-- Animation control elements -->
 
     <aside class = toolbox>
@@ -49,18 +222,27 @@
         </section>
     </aside>
 
+
+
+
+
+
+
     <!-- Add map container -->
     <div id="map"></div>
+
 
     <script>
 
         // Add basemap and set properties
-        const map = new mapboxgl.Map({
+        var map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.voyager,
             center: [125, -30],
             zoom: 2.5
+
         });
+
 
         //** CARTO VL functionality begins here **//
 
@@ -71,13 +253,13 @@
         });
 
         // Define source
-        const pollenSource = new carto.source.Dataset('cartoinput_aus');
+      const pollenSource = new carto.source.Dataset('cartoinput_aus');
 
         // Define Viz object and custom style
         const casuarinaViz = new carto.Viz(`
             @animation: animation($time, 42, fade(1,1))
             filter: @animation
-            color: #0a7069
+            color: #844b7a
             width: $casuarina
             `);
 
@@ -100,16 +282,17 @@
         const phyllocladusViz = new carto.Viz(`
             @animation: animation($time, 42, fade(1,1))
             filter: @animation
-            color: #915511
+            color: #497296
             width: $phyllocladus
 
 
                             `);
         // Define map layer
-        const casuarinaLayer = new carto.Layer('casaurina', pollenSource, casuarinaViz);
-        const eucalyptusLayer = new carto.Layer('eucalyptus', pollenSource, eucalyptusViz);
-        const nothofagusLayer = new carto.Layer('nothofagus', pollenSource, nothofagusViz);
-        const phyllocladusLayer = new carto.Layer('phyllocladus', pollenSource, phyllocladusViz);
+        //const speciesLayer = new carto.layer;
+        const casuarinaLayer = new carto.Layer('Casaurina', pollenSource, casuarinaViz);
+        const eucalyptusLayer = new carto.Layer('Eucalyptus', pollenSource, eucalyptusViz);
+        const nothofagusLayer = new carto.Layer('Nothofagus', pollenSource, nothofagusViz);
+        const phyllocladusLayer = new carto.Layer('Phyllocladus', pollenSource, phyllocladusViz);
 
         // Get animation control elements
         const $progressRange = document.getElementById('js-progress-range');
@@ -149,17 +332,191 @@
         function updateProgress () {
             $progressRange.value = casuarinaViz.variables.animation.getProgressValue();
             $currentTime.innerText = parseInt(casuarinaViz.variables.animation.getProgressValue());
+
+            $progressRange.value = eucalyptusViz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(eucalyptusViz.variables.animation.getProgressValue());
+
+            $progressRange.value = nothofagusViz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(nothofagusViz.variables.animation.getProgressValue());
+
+            $progressRange.value = phyllocladusViz.variables.animation.getProgressValue();
+            $currentTime.innerText = parseInt(phyllocladusViz.variables.animation.getProgressValue());
         }
 
         setInterval(updateProgress, 100);
 
-        // Add map layer
-        casuarinaLayer.addTo(map);
-        eucalyptusLayer.addTo(map);
-        nothofagusLayer.addTo(map);
-        phyllocladusLayer.addTo(map);
+
+       //Add map layer
+       //speciesLayer.addTo(map);
+       casuarinaLayer.addTo(map);
+       eucalyptusLayer.addTo(map);
+       nothofagusLayer.addTo(map);
+       phyllocladusLayer.addTo(map);
 
 
+//Controls menu layer toggle
+
+var toggleableMapIds = [ 'genus'
+                         ];
+
+for (var i = 0; i < toggleableMapIds.length; i++) {
+var id = toggleableMapIds[i];
+
+var link = document.createElement('genus');
+link.href = '#';
+link.className = 'active';
+link.textContent = id;
+
+link.onclick = function (e) {
+var clickedLayer = this.textContent;
+e.preventDefault();
+e.stopPropagation();
+
+var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+if (visibility === 'visible') {
+map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+this.className = '';
+} else {
+this.className = 'active';
+map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+}
+};
+
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
+
+var toggleableCasuarinaIds = [
+                           'casuarina'
+                         ];
+
+for (var i = 0; i < toggleableCasuarinaIds.length; i++) {
+var id = toggleableCasuarinaIds[i];
+
+var link = document.createElement('casuarina');
+link.href = '#';
+link.className = 'active';
+link.textContent = id;
+
+link.onclick = function (e) {
+var clickedLayer = this.textContent;
+e.preventDefault();
+e.stopPropagation();
+
+var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+if (visibility === 'visible') {
+map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+this.className = '';
+} else {
+this.className = 'active';
+map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+}
+};
+
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
+
+
+var toggleableEucalyptusIds = [
+                           'Eucalyptus'
+                         ];
+
+for (var i = 0; i < toggleableEucalyptusIds.length; i++) {
+var id = toggleableEucalyptusIds[i];
+
+var link = document.createElement('eucalyptus');
+link.href = '#';
+link.className = 'active';
+link.textContent = id;
+
+link.onclick = function (e) {
+var clickedLayer = this.textContent;
+e.preventDefault();
+e.stopPropagation();
+
+var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+if (visibility === 'visible') {
+map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+this.className = '';
+} else {
+this.className = 'active';
+map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+}
+};
+
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
+
+var toggleableNothofagusIds = ['Nothofagus'];
+
+for (var i = 0; i < toggleableNothofagusIds.length; i++) {
+var id = toggleableNothofagusIds[i];
+
+var link = document.createElement('nothofagus');
+link.href = '#';
+link.className = 'active';
+link.textContent = id;
+
+link.onclick = function (e) {
+var clickedLayer = this.textContent;
+e.preventDefault();
+e.stopPropagation();
+
+var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+if (visibility === 'visible') {
+map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+this.className = '';
+} else {
+this.className = 'active';
+map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+}
+};
+
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
+
+var toggleablePhyllocladusIds = [ //'Casuarina',
+                           //'Eucalyptus'
+                           //'Nothofagus'
+                           'Phyllocladus'
+                         ];
+
+for (var i = 0; i < toggleablePhyllocladusIds.length; i++) {
+var id = toggleablePhyllocladusIds[i];
+
+var link = document.createElement('phyllocladus');
+link.href = '#';
+link.className = 'active';
+link.textContent = id;
+
+link.onclick = function (e) {
+var clickedLayer = this.textContent;
+e.preventDefault();
+e.stopPropagation();
+
+var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+if (visibility === 'visible') {
+map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+this.className = '';
+} else {
+this.className = 'active';
+map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+}
+};
+
+var layers = document.getElementById('menu');
+layers.appendChild(link);
+}
     </script>
+
+
 </body>
 </html>
