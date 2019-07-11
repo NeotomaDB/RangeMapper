@@ -3,33 +3,9 @@ This code maps North American fossil pollen data over the last 21,000 years usin
 Carto VL library (https://carto.com/developers/carto-vl/) and data taken from the
 Neotoma Paleoecology Database (https://www.neotomadb.org/).
 
-The code is structured so that the 
-
-The genuses included in this code are Alnus, Ambrosia, Cyperaceae, Fagus, Picea, Pinus,
-Poacea, Quercus, Tsuga and Ulmus. We animate these trees using colors intended to convey
-information about the climate niches they fill. Darker colors indicate colder climates,
-greens indicate temperate climates and warmer colors for  warmer areas. Colors also
-range from warm to cool tones to reflect hydroclimate, with warmner tones reflecting
-drier climates.
-
-The exact colors associated with each genus are as follows:
-
-alnus: #57652A
-ambrosia:#E24E42
-cyperaceae: #eb7a02
-fagus:#129448
-picea:#015249
-pinus:#990f0f
-poacea: #f2c602
-quercus: #E9E9E9
-tsuga: #272372
-ulmus: #272372
-
-
 For more information, please see http://open.neotomadb.org/workbooks.html or contact
 Anna George (aegeorge2@wisc.edu)
 -->
-
 
 <!DOCTYPE html>
 
@@ -107,7 +83,7 @@ turn off the animation layer completely.
 The font used throughout the menu is "supria-sans, sans-serif" the font-style is "heavy,""
 the font-weight is "700," and the font size is "13px" -->
 
-
+<!--Menu -->
   <style>
     #menu {
       background: #E9E9E9;
@@ -480,11 +456,14 @@ the font-weight is "700," and the font size is "13px" -->
   <div id="menu"></div>
 
   <!-- This section places animation control elements in the newly created toolbox. The control
-  elements we've added are a progress bar, or how far into the animation you are,
-  and a current time monitor, or what year the animation shows. There is also a duration
-  adjustor, which makes the animation speed up or slow down, and a play and pause button.
+  elements we've added are a progress bar, which shows users how far into the animation they are,
+  a current time monitor, which tracks what year the animation shows, and a duration adjustor,
+  which makes the animation speed up or slow down. There also play and pause buttons which stop
+  and start the animation.
 
-  Our min and max values correspond to the min and max years of our polen data.
+  The min and max values we use throughout this section corresponds to the minimum and maximum
+  pollen ages we displayed.
+
   Our duration range runs between 1 second and 42 seconds-->
 
   <!-- Animation control elements -->
@@ -492,10 +471,10 @@ the font-weight is "700," and the font size is "13px" -->
     <div class="box">
       <header>
         <h1 style="color:#494E6B;
-            font-family: supria-sans, sans-serif;
-            font-style: heavy;
-            font-weight: 700;
-            font-size: 20px;
+          font-family: supria-sans, sans-serif;
+          font-style: heavy;
+          font-weight: 700;
+          font-size: 20px;
           ">
           Animation
           <button id="js-play-button">Play</button>
@@ -503,33 +482,32 @@ the font-weight is "700," and the font size is "13px" -->
       </header>
       <section>
         <p style="color:#494E6B;font-family: roboto, sans-serif;
-font-style: normal;
-font-weight: 300;
-font-size: 15px;">Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;">Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
       </section>
       <section>
         <p style="color:#494E6B; font-family: roboto, sans-serif;
-font-style: normal;
-font-weight: 300;
-font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span></p>
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span></p>
       </section>
       <section>
         <p style="color:#494E6B; font-family: roboto, sans-serif;
         font-style: normal;
         font-weight: 300;
         font-size: 15px;">
-          Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
+        Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
       </section>
   </aside>
 
-  <!-- this line adds a "container" for your map...-->
 
-  <!-- Add map container -->
+  <!-- Add map container... -->
   <div id="map"></div>
   <script>
-    //... and this one adds a basemap!
 
-    // Add basemap and set properties
+    //... and add a basemap! More styles are available at https://docs.mapbox.com/help/tutorials/carto/
+
     const map = new mapboxgl.Map({
       container: 'map',
       style: carto.basemaps.voyager,
@@ -539,28 +517,64 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
     });
 
     //** CARTO VL functionality begins here **//
+
     //These lines link this code to a carto account. Enter your username and API key where prompted
 
-    // Define user
     carto.setDefaultAuth({
       username: 'widell',
       apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
     });
 
-    // Define source datasets
-    // use the name of the carto data set you’d like to map
-    // as the argument in “new carto.source.Dataset()”
-    // We've used our North American Pollen data, which contains
-    // 10 different pollen types, as well as a dataset that models
-    // the last glaciation.
+     /*Defines source datasets
 
+     Use the name of the existing carto data set you’d like to map
+     as the argument in "new carto.source.Dataset()”
+     We've used our North American Pollen data, which contains
+     10 different pollen types, as well as a dataset that models
+     the last glaciation.
+     */
     const iceSource = new carto.source.Dataset('icesheets');
     const pollenSource = new carto.source.Dataset('cartoinput_na');
 
-    // Define Viz object and custom style
+    /*The genuses included in this code are Alnus, Ambrosia, Cyperaceae, Fagus, Picea, Pinus,
+    Poacea, Quercus, Tsuga and Ulmus. We animate these trees using colors intended to convey
+    information about the climate niches they fill. Darker colors indicate colder climates,
+    greens indicate temperate climates and warmer colors for  warmer areas. Colors also
+    range from warm to cool tones to reflect hydroclimate, with warmner tones reflecting
+    drier climates.
 
+    The exact colors associated with each genus are as follows:
 
+    alnus: #57652A
+    ambrosia:#E24E42
+    cyperaceae: #eb7a02
+    fagus:#129448
+    picea:#015249
+    pinus:#990f0f
+    poacea: #f2c602
+    quercus: #E9E9E9
+    tsuga: #272372
+    ulmus: #272372
 
+    */
+
+/*
+Animate both the width and strokeWidth of the symbol over time by
+multiplying by the animation variable you don't need the animation
+on the filter:
+
+width: $picea
+
+using $picea/30 is just a visual way to get the
+stokeWeight proportional to the width (you could do any calculation
+here, ramp the strokeWidth, or just have a static value):
+
+set the draw order of points to ascending. Right now, this can only
+be done with points and only the options of asc and desc are available:
+
+order: desc(width())
+
+*/
     const alnusViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
             color: opacity(#57652A,0.9)
@@ -707,9 +721,10 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
   </script>
 
   <script>
+
     // Creates animation control elements
     // As mentioned before, we’ll be creating a progress and
-    // duration range, play and pause buttons, and a current time reader.
+    // duration range, play and pause buttons and a current time reader.
 
     const $progressRange = document.getElementById('js-progress-range');
     const $playButton = document.getElementById('js-play-button');
@@ -770,6 +785,7 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
     });
 
     //Updates progress bar and current time reader each 100 milliseconds with integer values
+
     function updateProgress() {
       $progressRange.value = alnusViz.variables.animation.getProgressValue();
       $progressRange.value = ambrosiaViz.variables.animation.getProgressValue();
@@ -793,14 +809,11 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
       $currentTime.innerText = parseInt(quercusViz.variables.animation.getProgressValue());
       $currentTime.innerText = parseInt(tsugaViz.variables.animation.getProgressValue());
       $currentTime.innerText = parseInt(ulmusViz.variables.animation.getProgressValue());
-
-
-
-
-
     }
 
     setInterval(updateProgress, 100);
+
+//adds your new layers to the map
 
     iceLayer.addTo(map);
     alnusLayer.addTo(map);
@@ -814,6 +827,9 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
     tsugaLayer.addTo(map);
     ulmusLayer.addTo(map);
 
+//This section enables menu bar functionality.
+
+//These top lines create the title pannel. This code does not produce interactivity
     var toggleableMapIds = ['genus'];
 
     for (var i = 0; i < toggleableMapIds.length; i++) {
@@ -844,6 +860,7 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
       layers.appendChild(link);
     }
 
+//Begin interactivity
 
     var toggleableAlnusIds = [
       'alnus'
