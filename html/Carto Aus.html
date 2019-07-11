@@ -17,92 +17,99 @@
 
 <style type="text/css">
         aside.toolbox {
-                left: 96px;
-                position: relative;
-                }
+            left: 96px;
+            position: left;
+          }
 
-            .box {
-              width: 300px;
-              background: #c4c631;
-            }
-            section {
-              display: inherit;
-              flex-direction: row;
-              justify-content: space-between;
-              align-items: center;
-              }
-</style>
+        .box {
+            width: 300px;
+            background: #E9E9E9;
+        }
 
+        section {
+        display: inherit;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    </style>
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
-    </head>
+</head>
+
 
     <body>
       <div id="map"></div>
 
-    <style>
-    #menu {
-      background: #fcf4ff;
-      position: absolute;
-      z-index: 1;
-      top: 10px;
-      right: 10px;
-      border-radius: 3px;
-      width: 120px;
-      border: 1px solid rgba(0,0,0,0.4);
-      font-family: 'Open Sans', sans-serif;
-      }
+      <style>
+      #menu {
+        background: #E9E9E9;
+        z-index: 1;
+        top: 10px;
+        left: 1050px;
+        position: relative;
+        border-radius: 3px;
+        width: 120px;
+        border: 1px solid rgba(0,0,0,0.4);
+        font-family: 'Open Sans', sans-serif;
+        }
 
 
 
-    #menu genus {
-      font-size: 13px;
-      color: #4e4451;
-      display: block;
-      margin: 0;
-      padding: 0;
-      padding: 10px;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(0,0,0,.25);
-      text-align: center;
-      }
+      #menu genus {
+        font-size: 13px;
+        color: #4e4451;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0,0,0,.25);
+        text-align: center;
+        }
 
-    #menu genus:last-child {
-      border: none;
-      }
+      #menu genus:last-child {
+        border: none;
+        }
 
-    #menu genus.active {
-    background-color: #fcf4ff;
-    color: #070500;
-    }
-
-    #menu casuarina {
-      font-size: 13px;
-      color: #4e4451;
-      display: block;
-      margin: 0;
-      padding: 0;
-      padding: 10px;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(0,0,0,0.25);
-      text-align: center;
-      }
-
-    #menu casuarina:last-child {
-      border: none;
-      }
-
-    #menu casuarina:hover {
+      #menu genus.active {
       background-color: #fcf4ff;
-    color: #ddab66;
-    }
+      color: #070500;
+      }
 
-    #menu casuarina.active {
-    background-color: #844b7a;
-    color: #f9f0e3;
-    }
+      #menu casuarina {
+        font-size: 13px;
+        color: #4e4451;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(0,0,0,0.25);
+        text-align: center;
+        }
 
-    #menu casuarina.active:hover {
-    background: #a698ad;
+      #menu casuarina:last-child {
+        border: none;
+        }
+
+      #menu casuarina:hover {
+        background-color: #fcf4ff;
+      color: #ddab66;
+      }
+
+      #menu casuarina.active {
+      background-color: #d19112;
+      color: #f9f0e3;
+      }
+
+      #menu casuarina.active:hover {
+      background: #ceb88c;
+      }
+
+
+    #menu eucalyptus.active:hover {
+    background: #a2bfa6;
     }
 
     #menu eucalyptus {
@@ -207,21 +214,36 @@
     <aside class = toolbox>
         <div class="box">
         <header>
-            <h1>Animation</h1>
+            <h1 style = "color:#494E6B;
+            font-family: supria-sans, sans-serif;
+            font-style: heavy;
+            font-weight: 700;
+            font-size: 20px;
+          ">
+            Animation
+            <button id="js-play-button">Play</button>
+            <button id="js-pause-button">Pause</button></h1>
         </header>
         <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
+            <p style = "color:#494E6B;font-family: roboto, sans-serif;
+font-style: normal;
+font-weight: 300;
+font-size: 15px;">Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
         </section>
         <section>
-            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+            <p style = "color:#494E6B; font-family: roboto, sans-serif;
+font-style: normal;
+font-weight: 300;
+font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span></p>
         </section>
         <section>
-            <button id="js-play-button">Play</button>
-            <button id="js-pause-button">Pause</button>
-            <input type="range" id="js-duration-range" min="1" max="42" step="2">
+          <p style = "color:#494E6B; font-family: roboto, sans-serif;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;">
+        Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
         </section>
     </aside>
-
 
 
 
@@ -289,7 +311,7 @@
                             `);
         // Define map layer
         //const speciesLayer = new carto.layer;
-        const casuarinaLayer = new carto.Layer('Casaurina', pollenSource, casuarinaViz);
+        const casuarinaLayer = new carto.Layer('Casuarina', pollenSource, casuarinaViz);
         const eucalyptusLayer = new carto.Layer('Eucalyptus', pollenSource, eucalyptusViz);
         const nothofagusLayer = new carto.Layer('Nothofagus', pollenSource, nothofagusViz);
         const phyllocladusLayer = new carto.Layer('Phyllocladus', pollenSource, phyllocladusViz);
@@ -387,8 +409,9 @@ var layers = document.getElementById('menu');
 layers.appendChild(link);
 }
 
+
 var toggleableCasuarinaIds = [
-                           'casuarina'
+                           'Casuarina'
                          ];
 
 for (var i = 0; i < toggleableCasuarinaIds.length; i++) {
@@ -414,7 +437,6 @@ this.className = 'active';
 map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
 }
 };
-
 var layers = document.getElementById('menu');
 layers.appendChild(link);
 }
@@ -482,9 +504,7 @@ var layers = document.getElementById('menu');
 layers.appendChild(link);
 }
 
-var toggleablePhyllocladusIds = [ //'Casuarina',
-                           //'Eucalyptus'
-                           //'Nothofagus'
+var toggleablePhyllocladusIds = [
                            'Phyllocladus'
                          ];
 

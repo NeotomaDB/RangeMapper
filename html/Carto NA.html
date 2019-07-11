@@ -3,34 +3,34 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
+      <title>North America | Pollen Mapper</title>
+      <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
+      <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+      <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+      <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+      <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
-    <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
-  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-  crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
-  integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
-  crossorigin=""></script>
+        <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+        <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
 
   <!--  Creates animation control box as a toolbox located in top left corner of the screen
    Adjust the position“left” to a value like center or right, or change the point
   value to manipulate toolbox placement on a finer scale.
+
   "Position absolute" means the toolbox does not move relative to the map
   Change the width of the box by adjusting the width value
   Manipulate the color of the box by changing the value assigned to background.
-  values listed under section control the way elements appears within the toolbox -->
+  Values listed under section control the way elements appear within the toolbox -->
 
     <style type="text/css">
             aside.toolbox {
                 left: 96px;
-                position: absolute;
+                position: left;
               }
 
             .box {
                 width: 300px;
-                background: #F0F8E2;
+                background: #E9E9E9;
             }
 
             section {
@@ -40,12 +40,388 @@
             align-items: center;
         }
 
-   </style>
-
+        </style>
+        <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
   </head>
 
+<!-- This line introduces the map -->
 <body>
+    <div id="map"></div>
 
+<!--The next section creates a framework for a navigatable menu bar, so that viewers can turn
+animation layers on and off.The code that actually controls which lyers are visible is found later <opti
+on. Here,each pollen layer is represented in and on and off state.
+We've changed the aesthetics of each state to make the map more user friendly. We'e also color co-ordinated the o
+each pollen layer to its control bar. In this way, the <menu>
+is a key as well. -->
+
+
+  <style>
+  #menu {
+  background: #E9E9E9;
+  z-index: 1;
+  top: 10px;
+  left: 1050px;
+  position: relative;
+  border-radius: 3px;
+  width: 120px;
+  border: 1px solid rgba(0,0,0,0.4);
+  font-family: 'Open Sans', sans-serif;
+  }
+
+
+
+  #menu Genus {
+  font-family: supria-sans, sans-serif;
+  font-style: heavy;
+  font-weight: 700;
+  font-size: 13px;
+  color: #E9E9E9;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,.25);
+  text-align: center;
+  }
+
+  #menu Genus:last-child {
+  border: none;
+  }
+
+  #menu Genus.active {
+  background-color: #E9E9E9;
+  color: #494E6B;
+  }
+
+  #menu Alnus {
+  font-family: supria-sans, sans-serif;
+  font-style: heavy;
+  font-weight: 700;
+  font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Alnus:last-child {
+  border: none;
+  }
+
+  #menu Alnus:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Alnus.active {
+  background-color: #57652A;
+  color: #f9f0e3;
+  }
+
+  #menu Alnus.active:hover {
+  background: #878f6e;
+  }
+
+  #menu Ambrosia {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Ambrosia:last-child {
+  border: none;
+  background-color: #7fa384;
+  }
+
+  #menu Ambrosia:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Ambrosia.active {
+  background-color: #E24E42;
+  color: #f9f0e3;
+  }
+
+  #menu Ambrosia.active:hover {
+  background: #b06d68;
+  }
+
+  #menu Cyperaceae {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Cyperaceae:last-child {
+  border: none;
+  }
+
+  #menu Cyperaceae:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Cyperaceae.active {
+  background-color: #eb7a02;
+  color: #f9f0e3;
+  }
+
+  #menu Cyperaceae.active:hover {
+  background: #e8af72;
+  }
+
+  #menu Fagus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Fagus:last-child {
+  border: none;
+  }
+
+  #menu Fagus:hover {
+  background-color: #129448;
+  color: #ddab66;
+  }
+
+  #menu fagus.active {
+  background-color: #129448;
+  color: #f9f0e3;
+  }
+
+  #menu Fagus.active:hover {
+  background: #5b7d69;
+  }
+
+  #menu Picea {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Picea:last-child {
+  border: none;
+  }
+
+  #menu picea:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Picea.active {
+  background-color: #015249;
+  color: #f9f0e3;
+  }
+
+  #menu Picea.active:hover {
+  background: #52827d;
+  }
+  #menu Pinus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Pinus:last-child {
+  border: none;
+  }
+
+  #menu Pinus:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Pinus.active {
+  background-color: #990f0f;
+  color: #f9f0e3;
+  }
+
+  #menu Pinus.active:hover {
+  background: #916666;
+  }
+  #menu Poaceae {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Poaceae:last-child {
+  border: none;
+  }
+
+  #menu Poaceae:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Poaceae.active {
+  background-color: #f2c602;
+  color: #f9f0e3;
+  }
+
+  #menu Poaceae.active:hover {
+  background: #b0a471;
+  }
+  #menu Quercus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Quercus:last-child {
+  border: none;
+  }
+
+  #menu Quercus:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Quercus.active {
+  background-color: #96a106;
+  color: #f9f0e3;
+  }
+
+  #menu Quercus.active:hover {
+  background: #707347;
+  }
+  #menu Tsuga {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Tsuga:last-child {
+  border: none;
+  }
+
+  #menu Tsuga:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Tsuga.active {
+  background-color: #272372;
+  color: #f9f0e3;
+  }
+
+  #menu Tsuga.active:hover {
+  background: #6a6982;
+  }
+  #menu Ulmus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+  color: #494E6B;
+  display: block;
+  margin: 0;
+  padding: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.25);
+  text-align: center;
+  }
+
+  #menu Ulmus:last-child {
+  border: none;
+  }
+
+  #menu Ulmus:hover {
+  background-color: #E9E9E9;
+  color: #ddab66;
+  }
+
+  #menu Ulmus.active {
+  background-color: #21c6b6;
+  color: #f9f0e3;
+  }
+
+  #menu Ulmus.active:hover {
+  background: #8cafac;
+  }
+  </style>
+  <div id="menu"></div>
   <!-- This section places animation control elements in the newly created toolbox. The control
   elements we've added are a progress bar, or how far into the animation you are,
   and a current time monitor, or what year the animation shows. There is also a duration
@@ -58,18 +434,34 @@
     <aside class = toolbox>
         <div class="box">
         <header>
-            <h1>Animations</h1>
+            <h1 style = "color:#494E6B;
+            font-family: supria-sans, sans-serif;
+            font-style: heavy;
+            font-weight: 700;
+            font-size: 20px;
+          ">
+            Animation
+            <button id="js-play-button">Play</button>
+            <button id="js-pause-button">Pause</button></h1>
         </header>
         <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
+            <p style = "color:#494E6B;font-family: roboto, sans-serif;
+font-style: normal;
+font-weight: 300;
+font-size: 15px;">Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
         </section>
         <section>
-            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+            <p style = "color:#494E6B; font-family: roboto, sans-serif;
+font-style: normal;
+font-weight: 300;
+font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span></p>
         </section>
         <section>
-            <button id="js-play-button">Play</button>
-            <button id="js-pause-button">Pause</button>
-            <input type="range" id="js-duration-range" min="1" max="42" step="2">
+          <p style = "color:#494E6B; font-family: roboto, sans-serif;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;">
+        Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
         </section>
     </aside>
 
@@ -116,8 +508,8 @@
 
         const alnusViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#037E59,0.9)
-            strokeColor: opacity(#037E59,0.6)
+            color: opacity(#57652A,0.9)
+            strokeColor: opacity(#57652A,0.6)
             width: $alnus
             filter: @animation
             strokeWidth: $alnus/30 * @animation
@@ -127,8 +519,8 @@
 
         const ambrosiaViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#acdd5d,0.4)
-            strokeColor: opacity(#acdd5d,0.2)
+            color: opacity(#E24E42,0.4)
+            strokeColor: opacity(#E24E42,0.2)
             width: $ambrosia
             filter: @animation
             strokeWidth: $ambrosia/30 * @animation
@@ -140,8 +532,8 @@
         const cyperaceaeViz = new carto.Viz(`
 
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#c65e03,0.4)
-            strokeColor: opacity(#c65e03,0.2)
+            color: opacity(#eb7a02,0.4)
+            strokeColor: opacity(#eb7a02,0.2)
             width: $cyperaceae
             filter: @animation
             strokeWidth: $cyperaceae/30 * @animation
@@ -150,8 +542,8 @@
 
         const fagusViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#c6af02,0.4)
-            strokeColor: opacity(#c6af02,0.2)
+            color: opacity(#129448,0.4)
+            strokeColor: opacity(#129448,0.2)
             width: $fagus
             filter: @animation
             strokeWidth: $fagus/30 * @animation
@@ -161,8 +553,8 @@
          const piceaViz = new carto.Viz(`
 
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#c43636,0.4)
-            strokeColor: opacity(#c43636,0.2)
+            color: opacity(#015249,0.4)
+            strokeColor: opacity(#015249,0.2)
             width: $picea
             filter: @animation
             strokeWidth: $picea/30 * @animation
@@ -174,8 +566,8 @@
         const pinusViz = new carto.Viz(`
 
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#e5640d,0.4)
-            strokeColor: opacity(#e5640d,0.2)
+            color: opacity(#990f0f,0.4)
+            strokeColor: opacity(#990f0f,0.2)
             width: $pinus
             filter: @animation
             strokeWidth: $pinus/30 * @animation
@@ -185,8 +577,8 @@
         const poaceaeViz = new carto.Viz(`
 
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#2a7002,0.4)
-            strokeColor: opacity(#2a7002,0.2)
+            color: opacity(#f2c602,0.4)
+            strokeColor: opacity(#f2c602,0.2)
             width: $poaceae
             filter: @animation
             strokeWidth: $poaceae/30 * @animation
@@ -198,8 +590,8 @@
         const quercusViz = new carto.Viz(`
 
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#becc08,0.4)
-            strokeColor: opacity(#becc08,0.2)
+            color: opacity(#96a106,0.4)
+            strokeColor: opacity(#96a106,0.2)
             width: $quercus
             filter: @animation
             strokeWidth: $quercus/30 * @animation
@@ -233,8 +625,8 @@
         `);
       //add animation to the ice sheet layer
       const iceViz = new carto.Viz(`
-            @animation: animation($age,42, fade(hold,.75))
-            color: opacity(#78B1BF,0.8)
+            @animation: animation($age,42, fade(hold,.25))
+            color: opacity(#88BBD6,0.8)
             strokeWidth: 0
             filter: @animation
 
@@ -327,29 +719,36 @@
           function updateProgress () {
               $progressRange.value =  alnusViz.variables.animation.getProgressValue();
               $progressRange.value =  ambrosiaViz.variables.animation.getProgressValue();
+              $progressRange.value =  cyperaceaeViz.variables.animation.getProgressValue();
+              $progressRange.value =  fagusViz.variables.animation.getProgressValue();
+              $progressRange.value =  piceaViz.variables.animation.getProgressValue();
+              $progressRange.value =  pinusViz.variables.animation.getProgressValue();
+              $progressRange.value =  poaceaeViz.variables.animation.getProgressValue();
+              $progressRange.value =  quercusViz.variables.animation.getProgressValue();
+              $progressRange.value =  tsugaViz.variables.animation.getProgressValue();
+              $progressRange.value =  ulmusViz.variables.animation.getProgressValue();
+
 
               $currentTime.innerText = parseInt(  alnusViz.variables.animation.getProgressValue());
+              $currentTime.innerText = parseInt(  ambrosiaViz.variables.animation.getProgressValue());
+              $currentTime.innerText = parseInt(  cyperaceaeViz.variables.animatio.getProgressValue());
+              $currentTime.innerText = parseInt(  fagusViz.variables.animation.getProgressValue());
+              $currentTime.innerText = parseInt(  piceaViz.variables.animation.getProgressValue());
+              $currentTime.innerText = parseInt(  pinusViz.variables.animation.getProgressValue());
+              $currentTime.innerText = parseInt(  poaceaeViz.variables.animation.getProgressValue());
+              $currentTime.innerText = parseInt(  quercusViz.variables.animation.getProgressValue());
+              $currentTime.innerText = parseInt(  tsugaViz.variables.animation.getProgressValue());
+              $currentTime.innerText = parseInt(  ulmusViz.variables.animation.getProgressValue());
+
+
+
+
+
           }
 
         setInterval(updateProgress, 100);
 
-
-        // Add map layer
-        // var overlays = {
-        // "Ice Sheet": iceLayer,
-        // "Alnus" : alnusLayer,
-        // "Ambrosia" : ambrosiaLayer,
-        // "Cyperaceae" : cyperaceaeLayer,
-        // "Fagus" :fagusLayer,
-        // "Picea" : piceaLayer,
-        // "Pinus" :pinusLayer,
-        // "Quercus" : quercusLayer,
-        // "Tsuga" : tsugaLayer,
-        // "Ulmus" : ulmusLayer
-        // };
-       //overlays.addTo(map);
-
-       iceLayer.addTo(map);
+      iceLayer.addTo(map);
       alnusLayer.addTo(map);
       ambrosiaLayer.addTo(map);
       cyperaceaeLayer.addTo(map);
@@ -361,7 +760,339 @@
       tsugaLayer.addTo(map);
       ulmusLayer.addTo(map);
 
+      var toggleableMapIds = [ 'genus'
+                                 ];
 
+        for (var i = 0; i < toggleableMapIds.length; i++) {
+        var id = toggleableMapIds[i];
+
+        var link = document.createElement('genus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+
+        var toggleableAlnusIds = [
+                                   'alnus'
+                                 ];
+
+        for (var i = 0; i < toggleableAlnusIds.length; i++) {
+        var id = toggleableAlnusIds[i];
+
+        var link = document.createElement('Alnus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleableAmbrosiaIds = ['ambrosia'];
+
+        for (var i = 0; i < toggleableAmbrosiaIds.length; i++) {
+        var id = toggleableAmbrosiaIds[i];
+
+        var link = document.createElement('ambrosia');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleableCyperaceaeIds = ['cyperaceae'];
+
+        for (var i = 0; i < toggleableCyperaceaeIds.length; i++) {
+        var id = toggleableCyperaceaeIds[i];
+
+        var link = document.createElement('cyperaceae');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleableFagusIds = ['fagus'];
+
+        for (var i = 0; i < toggleableFagusIds.length; i++) {
+        var id = toggleableFagusIds[i];
+
+        var link = document.createElement('fagus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleablePiceaIds = ['picea'];
+
+        for (var i = 0; i < toggleablePiceaIds.length; i++) {
+        var id = toggleablePiceaIds[i];
+
+        var link = document.createElement('picea');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleablePinusIds = ['pinus'];
+
+        for (var i = 0; i < toggleablePinusIds.length; i++) {
+        var id = toggleablePinusIds[i];
+
+        var link = document.createElement('pinus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleablePoaceaeIds = ['poaceae'];
+
+        for (var i = 0; i < toggleablePoaceaeIds.length; i++) {
+        var id = toggleablePoaceaeIds[i];
+
+        var link = document.createElement('poaceae');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleableQuercusIds = ['quercus'];
+
+        for (var i = 0; i < toggleableQuercusIds.length; i++) {
+        var id = toggleableQuercusIds[i];
+
+        var link = document.createElement('quercus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleableTsugaIds = ['tsuga'];
+
+        for (var i = 0; i < toggleableTsugaIds.length; i++) {
+        var id = toggleableTsugaIds[i];
+
+        var link = document.createElement('tsuga');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
+
+        var toggleableUlmusIds = ['ulmus'];
+
+        for (var i = 0; i < toggleableUlmusIds.length; i++) {
+        var id = toggleableUlmusIds[i];
+
+        var link = document.createElement('ulmus');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function (e) {
+        var clickedLayer = this.textContent;
+        e.preventDefault();
+        e.stopPropagation();
+
+        var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+        if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+        } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+        }
 
 
     </script>

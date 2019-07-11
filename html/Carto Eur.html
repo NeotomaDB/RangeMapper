@@ -14,24 +14,26 @@
       <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
 
       <style type="text/css">
-            aside.toolbox {
-                left: 96px;
-                position: absolute;
+              aside.toolbox {
+                  left: 96px;
+                  position: left;
+                }
+
+              .box {
+                  width: 300px;
+                  background: #E9E9E9;
               }
 
-            .box {
-                width: 300px;
-                background: #F4F7EF;
-            }
-            section {
-            display: inherit;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
+              section {
+              display: inherit;
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
           }
-        </style>
-        <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
-        </head>
+
+          </style>
+          <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+    </head>
 
         <body>
           <div id="map"></div>
@@ -198,18 +200,34 @@ background: #cc9d68;
     <aside class = toolbox>
         <div class="box">
         <header>
-            <h1>Animations</h1>
+            <h1 style = "color:#494E6B;
+            font-family: supria-sans, sans-serif;
+            font-style: heavy;
+            font-weight: 700;
+            font-size: 20px;
+          ">
+            Animation
+            <button id="js-play-button">Play </button>
+            <button id="js-pause-button"> Pause </button></h1>
         </header>
         <section>
-            <p>Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
+            <p style = "color:#494E6B;font-family: roboto, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 15px;">Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
         </section>
         <section>
-            <p>Current: <span id="js-current-time" class="open-sans"></span></p>
+            <p style = "color:#494E6B; font-family: roboto, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span></p>
         </section>
         <section>
-            <button id="js-play-button">Play</button>
-            <button id="js-pause-button">Pause</button>
-            <input type="range" id="js-duration-range" min="1" max="42" step="2">
+          <p style = "color:#494E6B; font-family: roboto, sans-serif;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;">
+        Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
         </section>
     </aside>
 
