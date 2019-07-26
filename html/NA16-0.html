@@ -582,9 +582,16 @@ order: desc(width())
             color: opacity(#57652A,0.9)
             strokeColor: opacity(#57652A,0.6)
             width: $alnus
-            filter: @animation
             strokeWidth: $alnus/30 * @animation
-            order: asc(width())
+            order: asc(width()
+            filter: @animation
+              linear(
+                $time,
+                time('-18000'),
+                time('0')
+
+              )
+
         `);
 
 
