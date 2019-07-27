@@ -23,8 +23,6 @@ Anna George (aegeorge2@wisc.edu)
   <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
   <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
   <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-  <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
-
 
   <!--  Creates animation control box as a toolbox located in top left corner of the screen
 
@@ -37,7 +35,7 @@ Anna George (aegeorge2@wisc.edu)
 
   <style type="text/css">
     aside.toolbox {
-      left: 96px;
+      left: 70px;
       position: left;
     }
 
@@ -84,7 +82,9 @@ The font used throughout the menu is "supria-sans, sans-serif" the font-style is
 the font-weight is "700," and the font size is "13px" -->
 
 <!--Menu -->
+
   <style>
+
     #menu {
       background: #E9E9E9;
       z-index: 1;
@@ -453,6 +453,7 @@ the font-weight is "700," and the font size is "13px" -->
       background: #8cafac;
     }
   </style>
+
   <div id="menu"></div>
 
   <!-- This section places animation control elements in the newly created toolbox. The control
@@ -468,7 +469,9 @@ the font-weight is "700," and the font size is "13px" -->
 
   <!-- Animation control elements -->
   <aside class=toolbox>
-    <div class="box">
+    <div class="box"
+          style= "padding-bottom: 5px;
+                  padding-right: 0px;">
       <header>
         <h1 style="color:#494E6B;
           font-family: supria-sans, sans-serif;
@@ -483,21 +486,26 @@ the font-weight is "700," and the font size is "13px" -->
         <p style="color:#494E6B;font-family: roboto, sans-serif;
         font-style: normal;
         font-weight: 300;
-        font-size: 15px;">
+        font-size: 15px;
+        margin-top: 5px;
+        margin-bottom:5px ">
         Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
       </section>
       <section>
         <p style="color:#494E6B; font-family: roboto, sans-serif;
         font-style: normal;
         font-weight: 300;
-        font-size: 15px;">
+        font-size: 15px;
+        margin-bottom: 5px;
+        margin-top: 5px">
         Current: <span id="js-current-time" class="open-sans"></span></p>
       </section>
       <section>
         <p style="color:#494E6B; font-family: roboto, sans-serif;
         font-style: normal;
         font-weight: 300;
-        font-size: 15px;">
+        font-size: 15px;
+        margin-top: 5px">
         Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
       </section>
   </aside>
@@ -517,16 +525,15 @@ the font-weight is "700," and the font size is "13px" -->
 
     });
 
-    //** CARTO VL functionality begins here **//
-
-    //These lines link this code to a carto account. Enter your username and API key where prompted
+//** CARTO VL functionality begins here **//
+//These lines link this code to a carto account. Enter your username and API key where prompted
 
     carto.setDefaultAuth({
       username: 'widell',
       apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
     });
 
-     /*Defines source datasets
+     /*Defines dataset sources
 
      Use the name of the existing carto data set you’d like to map
      as the argument in "new carto.source.Dataset()”
@@ -579,7 +586,7 @@ order: desc(width())
 */
     const alnusViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
-            color: opacity(#57652A,0.9)
+            color: opacity(#57652A,0.4)
             strokeColor: opacity(#57652A,0.6)
             width: $alnus
             filter: @animation

@@ -1,49 +1,96 @@
+<!--
+This code maps North American fossil pollen data over the last 21,000 years using the
+Carto VL library (https://carto.com/developers/carto-vl/) and data taken from the
+Neotoma Paleoecology Database (https://www.neotomadb.org/).
+
+For more information, please see http://open.neotomadb.org/workbooks.html or contact
+Anna George (aegeorge2@wisc.edu)
+-->
+
 <!DOCTYPE html>
+
 <html>
+
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
-        <title>Europe | Pollen Mapper</title>
-    <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
-    <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <title>Europe | Pollen Mapper</title>
+  <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
   <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
-      <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
-      <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+
+  <!--  Creates animation control box as a toolbox located in top left corner of the screen
+
+  Adjust the position “left” to a value like center or right, or change the point
+  value to manipulate toolbox placement on a finer scale.
+
+  Change the width of the box by adjusting the width value
+  Manipulate the color of the box by changing the value assigned to background.
+  Values listed under "section" control the way elements appear within the toolbox -->
 
       <style type="text/css">
-              aside.toolbox {
-                  left: 96px;
-                  position: left;
-                }
+        aside.toolbox {
+          left: 96px;
+          position: left;
+        }
 
-              .box {
-                  width: 300px;
-                  background: #E9E9E9;
-              }
+        .box {
+          width: 300px;
+          background: #E9E9E9;
+        }
 
-              section {
-              display: inherit;
-              flex-direction: row;
-              justify-content: space-between;
-              align-items: center;
-          }
-
-          </style>
-          <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+        section {
+          display: inherit;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+        }
+      </style>
     </head>
 
-        <body>
-          <div id="map"></div>
+<!-- This line creates the map container -->
+
+      <body>
+        <div id="map"></div>
+
+        <!--The next section creates a framework for a navigation bar, so that viewers can turn
+        animation layers on and off.The code that actually controls which layers are visible is located
+        at the end of the code.
+
+        Here, each pollen layer is represented in an on and off state. When the map loads, all layers will be
+        "on." Users can then switch layers on and off from the web interface.
+
+        We use a light grey background color (#E9E9E9) and a dark blue font (#494E6B)
+        to indicate a menu item in its "off" state.
+
+        When a user hovers their mouse over an innactive menu item, the font will change from blue to
+        orange (#ddab66).
+
+        Activating a menu item will change its font to white (#f9f0e3) and background color to match the
+        color of the animation. In this way, the menu will also act as a key to the animation layers as those
+        layers become activated.
+
+        Hovering a mouse over an active menu item dulls the background color, and clicking on it will
+        turn off the animation layer completely.
+
+        The font used throughout the menu is "supria-sans, sans-serif" the font-style is "heavy,""
+        the font-weight is "700," and the font size is "13px" -->
+
+        <!--Menu -->
+
 <style>
+
 #menu {
-  background: #fcf4ff;
-  position: fixed;
+  background: #E9E9E9;
+  position: relative;
   z-index: 1;
   top: 10px;
-  right: 10px;
+  left: 1050px;
   border-radius: 3px;
   width: 120px;
   border: 1px solid rgba(0,0,0,0.4);
@@ -53,195 +100,226 @@
 
 
 #menu genus {
+  font-family: supria-sans, sans-serif;
+  font-style: heavy;
+  font-weight: 700;
   font-size: 13px;
-  color: #4e4451;
+  color: #E9E9E9;
   display: block;
   margin: 0;
   padding: 0;
   padding: 10px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(0,0,0,.25);
+  border-bottom: 1px solid rgba(0, 0, 0, .25);
   text-align: center;
-  }
+}
 
 #menu genus:last-child {
   border: none;
   }
 
-#menu genus.active {
-background-color: #fcf4ff;
-color: #070500;
-}
+  #menu Genus.active {
+    background-color: #E9E9E9;
+    color: #494E6B;
+  }
 
 #menu alnus {
+  font-family: supria-sans, sans-serif;
+  font-style: heavy;
+  font-weight: 700;
   font-size: 13px;
-  color: #4e4451;
+  color: #494E6B;
   display: block;
-  margin: 0;
-  padding: 0;
+  margin: 0px;
   padding: 10px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   text-align: center;
-  }
+}
 
 #menu alnus:last-child {
   border: none;
   }
 
 #menu alnus:hover {
-  background-color: #fcf4ff;
-color: #ddab66;
+  background-color: #E9E9E9;
+  color: #ddab66;
 }
 
 #menu alnus.active {
-background-color: #d19112;
+background-color: #57652A;
 color: #f9f0e3;
 }
 
 #menu alnus.active:hover {
-background: #ceb88c;
+background: #878f6e;
 }
 
 #menu fagus {
+  font-family: supria-sans, sans-serif;
+  font-style: heavy;
+  font-weight: 700;
   font-size: 13px;
-  color: #4e4451;
+  color: #494E6B;
   display: block;
   margin: 0;
   padding: 0;
   padding: 10px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   text-align: center;
-  }
+}
 
 #menu fagus:last-child {
   border: none;
         background-color: #7fa384;
   }
 
-#menu fagus:hover {
-  background-color: #fcf4ff;
-color: #ddab66;
-}
+  #menu fagus:hover {
+    background-color: #129448;
+    color: #ddab66;
+  }
 
 #menu fagus.active {
-background-color: #163f04;
+background-color: #129448;
 color: #f9f0e3;
 }
 
 #menu fagus.active:hover {
-background: #73846b;
+background: #5b7d69;
 }
 
 #menu picea {
+  font-family: supria-sans, sans-serif;
+  font-style: heavy;
+  font-weight: 700;
   font-size: 13px;
-  color: #4e4451;
+  color: #494E6B;
   display: block;
   margin: 0;
   padding: 0;
   padding: 10px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   text-align: center;
-  }
+}
 
 #menu picea:last-child {
   border: none;
-  }
+}
 
 #menu picea:hover {
-  background-color: #fcf4ff;
-color: #ddab66;
+  background-color: #E9E9E9;
+  color: #ddab66;
 }
 
 #menu picea.active {
-background-color: #4d788c;
-color: #f9f0e3;
+  background-color: #015249;
+  color: #f9f0e3;
 }
 
 #menu picea.active:hover {
-background: #b5c4d1;
+  background: #52827d;
 }
 
 #menu quercus {
+  font-family: supria-sans, sans-serif;
+  font-style: heavy;
+  font-weight: 700;
   font-size: 13px;
-  color: #4e4451;
+  color: #494E6B;
   display: block;
   margin: 0;
   padding: 0;
   padding: 10px;
   text-decoration: none;
-  border-bottom: 1px solid rgba(0,0,0,0.25);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   text-align: center;
-  }
+}
 
 #menu quercus:last-child {
   border: none;
-  }
+}
 
 #menu quercus:hover {
-  background-color: #fcf4ff;
-color: #ddab66;
+  background-color: #E9E9E9;
+  color: #ddab66;
 }
 
 #menu quercus.active {
-background-color: #915511;
-color: #f9f0e3;
+  background-color: #96a106;
+  color: #f9f0e3;
 }
 
 #menu quercus.active:hover {
-background: #cc9d68;
+  background: #707347;
 }
 
 </style>
-  <div id="menu"></div>
-    <!-- Animation control elements -->
-    <aside class = toolbox>
-        <div class="box">
-        <header>
-            <h1 style = "color:#494E6B;
-            font-family: supria-sans, sans-serif;
-            font-style: heavy;
-            font-weight: 700;
-            font-size: 20px;
-          ">
-            Animation
-            <button id="js-play-button">Play </button>
-            <button id="js-pause-button"> Pause </button></h1>
-        </header>
-        <section>
-            <p style = "color:#494E6B;font-family: roboto, sans-serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 15px;">Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
-        </section>
-        <section>
-            <p style = "color:#494E6B; font-family: roboto, sans-serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span></p>
-        </section>
-        <section>
-          <p style = "color:#494E6B; font-family: roboto, sans-serif;
-        font-style: normal;
-        font-weight: 300;
-        font-size: 15px;">
-        Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
-        </section>
-    </aside>
 
+<div id="menu"></div>
 
+<!-- This section places animation control elements in the newly created toolbox. The control
+elements we've added are a progress bar, which shows users how far into the animation they are,
+a current time monitor, which tracks what year the animation shows, and a duration adjustor,
+which makes the animation speed up or slow down. There also play and pause buttons which stop
+and start the animation.
 
+The min and max values we use throughout this section corresponds to the minimum and maximum
+pollen ages we displayed.
 
+Our duration range runs between 1 second and 42 seconds-->
 
+<!-- Animation control elements -->
+
+<aside class=toolbox>
+  <div class="box"
+        style= "padding-bottom: 5px;
+                padding-right: 0px;">
+    <header>
+      <h1 style="color:#494E6B;
+        font-family: supria-sans, sans-serif;
+        font-style: heavy;
+        font-weight: 700;
+        font-size: 20px">
+        Animation
+        <button id="js-play-button">Play</button>
+        <button id="js-pause-button">Pause</button></h1>
+    </header>
+    <section>
+      <p style="color:#494E6B;font-family: roboto, sans-serif;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 15px;
+      margin-top: 5px;
+      margin-bottom:5px ">
+      Progress: <input type="range" id="js-progress-range" min="-21000" max="0" step="500"></p>
+    </section>
+    <section>
+      <p style="color:#494E6B; font-family: roboto, sans-serif;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 15px;
+      margin-bottom: 5px;
+      margin-top: 5px">
+      Current: <span id="js-current-time" class="open-sans"></span></p>
+    </section>
+    <section>
+      <p style="color:#494E6B; font-family: roboto, sans-serif;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 15px;
+      margin-top: 5px">
+      Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
+    </section>
+</aside>
 
     <!-- Add map container -->
     <div id="map"></div>
 
     <script>
 
-        // Add basemap and set properties
+    //... and add a basemap! More styles are available at https://docs.mapbox.com/help/tutorials/carto/
         const map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.voyager,
@@ -249,23 +327,63 @@ background: #cc9d68;
             zoom: 2.5
         });
 
-        //** CARTO VL functionality begins here **//
+//** CARTO VL functionality begins here **//
+//These lines link this code to a carto account. Enter your username and API key where prompted
 
-        // Define user
         carto.setDefaultAuth({
             username: 'widell',
             apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
         });
 
-        // Define source
+        /*Defines dataset sources
+
+        Use the name of the existing carto data set you’d like to map
+        as the argument in "new carto.source.Dataset()”
+        We've used our North American Pollen data, which contains
+        10 different pollen types, as well as a dataset that models
+        the last glaciation.
+        */
+
         const pollenSource = new carto.source.Dataset('cartoinputeuro');
         const iceSource = new carto.source.Dataset('euroice');
 
-        // Define Viz object and custom style
+        /*The genuses included in this code are Alnus, Fagus, Picea and
+        Quercus. We animate these trees using colors intended to convey
+        information about the climate niches they fill. Darker colors indicate colder climates,
+        greens indicate temperate climates and warmer colors for  warmer areas. Colors also
+        range from warm to cool tones to reflect hydroclimate, with warmner tones reflecting
+        drier climates.
+
+        The exact colors associated with each genus are as follows:
+
+        alnus: #57652A
+        fagus:#129448
+        picea:#015249
+        quercus: #E9E9E9
+
+        */
+
+    /*
+    Animate both the width and strokeWidth of the symbol over time by
+    multiplying by the animation variable you don't need the animation
+    on the filter:
+
+    width: $picea
+
+    using $picea/30 is just a visual way to get the
+    stokeWeight proportional to the width (you could do any calculation
+    here, ramp the strokeWidth, or just have a static value):
+
+    set the draw order of points to ascending. Right now, this can only
+    be done with points and only the options of asc and desc are available:
+
+    order: desc(width())
+
+    */
         const alnusViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
             filter: @animation
-            color: opacity(#d19112,0.4)
+            color: opacity(#57652A,0.4)
             strokeColor: opacity(#d19112,0.2)
             width: $alnus
         `);
@@ -273,7 +391,7 @@ background: #cc9d68;
         const fagusViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
             filter: @animation
-            color: opacity(#163f04,0.4)
+            color: opacity(#129448,0.4)
             strokeColor: opacity(#163f04,0.2)
             width: $fagus
         `);
@@ -281,7 +399,7 @@ background: #cc9d68;
         const piceaViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
             filter: @animation
-            color: opacity(#4d788c,0.4)
+            color: opacity(#015249,0.4)
             strokeColor: opacity(#4d788c,0.2)
             width: $picea
         `);
@@ -289,7 +407,7 @@ background: #cc9d68;
         const quercusViz = new carto.Viz(`
             @animation: animation($time, 42, fade(,1)),
             filter: @animation
-            color: opacity(#915511,0.4)
+            color: opacity(#96a106,0.4)
             strokeColor: opacity(#915511,0.2)
             width: $quercus
         `);
