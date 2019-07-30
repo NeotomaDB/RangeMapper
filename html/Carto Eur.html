@@ -87,10 +87,11 @@ Anna George (aegeorge2@wisc.edu)
 
 #menu {
   background: #E9E9E9;
-  position: relative;
+
   z-index: 1;
   top: 10px;
   left: 1050px;
+  position: relative;
   border-radius: 3px;
   width: 120px;
   border: 1px solid rgba(0,0,0,0.4);
@@ -322,7 +323,7 @@ Our duration range runs between 1 second and 42 seconds-->
     //... and add a basemap! More styles are available at https://docs.mapbox.com/help/tutorials/carto/
         const map = new mapboxgl.Map({
             container: 'map',
-            style: carto.basemaps.voyager,
+            style: carto.basemaps.positron,
             center: [30, 55],
             zoom: 2.5
         });
@@ -361,12 +362,11 @@ Our duration range runs between 1 second and 42 seconds-->
         picea:#015249
         quercus: #E9E9E9
 
-        */
 
-    /*
+
+
     Animate both the width and strokeWidth of the symbol over time by
-    multiplying by the animation variable you don't need the animation
-    on the filter:
+    multiplying by the animation variable. For example, 
 
     width: $picea
 
@@ -420,7 +420,8 @@ Our duration range runs between 1 second and 42 seconds-->
 
                 `);
 
-        // Define map layer
+//Sets your animations as map layers.
+//As an argument in new carto.Layer(), use ‘object’ (is that the right word?), source, viz.
         const alnusLayer = new carto.Layer('alnus', pollenSource, alnusViz);
         const fagusLayer = new carto.Layer('fagus', pollenSource, fagusViz);
         const piceaLayer = new carto.Layer('picea', pollenSource, piceaViz);
@@ -429,7 +430,10 @@ Our duration range runs between 1 second and 42 seconds-->
         const iceLayer = new carto.Layer('euroice', iceSource, iceViz);
 
 
-        // Get animation control elements
+// Creates animation control elements
+// As mentioned before, we’ll be creating a progress and
+// duration range, play and pause buttons and a current time reader.
+
         const $progressRange = document.getElementById('js-progress-range');
         const $playButton = document.getElementById('js-play-button');
         const $pauseButton = document.getElementById('js-pause-button');

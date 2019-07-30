@@ -1,9 +1,16 @@
+<!--
+This code maps North American fossil pollen data over the last 21,000 years using the
+Carto VL library (https://carto.com/developers/carto-vl/) and data taken from the
+Neotoma Paleoecology Database (https://www.neotomadb.org/).
+
+For more information, please see http://open.neotomadb.org/workbooks.html or contact
+Anna George (aegeorge2@wisc.edu)
+-->
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
       <title>Australia | Pollen Mapper</title>
           <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
           <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.js'></script>
@@ -13,7 +20,14 @@
             <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
             <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
 
-<!--BUILDING TOOLBOX-->
+ <!--  Creates animation control box as a toolbox located in top left corner of the screen
+
+  Adjust the position “left” to a value like center or right, or change the point
+  value to manipulate toolbox placement on a finer scale.
+
+  Change the width of the box by adjusting the width value
+  Manipulate the color of the box by changing the value assigned to background.
+  Values listed under "section" control the way elements appear within the toolbox -->
 
 <style type="text/css">
         aside.toolbox {
@@ -34,16 +48,42 @@
     }
 
     </style>
-    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
 </head>
+<!-- This line creates the map container -->
+
 
 
     <body>
       <div id="map"></div>
+      <!--The next section creates a framework for a navigation bar, so that viewers can turn
+      animation layers on and off.The code that actually controls which layers are visible is located
+      at the end of the code.
+
+      Here, each pollen layer is represented in an on and off state. When the map loads, all layers will be
+      "on." Users can then switch layers on and off from the web interface.
+
+      We use a light grey background color (#E9E9E9) and a dark blue font (#494E6B)
+      to indicate a menu item in its "off" state.
+
+      When a user hovers their mouse over an innactive menu item, the font will change from blue to
+      orange (#ddab66).
+
+      Activating a menu item will change its font to white (#f9f0e3) and background color to match the
+      color of the animation. In this way, the menu will also act as a key to the animation layers as those
+      layers become activated.
+
+      Hovering a mouse over an active menu item dulls the background color, and clicking on it will
+      turn off the animation layer completely.
+
+      The font used throughout the menu is "supria-sans, sans-serif" the font-style is "heavy,""
+      the font-weight is "700," and the font size is "13px" -->
+
+      <!--Menu -->
 
       <style>
       #menu {
         background: #E9E9E9;
+
         z-index: 1;
         top: 10px;
         left: 1050px;
@@ -53,29 +93,29 @@
         border: 1px solid rgba(0,0,0,0.4);
         font-family: 'Open Sans', sans-serif;
         }
-
-
-
-      #menu genus {
+        #menu genus {
+        font-family: supria-sans, sans-serif;
+        font-style: heavy;
+        font-weight: 700;
         font-size: 13px;
-        color: #4e4451;
+        color: #E9E9E9;
         display: block;
         margin: 0;
         padding: 0;
         padding: 10px;
         text-decoration: none;
-        border-bottom: 1px solid rgba(0,0,0,.25);
+        border-bottom: 1px solid rgba(0, 0, 0, .25);
         text-align: center;
-        }
+      }
 
       #menu genus:last-child {
         border: none;
         }
 
-      #menu genus.active {
-      background-color: #fcf4ff;
-      color: #070500;
-      }
+        #menu Genus.active {
+          background-color: #E9E9E9;
+          color: #494E6B;
+        }
 
       #menu casuarina {
         font-size: 13px;
@@ -274,11 +314,48 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
             apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
         });
 
-        // Define source
+        /* Defines dataset sources
+
+        Use the name of the existing carto data set you’d like to map
+        as the argument in "new carto.source.Dataset()”
+        We've used our North American Pollen data, which contains
+        10 different pollen types, as well as a dataset that models
+        the last glaciation.
+        */
       const pollenSource = new carto.source.Dataset('cartoinput_aus');
 
-        // Define Viz object and custom style
-        const casuarinaViz = new carto.Viz(`
+      /*The genuses included in this code are Casuarina, Eucalyptus,
+      Nothofagus and Phyllocladus.  We animate these trees using colors intended to convey
+      information about the climate niches they fill. Darker colors indicate colder climates,
+      greens indicate temperate climates and warmer colors for  warmer areas. Colors also
+      range from warm to cool tones to reflect hydroclimate, with warmner tones reflecting
+      drier climates.
+
+      The exact colors associated with each genus are as follows:
+
+      casuarina: #844b7a
+      eucalyptus:#0b6018
+      nothofagus:#d67304
+      phyllocladus: #497296
+
+
+
+
+    Animate both the width and strokeWidth of the symbol over time by
+    multiplying by the animation variable.
+
+    width: $picea
+
+    using $picea/30 is just a visual way to get the
+    stokeWeight proportional to the width (you could do any calculation
+    here, ramp the strokeWidth, or just have a static value):
+
+    set the draw order of points to ascending. Right now, this can only
+    be done with points and only the options of asc and desc are available:
+
+    order: desc(width())
+
+    */        const casuarinaViz = new carto.Viz(`
             @animation: animation($time, 42, fade(1,1))
             filter: @animation
             color: #844b7a
@@ -316,7 +393,10 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
         const nothofagusLayer = new carto.Layer('Nothofagus', pollenSource, nothofagusViz);
         const phyllocladusLayer = new carto.Layer('Phyllocladus', pollenSource, phyllocladusViz);
 
-        // Get animation control elements
+        // Creates animation control elements
+        // As mentioned before, we’ll be creating a progress and
+        // duration range, play and pause buttons and a current time reader.
+
         const $progressRange = document.getElementById('js-progress-range');
         const $playButton = document.getElementById('js-play-button');
         const $pauseButton = document.getElementById('js-pause-button');
@@ -368,8 +448,7 @@ font-size: 15px;">Current: <span id="js-current-time" class="open-sans"></span><
         setInterval(updateProgress, 100);
 
 
-       //Add map layer
-       //speciesLayer.addTo(map);
+
        casuarinaLayer.addTo(map);
        eucalyptusLayer.addTo(map);
        nothofagusLayer.addTo(map);
@@ -536,7 +615,6 @@ var layers = document.getElementById('menu');
 layers.appendChild(link);
 }
     </script>
-
 
 </body>
 </html>
