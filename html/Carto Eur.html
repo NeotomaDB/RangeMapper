@@ -1,5 +1,5 @@
 <!--
-This code maps North American fossil pollen data over the last 21,000 years using the
+This code maps European fossil pollen data over the last 21,000 years using the
 Carto VL library (https://carto.com/developers/carto-vl/) and data taken from the
 Neotoma Paleoecology Database (https://www.neotomadb.org/).
 
@@ -100,7 +100,7 @@ Anna George (aegeorge2@wisc.edu)
 
 
 
-#menu genus {
+#menu taxa {
   font-family: supria-sans, sans-serif;
   font-style: heavy;
   font-weight: 700;
@@ -115,11 +115,11 @@ Anna George (aegeorge2@wisc.edu)
   text-align: center;
 }
 
-#menu genus:last-child {
+#menu taxa:last-child {
   border: none;
   }
 
-  #menu Genus.active {
+  #menu taxa.active {
     background-color: #E9E9E9;
     color: #494E6B;
   }
@@ -148,12 +148,12 @@ Anna George (aegeorge2@wisc.edu)
 }
 
 #menu alnus.active {
-background-color: #57652A;
+background-color: #8977a3;
 color: #f9f0e3;
 }
 
 #menu alnus.active:hover {
-background: #878f6e;
+background: #9286a3;
 }
 
 #menu fagus {
@@ -182,12 +182,12 @@ background: #878f6e;
   }
 
 #menu fagus.active {
-background-color: #129448;
+background-color: #96a106;
 color: #f9f0e3;
 }
 
 #menu fagus.active:hover {
-background: #5b7d69;
+background: #9ba150;
 }
 
 #menu picea {
@@ -220,7 +220,7 @@ background: #5b7d69;
 }
 
 #menu picea.active:hover {
-  background: #52827d;
+  background: #647056;
 }
 
 #menu quercus {
@@ -248,12 +248,12 @@ background: #5b7d69;
 }
 
 #menu quercus.active {
-  background-color: #96a106;
+  background-color: #D13525;
   color: #f9f0e3;
 }
 
 #menu quercus.active:hover {
-  background: #707347;
+  background: #b0594f;
 }
 
 </style>
@@ -311,7 +311,7 @@ Our duration range runs between 1 second and 42 seconds-->
       font-weight: 300;
       font-size: 15px;
       margin-top: 5px">
-      Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
+      Duration: <input type="range" id="js-duration-range" min="15" max="42" step="2">
     </section>
 </aside>
 
@@ -324,9 +324,16 @@ Our duration range runs between 1 second and 42 seconds-->
         const map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.positron,
-            center: [30, 55],
-            zoom: 2.5
+            center: [20, 57],
+            zoom: 2.75,
+            scrollZoom: true
+
         });
+
+        const nav = new mapboxgl.NavigationControl({
+             showCompass: false
+           });
+           map.addControl(nav, 'top-left');
 
 //** CARTO VL functionality begins here **//
 //These lines link this code to a carto account. Enter your username and API key where prompted
@@ -357,16 +364,16 @@ Our duration range runs between 1 second and 42 seconds-->
 
         The exact colors associated with each genus are as follows:
 
-        alnus: #57652A
-        fagus:#129448
+        alnus: #8977a3
+        fagus:#96a106
         picea:#015249
-        quercus: #E9E9E9
+        quercus: #D13525
 
 
 
 
     Animate both the width and strokeWidth of the symbol over time by
-    multiplying by the animation variable. For example, 
+    multiplying by the animation variable. For example,
 
     width: $picea
 
@@ -381,39 +388,44 @@ Our duration range runs between 1 second and 42 seconds-->
 
     */
         const alnusViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
             filter: @animation
-            color: opacity(#57652A,0.4)
-            strokeColor: opacity(#d19112,0.2)
+            color: opacity(#8977a3,0.4)
+            strokeColor: opacity(#8977a3,0.2)
             width: $alnus
         `);
 
         const fagusViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
             filter: @animation
-            color: opacity(#129448,0.4)
-            strokeColor: opacity(#163f04,0.2)
+            color: opacity(#96a106,0.4)
+            strokeColor: opacity(#96a106,0.2)
             width: $fagus
         `);
 
         const piceaViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
             filter: @animation
             color: opacity(#015249,0.4)
-            strokeColor: opacity(#4d788c,0.2)
+            strokeColor: opacity(#015249,0.2)
             width: $picea
         `);
 
         const quercusViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
             filter: @animation
-            color: opacity(#96a106,0.4)
-            strokeColor: opacity(#915511,0.2)
+            color: opacity(#D13525,0.4)
+            strokeColor: opacity(#D13525,0.2)
             width: $quercus
         `);
 
         const iceViz = new carto.Viz(`
-            @animation: animation($av_time,42, fade(6,4))
+            @duration:42
+            @animation: animation($av_time, @duration, fade(6,4))
             color: opacity(#78B1BF,0.8)
               strokeWidth: 0
               filter: @animation
@@ -496,13 +508,13 @@ Our duration range runs between 1 second and 42 seconds-->
 
         iceLayer.addTo(map);
 
-      var toggleableMapIds = [ 'genus'
+      var toggleableMapIds = [ 'Taxa'
                                  ];
 
         for (var i = 0; i < toggleableMapIds.length; i++) {
         var id = toggleableMapIds[i];
 
-        var link = document.createElement('genus');
+        var link = document.createElement('Taxa');
         link.href = '#';
         link.className = 'active';
         link.textContent = id;
@@ -529,13 +541,13 @@ Our duration range runs between 1 second and 42 seconds-->
 
 
         var toggleableAlnusIds = [
-                                   'alnus'
+                                   'Alnus'
                                  ];
 
         for (var i = 0; i < toggleableAlnusIds.length; i++) {
         var id = toggleableAlnusIds[i];
 
-        var link = document.createElement('alnus');
+        var link = document.createElement('Alnus');
         link.href = '#';
         link.className = 'active';
         link.textContent = id;
@@ -560,12 +572,12 @@ Our duration range runs between 1 second and 42 seconds-->
         layers.appendChild(link);
         }
 
-        var toggleableFagusIds = ['fagus'];
+        var toggleableFagusIds = ['Fagus'];
 
         for (var i = 0; i < toggleableFagusIds.length; i++) {
         var id = toggleableFagusIds[i];
 
-        var link = document.createElement('fagus');
+        var link = document.createElement('Fagus');
         link.href = '#';
         link.className = 'active';
         link.textContent = id;
@@ -590,12 +602,12 @@ Our duration range runs between 1 second and 42 seconds-->
         layers.appendChild(link);
         }
 
-        var toggleablePiceaIds = ['picea'];
+        var toggleablePiceaIds = ['Picea'];
 
         for (var i = 0; i < toggleablePiceaIds.length; i++) {
         var id = toggleablePiceaIds[i];
 
-        var link = document.createElement('picea');
+        var link = document.createElement('Picea');
         link.href = '#';
         link.className = 'active';
         link.textContent = id;
@@ -620,12 +632,12 @@ Our duration range runs between 1 second and 42 seconds-->
         layers.appendChild(link);
         }
 
-        var toggleableQuercusIds = ['quercus'];
+        var toggleableQuercusIds = ['Quercus'];
 
         for (var i = 0; i < toggleableQuercusIds.length; i++) {
         var id = toggleableQuercusIds[i];
 
-        var link = document.createElement('quercus');
+        var link = document.createElement('Quercus');
         link.href = '#';
         link.className = 'active';
         link.textContent = id;

@@ -99,7 +99,7 @@ the font-weight is "700," and the font size is "13px" -->
 
 
 
-    #menu Genus {
+    #menu Taxa {
       font-family: supria-sans, sans-serif;
       font-style: heavy;
       font-weight: 700;
@@ -114,11 +114,11 @@ the font-weight is "700," and the font size is "13px" -->
       text-align: center;
     }
 
-    #menu Genus:last-child {
+    #menu Taxa:last-child {
       border: none;
     }
 
-    #menu Genus.active {
+    #menu Taxa.active {
       background-color: #E9E9E9;
       color: #494E6B;
     }
@@ -147,12 +147,12 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu Alnus.active {
-      background-color: #57652A;
+      background-color: #8977a3;
       color: #f9f0e3;
     }
 
     #menu Alnus.active:hover {
-      background: #878f6e;
+      background: #9286a3;
     }
 
     #menu Ambrosia {
@@ -181,7 +181,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu Ambrosia.active {
-      background-color: #E24E42;
+      background-color: #BC6D4F;
       color: #f9f0e3;
     }
 
@@ -219,7 +219,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu Cyperaceae.active:hover {
-      background: #e8af72;
+      background: #cc8e4b;
     }
 
     #menu Fagus {
@@ -247,12 +247,12 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu fagus.active {
-      background-color: #129448;
+      background-color: #96a106;
       color: #f9f0e3;
     }
 
     #menu Fagus.active:hover {
-      background: #5b7d69;
+      background: #9ba150;
     }
 
     #menu Picea {
@@ -285,7 +285,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu Picea.active:hover {
-      background: #52827d;
+      background: #25635c;
     }
 
     #menu Pinus {
@@ -313,12 +313,12 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu Pinus.active {
-      background-color: #990f0f;
+      background-color: #730707;
       color: #f9f0e3;
     }
 
     #menu Pinus.active:hover {
-      background: #916666;
+      background: #7d2f2f;
     }
 
     #menu Poaceae {
@@ -351,7 +351,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu Poaceae.active:hover {
-      background: #b0a471;
+      background: #f5dc6e;
     }
 
     #menu Quercus {
@@ -379,12 +379,12 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu Quercus.active {
-      background-color: #96a106;
+      background-color: #D13525;
       color: #f9f0e3;
     }
 
     #menu Quercus.active:hover {
-      background: #707347;
+      background: #c45a4f;
     }
 
     #menu Tsuga {
@@ -519,11 +519,17 @@ the font-weight is "700," and the font size is "13px" -->
 
     const map = new mapboxgl.Map({
       container: 'map',
-      style: carto.basemaps.voyager,
+      style: carto.basemaps.positron,
       center: [-100, 45],
       zoom: 2.5,
+      scrollZoom: true
 
     });
+
+    const nav = new mapboxgl.NavigationControl({
+         showCompass: false
+       });
+       map.addControl(nav, 'top-left');
 
 //** CARTO VL functionality begins here **//
 //These lines link this code to a carto account. Enter your username and API key where prompted
@@ -555,14 +561,14 @@ the font-weight is "700," and the font size is "13px" -->
 
     The exact colors associated with each genus are as follows:
 
-    alnus: #57652A
-    ambrosia:#E24E42
+    alnus: #8977a3
+    ambrosia:#BC6D4F
     cyperaceae: #eb7a02
-    fagus:#129448
+    fagus:#96a106
     picea:#015249
-    pinus:#990f0f
+    pinus:#730707
     poacea: #f2c602
-    quercus: #E9E9E9
+    quercus: #D13525
     tsuga: #272372
     ulmus: #272372
 
@@ -585,9 +591,10 @@ order: desc(width())
 
 */
     const alnusViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
-            color: opacity(#57652A,0.4)
-            strokeColor: opacity(#57652A,0.6)
+            @duration:42,
+            @animation: animation($time, @duration, fade(,1)),
+            color: opacity(#8977a3,0.4)
+            strokeColor: opacity(#8977a3,0.6)
             width: $alnus
             filter: @animation
             strokeWidth: $alnus/30 * @animation
@@ -596,9 +603,10 @@ order: desc(width())
 
 
     const ambrosiaViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
-            color: opacity(#E24E42,0.4)
-            strokeColor: opacity(#E24E42,0.2)
+            @duration:42,
+            @animation: animation($time, @duration, fade(,1)),
+            color: opacity(#BC6D4F,0.4)
+            strokeColor: opacity(#BC6D4F,0.2)
             width: $ambrosia
             filter: @animation
             strokeWidth: $ambrosia/30 * @animation
@@ -609,7 +617,8 @@ order: desc(width())
 
     const cyperaceaeViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(,1)),
+            @duration: 42
+            @animation: animation($time, @duration, fade(,1)),
             color: opacity(#eb7a02,0.4)
             strokeColor: opacity(#eb7a02,0.2)
             width: $cyperaceae
@@ -619,9 +628,10 @@ order: desc(width())
         `);
 
     const fagusViz = new carto.Viz(`
-            @animation: animation($time, 42, fade(,1)),
-            color: opacity(#129448,0.4)
-            strokeColor: opacity(#129448,0.2)
+            @duration: 42
+            @animation: animation($time, @duration, fade(,1)),
+            color: opacity(#96a106,0.4)
+            strokeColor: opacity(#96a106,0.2)
             width: $fagus
             filter: @animation
             strokeWidth: $fagus/30 * @animation
@@ -630,7 +640,8 @@ order: desc(width())
 
     const piceaViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(,1)),
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
             color: opacity(#015249,0.4)
             strokeColor: opacity(#015249,0.2)
             width: $picea
@@ -643,9 +654,10 @@ order: desc(width())
 
     const pinusViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(,1)),
-            color: opacity(#990f0f,0.4)
-            strokeColor: opacity(#990f0f,0.2)
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
+            color: opacity(#730707,0.4)
+            strokeColor: opacity(#730707,0.2)
             width: $pinus
             filter: @animation
             strokeWidth: $pinus/30 * @animation
@@ -654,7 +666,8 @@ order: desc(width())
 
     const poaceaeViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(,1)),
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
             color: opacity(#f2c602,0.4)
             strokeColor: opacity(#f2c602,0.2)
             width: $poaceae
@@ -667,9 +680,10 @@ order: desc(width())
 
     const quercusViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(,1)),
-            color: opacity(#96a106,0.4)
-            strokeColor: opacity(#96a106,0.2)
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
+            color: opacity(#D13525,0.4)
+            strokeColor: opacity(#D13525,0.2)
             width: $quercus
             filter: @animation
             strokeWidth: $quercus/30 * @animation
@@ -679,7 +693,8 @@ order: desc(width())
 
     const tsugaViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(,1)),
+            @duration:42
+            @animation: animation($time, @duration, fade(,1)),
             color: opacity(#272372,0.4)
             strokeColor: opacity(#272372,0.2)
             width: $tsuga
@@ -692,7 +707,8 @@ order: desc(width())
 
     const ulmusViz = new carto.Viz(`
 
-            @animation: animation($time, 42, fade(,1)),
+            @duration: 42
+            @animation: animation($time, @duration, fade(,1)),
             color: opacity(#21c6b6,0.4)
             strokeColor: opacity(#21c6b6,0.2)
             width: $ulmus
@@ -703,7 +719,8 @@ order: desc(width())
         `);
     //add animation to the ice sheet layer
     const iceViz = new carto.Viz(`
-            @animation: animation($age,42, fade(hold,.25))
+            @duration:42
+            @animation: animation($age,@duration, fade(hold,.25))
             color: opacity(#88BBD6,0.8)
             strokeWidth: 0
             filter: @animation
@@ -839,12 +856,12 @@ order: desc(width())
 //This section enables menu bar functionality.
 
 //These top lines create the title pannel. This code does not produce interactivity
-    var toggleableMapIds = ['genus'];
+    var toggleableMapIds = ['Taxa'];
 
     for (var i = 0; i < toggleableMapIds.length; i++) {
       var id = toggleableMapIds[i];
 
-      var link = document.createElement('genus');
+      var link = document.createElement('Taxa');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -872,7 +889,7 @@ order: desc(width())
 //Begin interactivity
 
     var toggleableAlnusIds = [
-      'alnus'
+      'Alnus'
     ];
 
     for (var i = 0; i < toggleableAlnusIds.length; i++) {
@@ -903,12 +920,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleableAmbrosiaIds = ['ambrosia'];
+    var toggleableAmbrosiaIds = ['Ambrosia'];
 
     for (var i = 0; i < toggleableAmbrosiaIds.length; i++) {
       var id = toggleableAmbrosiaIds[i];
 
-      var link = document.createElement('ambrosia');
+      var link = document.createElement('Ambrosia');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -933,12 +950,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleableCyperaceaeIds = ['cyperaceae'];
+    var toggleableCyperaceaeIds = ['Cyperaceae'];
 
     for (var i = 0; i < toggleableCyperaceaeIds.length; i++) {
       var id = toggleableCyperaceaeIds[i];
 
-      var link = document.createElement('cyperaceae');
+      var link = document.createElement('Cyperaceae');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -963,12 +980,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleableFagusIds = ['fagus'];
+    var toggleableFagusIds = ['Fagus'];
 
     for (var i = 0; i < toggleableFagusIds.length; i++) {
       var id = toggleableFagusIds[i];
 
-      var link = document.createElement('fagus');
+      var link = document.createElement('Fagus');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -993,12 +1010,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleablePiceaIds = ['picea'];
+    var toggleablePiceaIds = ['Picea'];
 
     for (var i = 0; i < toggleablePiceaIds.length; i++) {
       var id = toggleablePiceaIds[i];
 
-      var link = document.createElement('picea');
+      var link = document.createElement('Picea');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -1023,12 +1040,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleablePinusIds = ['pinus'];
+    var toggleablePinusIds = ['Pinus'];
 
     for (var i = 0; i < toggleablePinusIds.length; i++) {
       var id = toggleablePinusIds[i];
 
-      var link = document.createElement('pinus');
+      var link = document.createElement('Pinus');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -1053,12 +1070,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleablePoaceaeIds = ['poaceae'];
+    var toggleablePoaceaeIds = ['Poaceae'];
 
     for (var i = 0; i < toggleablePoaceaeIds.length; i++) {
       var id = toggleablePoaceaeIds[i];
 
-      var link = document.createElement('poaceae');
+      var link = document.createElement('Poaceae');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -1083,12 +1100,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleableQuercusIds = ['quercus'];
+    var toggleableQuercusIds = ['Quercus'];
 
     for (var i = 0; i < toggleableQuercusIds.length; i++) {
       var id = toggleableQuercusIds[i];
 
-      var link = document.createElement('quercus');
+      var link = document.createElement('Quercus');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -1113,12 +1130,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleableTsugaIds = ['tsuga'];
+    var toggleableTsugaIds = ['Tsuga'];
 
     for (var i = 0; i < toggleableTsugaIds.length; i++) {
       var id = toggleableTsugaIds[i];
 
-      var link = document.createElement('tsuga');
+      var link = document.createElement('Tsuga');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
@@ -1143,12 +1160,12 @@ order: desc(width())
       layers.appendChild(link);
     }
 
-    var toggleableUlmusIds = ['ulmus'];
+    var toggleableUlmusIds = ['Ulmus'];
 
     for (var i = 0; i < toggleableUlmusIds.length; i++) {
       var id = toggleableUlmusIds[i];
 
-      var link = document.createElement('ulmus');
+      var link = document.createElement('Ulmus');
       link.href = '#';
       link.className = 'active';
       link.textContent = id;
