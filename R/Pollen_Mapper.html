@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Williams Lab" />
+<meta name="author" content="Anna George, Williams Lab" />
 
 
 <title>Pollen_Mapper</title>
@@ -185,7 +185,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Pollen_Mapper</h1>
-<h4 class="author"><em>Williams Lab</em></h4>
+<h4 class="author"><em>Anna George, Williams Lab</em></h4>
 <h4 class="date"><em>2/27/2019</em></h4>
 
 </div>
@@ -193,32 +193,16 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Welcome to (what are you calling this lol), a repository (is this the right word?) designed to allow researchers, web developers and other users to extract species-specifc(can it?), spatiotemporal data from the Neotoma Paleoecology Database <span class="citation">[@williams2017neotoma]</span>. This code also creates a channel between Neotoma and Carto, an online platform where Neotoma data can now be visualized and transformed through Carto’s user interface.[<a href="https://carto.com/attribution/" class="uri">https://carto.com/attribution/</a>] (NOTE FOR ANNA– how/what do we site here? Is this what’s happening?).</p>
-<p>Building this R pathway was helpful to us in our attempts to model global forest turnover over the last 21,000 years based on pollen records archived in Neotoma. Our models are a few of many that could be possible with code that links Neotoma’s deep paleoecological data repository to Carto’s intuitive and vibrant mapping technology.</p>
-<p>Our code integrates previous methods established in <span class="citation">@williams2017neotoma</span> and <span class="citation">@goring2018bulk-baconizing</span> for extracting and interpolating Neotoma data on R with a quick solution for moving that data to Carto, developed in <span class="citation">@dracodoc2017rCartoAPI</span>. In this guide, we will provide step-by-step instructions for running all parts of the code.(<span class="citation">@anna</span>, what am I not citing here?)</p>
+<p>Welcome to (what are you calling this lol), a repository (is this the right word?) that allows researchers, web developers and other users to extract taxa-specific, spatio-temporal data from the Neotoma Paleoecology Database <span class="citation">[@williams2017neotoma]</span>. This code also establishes a channel between Neotoma and Carto, an online platform where Neotoma data can be visualized and transformed through Carto’s user interface.[<a href="https://carto.com/attribution/" class="uri">https://carto.com/attribution/</a>] (NOTE FOR ANNA– how/what do we site here? Is this what’s happening?).</p>
+<p>Building this R pathway was helpful to us in our attempts to model global forest turnover over the last 21,000 years, using on pollen records archived on Neotoma. Our models are a few of many that could be possible with code that links Neotoma’s deep paleoecological data repository to Carto’s intuitive and vibrant mapping technology.</p>
+<p>Our code integrates previous methods established by <span class="citation">@williams2017neotoma</span> and <span class="citation">@goring2018bulk-baconizing</span> for extracting and interpolating Neotoma data in R with a quick solution for moving that data to Carto, developed in <span class="citation">@dracodoc2017rCartoAPI</span>. In this guide, we will provide step-by-step instructions for running all parts of the code.(<span class="citation">@anna</span>, what am I not citing here?)</p>
 <div id="rstudio--i-coppied-this-part-straight-from-bulk-baconizing.-is-this-standard-do-i-need-to-cite" class="section level4">
 <h4>RStudio —-I coppied this part straight from bulk baconizing. Is this standard? do I need to cite?</h4>
 <p>Many people working with R may choose to use <a href="http://rstudio.com">RStudio</a>. If you are using RStudio, you can customize elements of this document (for example, removing this header information) and then use the <em>knit</em> button to compile the code into an HTML document, while generating the neccessary output files (see the <a href="https://github.com/neotomadb">README file</a> in the GitHub repository).</p>
 </div>
-<div id="r-console" class="section level4">
-<h4>R Console</h4>
-<p>Users who use the R Console without any other editor can move to the appropriate working directory (using <code>setwd()</code>) and then run the entire document using the following command:</p>
-<pre class="r"><code>#library(rmarkdown)
-#render('Pollen_Mapper.Rmd')</code></pre>
-</div>
-<div id="terminal" class="section level4">
-<h4>Terminal</h4>
-<p>Similarly, if you wish to execute the code from a console or terminal you can navigate to the working directory and execute the following:</p>
-<pre class="bash"><code>Rscript -e &quot;rmarkdown::render('Pollen_Mapper.Rmd')&quot;</code></pre>
-<p>Note that with the terminal you need to use two different quotation marks when executing. The inner and outer quotations must be different (<em>e.g.</em>, double on the outside, single on the inside, or <em>vice versa</em>). Whether you customize the code, or choose to run it as-is (for just the US state of Utah), these three methods of executing the code are your main options.</p>
-</div>
 <div id="providing-feedback" class="section level3">
 <h3>Providing Feedback</h3>
-<p>If, in any place instructions are not clear or more details are required please feel free to contact us by either <a href="Insert%20Link">raising a GitHub Issue for this repository</a>, or by mailing (?) directly at (?).</p>
-<div id="settings-defined" class="section level4">
-<h4>Settings Defined</h4>
-<p>(Do we have settings in this context?)</p>
-</div>
+<p>If, in any place instructions are not clear or more details are required please feel free to contact us by either <a href="Insert%20Link">raising a GitHub Issue for this repository</a>, or by emailing (?) directly at (?).</p>
 </div>
 </div>
 <div id="connecting-to-neotoma" class="section level2">
@@ -227,8 +211,8 @@ $(document).ready(function () {
 </div>
 <div id="setting-up-your-library" class="section level2">
 <h2>Setting up your library</h2>
-<p>The neotoma package is used during interactions between R and the database. The dplyr package supports that process through functions that allow you to filter the extracted data by factors like site and age.</p>
-<p>Later on, rCartoAPI pushes the data you’ve downloaded to Carto. It depends on httr and devtools, but you won’t reference those libraries directly.</p>
+<p>The Neotoma Package facilitates interactions between R and the Neotoma Database, and the dplyr Package allows you to filter the data you’ve extracted by factors like site and age.</p>
+<p>Later on, the rCartoAPI Package will push the data you’ve downloaded to Carto. That process references tools contained in the httr and devtools packages.</p>
 <pre class="r"><code>library(neotoma)
 library(dplyr)</code></pre>
 <pre><code>## 
@@ -246,87 +230,147 @@ library(rCartoAPI)</code></pre>
 </div>
 <div id="retrieving-neotoma-data" class="section level2">
 <h2>Retrieving Neotoma data</h2>
-<p>With this set up complete, you’ll be ready to extract your first dataset.</p>
-<p>First, replace all instances of “taxon” with the taxon you’d like to explore. Be aware that these values are case-sensitive. It might be helpful to browse Neotoma at this point, just to make sure that what you’re looking for exists in its database.</p>
-<p>Second, select the geographical bounds of your querry and express them as coordinates. ttps://boundingbox.klokantech.com/ is a useful way to generate your own bounding regions. Otherwise, these sets of coordinates worked well for us:</p>
-<p>North American bounding box: loc = c(-130, 24, -34, 65), European bounding box: loc = c(-11, 35, 47, 72), Australian bounding box: loc = c(105, -51, 177, 10)</p>
-<p>It’s also possible to select data from a geopolitical region. That code is recorded in lines 114-116. Pick whichever of these methods work best for you.</p>
+<p>With this set-up complete, you’re ready to extract your first dataset! In this example, we’ll compile a few pollen records from Australia.</p>
+<p>The taxa we’ll be mapping are Nothofagus and Eucalyptus, but there are countless records available on Neotoma, and you can extract as many as you’d like by replicating the code below. However, it might be helpful to browse for any additional taxa on Neotoma, just to make sure that what you’re looking for exists in its database. Be aware that these values are case-sensitive.</p>
+<p>Then, select the geographical bounds of your querry and express them as coordinates. ttps://boundingbox.klokantech.com/ is a useful way to generate your own bounding regions. Otherwise, these coordinates worked well for us across the sites we surveyed:</p>
+<p>North American bounding box: loc = c(-130, 24, -34, 65), European bounding box: loc = c(-11, 35, 47, 72) Australian bounding box: loc = c(105, -51, 177, 10)</p>
+<p>It’s also possible to select data from a geopolitical region. That code is recorded in lines 115-117. Pick whichever of these methods work best for you.</p>
 <p>Third, set your boundary ages. We use a minimum of 21,000 years ago and set our maximum to 0.</p>
 <p>Combined, these parameters are recorded in the metadata for the taxon in a specified location.</p>
-<p>The last step creates a list of all the taxon dataset numbers.</p>
-<p>By running this chunk several times in a row with different Taxon values (but keeping other parameters constant!), it is possible to generate lists for many taxa. All of these lists will be written together as one file in the following section.</p>
-<pre class="r"><code>#taxon_datasets &lt;- get_dataset(taxonname = 'Taxon*',
-                             # loc = c(set location here), 
-                             #  ageyoung = set age, 
-                             #  ageold = set age)
- 
-#can_datasets &lt;- neotoma::get_dataset(datasettype = 'pollen', 
+<p>The final step creates a list of all the taxon dataset numbers.</p>
+<pre class="r"><code>nothofagus_datasets &lt;- get_dataset(taxonname = 'Nothofagus*',
+                              loc = c(105, -51, 177, 10),
+                              ageyoung = 0,
+                              ageold = 21000)</code></pre>
+<pre><code>## The API call was successful, you have returned 19 records.</code></pre>
+<pre class="r"><code>eucalyptus_datasets &lt;- get_dataset(taxonname = 'Eucalyptus*',
+                                loc = c(105, -51, 177, 10), 
+                                ageyoung = 0, 
+                                ageold = 21000)</code></pre>
+<pre><code>## The API call was successful, you have returned 19 records.</code></pre>
+<pre class="r"><code>#can_datasets &lt;- neotoma::get_dataset(datasettype = 'pollen', 
                                      #ageold = 15000, ageyoung = -100,
                                      #gpid = &quot;Canada&quot;)
 
-#taxon_dataset_numbers &lt;- as.numeric(names(taxon_datasets))</code></pre>
+nothofagus_dataset_numbers &lt;- as.numeric(names(nothofagus_datasets))
+eucalyptus_dataset_numbers &lt;- as.numeric(names(eucalyptus_datasets))</code></pre>
 </div>
 <div id="appending-and-downloading-your-lists" class="section level2">
 <h2>Appending and downloading your lists</h2>
-<p>The first line in this dataset prepares the empty list you’ll work with later. Nothing to add to this line!</p>
-<p>The second line combines lists of different taxa dataset numbers. Here again, you should substitute “taxon” with whatever taxa you’ve pulled thus far. Add comma-separated arguments to this vector for each taxon you’ve referenced previously.</p>
+<p>The first line in this dataset prepares the empty list you’ll fill with your extracted data later. Nothing to add to this line!</p>
+<p>The second line combines lists of different taxa dataset numbers for the records you’ve pulled. Add each taxon as a comma-separated argument to this vector.</p>
 <p>The third line removes duplicate dataset numbers from your new list. Again, nothing to update here.</p>
 <p>The last two lines download all your datasets as RDS files. You may want to change the name “data_downloads” to something more specific, especially if you plan on downloading multiple datasets. Set the file path to a pre-existing, local file.</p>
-<pre class="r"><code>#site_dataset_numbers = list()
+<pre class="r"><code>site_dataset_numbers = list()
 
-#site_dataset_numbers &lt;- append(site_dataset_numbers, c(taxon_dataset_numbers))
+site_dataset_numbers &lt;- append(site_dataset_numbers, c(nothofagus_dataset_numbers,
+                                                       eucalyptus_dataset_numbers))
+all_dataset_numbers &lt;- as.numeric(unique(site_dataset_numbers))
 
-#all_dataset_numbers &lt;- as.numeric(unique(site_dataset_numbers))
-
-#data_downloads &lt;- get_download(all_dataset_numbers)
-
-#saveRDS(data_downloads, file = &quot;FILE_PATH&quot;)</code></pre>
+data_downloads &lt;- get_download(all_dataset_numbers)</code></pre>
+<pre><code>## API call was successful. Returned record for Yarlington Tier</code></pre>
+<pre><code>## API call was successful. Returned record for Lake Kirkpatrick</code></pre>
+<pre><code>## Warning: 
+## There were multiple entries for Lycopodium tablets 
+## get_download has mapped aliases for the taxa in the taxon.list.</code></pre>
+<pre><code>## API call was successful. Returned record for Dukes Tarn</code></pre>
+<pre><code>## Warning: 
+## There were multiple entries for Lycopodium tablets 
+## get_download has mapped aliases for the taxa in the taxon.list.</code></pre>
+<pre><code>## API call was successful. Returned record for Brass Tarn</code></pre>
+<pre><code>## API call was successful. Returned record for Ijomba</code></pre>
+<pre><code>## API call was successful. Returned record for Eagle Tarn</code></pre>
+<pre><code>## API call was successful. Returned record for Adamsons Peak</code></pre>
+<pre><code>## API call was successful. Returned record for Komanimambuno Mire
+## API call was successful. Returned record for Komanimambuno Mire</code></pre>
+<pre><code>## API call was successful. Returned record for Camerons Lagoon</code></pre>
+<pre><code>## API call was successful. Returned record for Sundown Swamp</code></pre>
+<pre><code>## API call was successful. Returned record for Stockyard Swamp</code></pre>
+<pre><code>## API call was successful. Returned record for Lac Suprin</code></pre>
+<pre><code>## API call was successful. Returned record for Granta Pools</code></pre>
+<pre><code>## API call was successful. Returned record for Lake St Clair</code></pre>
+<pre><code>## API call was successful. Returned record for Ringarooma River</code></pre>
+<pre><code>## API call was successful. Returned record for Lake Vera</code></pre>
+<pre><code>## API call was successful. Returned record for Paddy's Lake</code></pre>
+<pre><code>## Warning: 
+## There were multiple entries for Lycopodium tablets 
+## get_download has mapped aliases for the taxa in the taxon.list.</code></pre>
+<pre><code>## API call was successful. Returned record for Dove Lake</code></pre>
+<pre><code>## Warning: 
+## There were multiple entries for Lycopodium tablets 
+## get_download has mapped aliases for the taxa in the taxon.list.</code></pre>
+<pre><code>## API call was successful. Returned record for Bega Swamp</code></pre>
+<pre><code>## API call was successful. Returned record for Blue Lake</code></pre>
+<pre><code>## API call was successful. Returned record for Lake George</code></pre>
+<pre><code>## Warning: 
+## There were multiple entries for Azolla 
+## get_download has mapped aliases for the taxa in the taxon.list.</code></pre>
+<pre><code>## API call was successful. Returned record for Lynch's Crater A</code></pre>
+<pre><code>## API call was successful. Returned record for Rotten Swamp</code></pre>
+<pre><code>## API call was successful. Returned record for Jacksons Bog</code></pre>
+<pre><code>## API call was successful. Returned record for Swallow Lagoon</code></pre>
+<pre><code>## Warning: 
+## There were multiple entries for Lycopodium tablets 
+## get_download has mapped aliases for the taxa in the taxon.list.</code></pre>
+<pre class="r"><code>saveRDS(data_downloads, file = &quot;~/Desktop/Neotoma.RData&quot;)</code></pre>
 </div>
 <div id="compliling-data" class="section level2">
 <h2>Compliling Data</h2>
-<p>In this next section, you’ll be working with data you’ve already downloaded from Neotoma and stored in a local file. Now, you’ll retrieve that data via the proper file path and compile it. Note that data_downloads may be a generic name, if you’ve chosen to call your file something more specific.</p>
-<pre class="r"><code>#data_downloads &lt;- readRDS(&quot;FILE_PATH.&quot;)
+<p>In this next section, you’ll be working with data you’ve already downloaded from Neotoma. Now, you’ll retrieve that data and prepare it for mapping. Note that data_downloads may be a generic name, if you’ve chosen to call your file something more specific.</p>
+<pre class="r"><code>data_downloads &lt;- readRDS(&quot;~/Desktop/Neotoma.RData&quot;)
 
-#comp_dl &lt;- compile_downloads(data_downloads)</code></pre>
+comp_dl &lt;- compile_downloads(data_downloads)</code></pre>
 </div>
 <div id="linear-interpolation" class="section level2">
 <h2>Linear Interpolation</h2>
-<p>This chuck fetches total counts for all taxa observations at every location and linerally interpolates all the data into bins of 500 years.</p>
-<p>In lines 164 and 167, replace every instance of Taxon with the specific names of the taxa you’ve examined, being mindful that taxon names are case-sensitive in this code. Run additional itterations of lines 164 and 167 for each taxon you’ve observed.</p>
-<pre class="r"><code>#tot_cnts &lt;- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
+<p>This chunk fetches total counts for each taxon observation at every site and linerally interpolates all the data in 500 year intervals.</p>
+<pre class="r"><code>tot_cnts &lt;- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
 
-#interp_dl &lt;- data.frame(comp_dl[,1:10],
-               #time = - (round(comp_dl$age / 500, 0) * 500),
-               #taxon = rowSums(comp_dl[, grep(&quot;Taxon*&quot;, colnames(comp_dl))], na.rm = TRUE) / tot_cnts)
-
-  #group_by(time, lat, long, site.name) %&gt;%
-  #summarize(taxon = mean(taxon) * 100)</code></pre>
+interp_dl &lt;- data.frame(comp_dl[,1:10],
+                        time = - (round(comp_dl$age / 500, 0) * 500),
+                        nothofagus = rowSums(comp_dl[, grep(&quot;Nothofagus*&quot;, colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+                        eucalyptus = rowSums(comp_dl[, grep(&quot;Eucalyptus*&quot;, colnames(comp_dl))], na.rm = TRUE) / tot_cnts)  %&gt;%
+dplyr::group_by(time, lat, long, site.name) %&gt;% 
+  summarize(nothofagus = mean (nothofagus) * 100, eucalyptus = mean (eucalyptus) * 100)</code></pre>
 </div>
 <div id="clean-your-data" class="section level2">
 <h2>Clean your data</h2>
 <p>These next lines remove any observations from beyond the maxiumim age you recorded in your file.</p>
-<pre class="r"><code>#timefltr_output &lt;- dplyr::filter (interp_dl, time &gt;= min year, time &lt; max year)
-#final_output &lt;- na.omit(timefltr_output)</code></pre>
+<pre class="r"><code>timefltr_output &lt;- dplyr::filter(interp_dl, time &gt;= -21000)
+final_output &lt;- na.omit(timefltr_output)</code></pre>
 </div>
 <div id="create-csv-and-upload-it-to-carto" class="section level2">
 <h2>Create CSV and upload it to Carto</h2>
-<p>This chunk takes the final output you generated above, converts it to a CSV and then imediatly posts it to Carto. All you have to do is provide a file path and carto user information where prompted. If you are not sure if you are able to access Carto, we’ve included an optional test conection, which you may uncomment and run as you’d like.</p>
+<p>This chunk takes the data frame you generated above, converts it to a CSV and then imediatly posts it to Carto. All you have to do is provide a file path and carto user information where prompted. If you are not sure if you are able to access Carto, we’ve included an optional test conection, which you may uncomment and run as you’d like.</p>
 <p>Double check your Carto data library to make sure yuour file has posted. Now you’re ready to generate some rad visualizations!</p>
-<pre class="r"><code>#write.csv(final_output, file = &quot;FILE_PATH.csv&quot;)
-#inputFile &lt;- &quot;FILE_PATH.csv&quot;
+<pre class="r"><code>write.csv(final_output, file = &quot;~/Desktop/Neotoma.csv&quot;)
+inputFile &lt;- &quot;~/Desktop/Neotoma.csv&quot;
 
 
 #This section posts the file you just created and saved locally to R
 
-#your carto info
-#carto_acc = &quot;username&quot;
-#carto_api = &quot;api key&quot;
+#our carto info
+carto_acc = &quot;username&quot;
+carto_api = &quot;api key&quot;
 
 #optional:
 #test_connection()
 
 #Post the file!
-#local_import(inputFile)</code></pre>
+local_import(inputFile)</code></pre>
+<pre><code>## 
+## ----Request Status:----
+## {
+##   &quot;category&quot;: [&quot;Success&quot;],
+##   &quot;reason&quot;: [&quot;OK&quot;],
+##   &quot;message&quot;: [&quot;Success: (200) OK&quot;]
+## }
+## -----------------------</code></pre>
+<pre><code>## {
+##     &quot;item_queue_id&quot;: &quot;8e546152-19d1-4d82-aec8-cc129fcf4727&quot;,
+##     &quot;success&quot;: true
+## }
+## </code></pre>
 </div>
 
 
