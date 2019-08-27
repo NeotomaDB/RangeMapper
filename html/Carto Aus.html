@@ -56,6 +56,11 @@ Anna George (aegeorge2@wisc.edu)
 
 <body>
   <div id="map"></div>
+  <section>
+    <img src="neotoma.jpeg" alt="neotoma"
+    style="width:60px;height:55px;left: 15px; bottom: 1px; margin-top:-10px;
+    position: absolute;">
+  </section>
 
   <!--The next section creates a framework for a navigation bar, so that viewers can turn
       animation layers on and off.The code that actually controls which layers are visible is located
@@ -317,7 +322,7 @@ Anna George (aegeorge2@wisc.edu)
 
     var map = new mapboxgl.Map({
       container: 'map',
-      style: carto.basemaps.voyager,
+      style: carto.basemaps.positron,
       center: [125, -30],
       zoom: 2.5,
       scrollZoom: true

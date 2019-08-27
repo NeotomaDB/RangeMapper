@@ -57,6 +57,14 @@ Anna George (aegeorge2@wisc.edu)
 
       <body>
         <div id="map"></div>
+        <section>
+          <img src="neotoma.jpeg" alt="neotoma"
+          style="width:60px;height:55px;left: 15px; bottom: 1px; margin-top:-10px;
+          position: absolute;">
+        </section>
+
+
+
 
         <!--The next section creates a framework for a navigation bar, so that viewers can turn
         animation layers on and off.The code that actually controls which layers are visible is located
@@ -173,11 +181,11 @@ background: #9286a3;
 
 #menu fagus:last-child {
   border: none;
-        background-color: #7fa384;
+
   }
 
   #menu fagus:hover {
-    background-color: #129448;
+    background-color: #E9E9E9;
     color: #ddab66;
   }
 
@@ -434,10 +442,10 @@ Our duration range runs between 1 second and 42 seconds-->
 
 //Sets your animations as map layers.
 //As an argument in new carto.Layer(), use ‘object’ (is that the right word?), source, viz.
-        const alnusLayer = new carto.Layer('alnus', pollenSource, alnusViz);
-        const fagusLayer = new carto.Layer('fagus', pollenSource, fagusViz);
-        const piceaLayer = new carto.Layer('picea', pollenSource, piceaViz);
-        const quercusLayer = new carto.Layer('quercus', pollenSource, quercusViz);
+        const alnusLayer = new carto.Layer('Alnus', pollenSource, alnusViz);
+        const fagusLayer = new carto.Layer('Fagus', pollenSource, fagusViz);
+        const piceaLayer = new carto.Layer('Picea', pollenSource, piceaViz);
+        const quercusLayer = new carto.Layer('Quercus', pollenSource, quercusViz);
 
         const iceLayer = new carto.Layer('euroice', iceSource, iceViz);
 
@@ -508,8 +516,9 @@ Our duration range runs between 1 second and 42 seconds-->
 
         iceLayer.addTo(map);
 
-      var toggleableMapIds = [ 'Taxa'
-                                 ];
+
+
+      var toggleableMapIds = [ 'Taxa'];
 
         for (var i = 0; i < toggleableMapIds.length; i++) {
         var id = toggleableMapIds[i];
