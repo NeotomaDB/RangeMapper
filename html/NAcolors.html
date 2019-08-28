@@ -152,7 +152,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu alnus.active {
-      background-color: #8977a3;
+      background-color: #b172b8;
       color: #f9f0e3;
     }
 
@@ -185,7 +185,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu ambrosia.active {
-      background-color: #BC6D4F;
+      background-color: #d47463;
       color: #f9f0e3;
     }
 
@@ -216,7 +216,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu cyperaceae.active {
-      background-color: #eb7a02;
+      background-color: #805b29;
       color: #f9f0e3;
     }
 
@@ -250,7 +250,7 @@ the font-weight is "700," and the font size is "13px" -->
       }
 
     #menu fagus.active {
-    background-color: #96a106;
+    background-color: #3d87d1;
     color: #f9f0e3;
     }
 
@@ -382,7 +382,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu quercus.active {
-      background-color: #D13525;
+      background-color: #929615;
       color: #f9f0e3;
     }
 
@@ -596,8 +596,8 @@ order: desc(width())
     const alnusViz = new carto.Viz(`
             @duration:42,
             @animation: animation($time, @duration, fade(,1)),
-            color: opacity(#8977a3,0.4)
-            strokeColor: opacity(#8977a3,0.6)
+            color: opacity(#b172b8,0.4)
+            strokeColor: opacity(#b172b8,0.6)
             width: $alnus
             filter: @animation
             strokeWidth: $alnus/30 * @animation
@@ -608,8 +608,8 @@ order: desc(width())
     const ambrosiaViz = new carto.Viz(`
             @duration:42,
             @animation: animation($time, @duration, fade(,1)),
-            color: opacity(#BC6D4F,0.4)
-            strokeColor: opacity(#BC6D4F,0.2)
+            color: opacity(#d47463,0.4)
+            strokeColor: opacity(#d47463,0.2)
             width: $ambrosia
             filter: @animation
             strokeWidth: $ambrosia/30 * @animation
@@ -622,8 +622,8 @@ order: desc(width())
 
             @duration: 42
             @animation: animation($time, @duration, fade(,1)),
-            color: opacity(#eb7a02,0.4)
-            strokeColor: opacity(#eb7a02,0.2)
+            color: opacity(#805b29,0.4)
+            strokeColor: opacity(#805b29,0.2)
             width: $cyperaceae
             filter: @animation
             strokeWidth: $cyperaceae/30 * @animation
@@ -633,8 +633,8 @@ order: desc(width())
     const fagusViz = new carto.Viz(`
             @duration: 42
             @animation: animation($time, @duration, fade(,1)),
-            color: opacity(#96a106,0.4)
-            strokeColor: opacity(#96a106,0.2)
+            color: opacity(#3d87d1,0.4)
+            strokeColor: opacity(#3d87d1,0.2)
             width: $fagus
             filter: @animation
             strokeWidth: $fagus/30 * @animation
@@ -685,8 +685,8 @@ order: desc(width())
 
             @duration:42
             @animation: animation($time, @duration, fade(,1)),
-            color: opacity(#D13525,0.4)
-            strokeColor: opacity(#D13525,0.2)
+            color: opacity(#929615,0.4)
+            strokeColor: opacity(#929615,0.2)
             width: $quercus
             filter: @animation
             strokeWidth: $quercus/30 * @animation
@@ -724,7 +724,7 @@ order: desc(width())
     const iceViz = new carto.Viz(`
             @duration:42
             @animation: animation($age,@duration, fade(hold,.25))
-            color: opacity(#88BBD6,0.8)
+            color: opacity(#90959e,0.8)
             strokeWidth: 0
             filter: @animation
 
@@ -761,7 +761,7 @@ order: desc(width())
     const $durationRange = document.getElementById('js-duration-range');
     const $currentTime = document.getElementById('js-current-time');
 
-  
+
 
     // Links animations to control elements
     // Create a listener for every animation layer you build
@@ -817,7 +817,7 @@ order: desc(width())
 
     });
 
-    $progressRange.addEventListener('change', () => {
+  /*  $progressRange.addEventListener('change', () => {
            alnusViz.variables.animation.setProgressPct($progressRange.value);
            ambrosiaViz.variables.animation.setProgressPct($progressRange.value);
            cyperaceaeViz.variables.animation.setProgressPct($progressRange.value);
@@ -828,6 +828,7 @@ order: desc(width())
            quercusViz.variables.animation.setProgressPct($progressRange.value);
            tsugaViz.variables.animation.setProgressPct($progressRange.value);
            ulmusViz.variables.animation.setProgressPct($progressRange.value);
+           iceViz.variables.animation.setProgressPct($progressRange.value);
        });
 
        layer.on('updated', () => {
@@ -891,7 +892,7 @@ order: desc(width())
     });
     */
 
-  //  setInterval(updateProgress, 100);
+   setInterval(updateProgress, 100);
 
 //adds your new layers to the map
 
@@ -899,13 +900,14 @@ order: desc(width())
     alnusLayer.addTo(map);
     ambrosiaLayer.addTo(map);
     cyperaceaeLayer.addTo(map);
-    fagusLayer.addTo(map);
+
     piceaLayer.addTo(map);
     pinusLayer.addTo(map);
     poaceaeLayer.addTo(map);
     quercusLayer.addTo(map);
     tsugaLayer.addTo(map);
     ulmusLayer.addTo(map);
+    fagusLayer.addTo(map);
 
 //This section enables menu bar functionality.
 
