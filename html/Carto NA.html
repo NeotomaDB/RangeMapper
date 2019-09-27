@@ -761,7 +761,7 @@ order: desc(width())
     const $durationRange = document.getElementById('js-duration-range');
     const $currentTime = document.getElementById('js-current-time');
 
-  
+
 
     // Links animations to control elements
     // Create a listener for every animation layer you build
@@ -828,6 +828,7 @@ order: desc(width())
            quercusViz.variables.animation.setProgressPct($progressRange.value);
            tsugaViz.variables.animation.setProgressPct($progressRange.value);
            ulmusViz.variables.animation.setProgressPct($progressRange.value);
+           iceViz.variables.animation.setProgressPct($progressRange.value);
        });
 
        layer.on('updated', () => {

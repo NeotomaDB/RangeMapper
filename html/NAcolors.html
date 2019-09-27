@@ -15,6 +15,13 @@ Anna George (aegeorge2@wisc.edu)
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <title> North America | Pollen Mapper </title>
+  <script src="https://libs.cartocdn.com/carto-vl/v1.4.1/carto-vl.min.js"></script>
+  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
+  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://carto.com/developers/carto-vl/v1.4.1/examples/maps/style.css" rel="stylesheet">
+
+<!--first four links added for legend^^-->
+
   <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
   <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
   <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
@@ -51,17 +58,41 @@ Anna George (aegeorge2@wisc.edu)
       align-items: center;
     }
   </style>
-</head>
+
 
 <!-- This line creates the map container -->
 
+</head>
 <body>
 <div id="map"></div>
+<section class="toolbox">
+     <div class="box"
+     style= "right: 15px; bottom: 1px; position: fixed">
+         <header>
+             <h1 style="color:#494E6B;
+               font-family: supria-sans, sans-serif;
+               font-style: heavy;
+               font-weight: 700;
+               font-size: 20px">
+               Pollen Abundance </h1>
+         </header>
+         <section>
+           <section>
+          <div id="controls">
+              <ul id="legend"></ul>
+              </div>
+
+        </section>
+     </div>
+ </section>
 <section>
   <img src="neotoma.jpeg" alt="neotoma"
   style="width:60px;height:55px;left: 15px; bottom: 1px; margin-top:-10px;
-  position: absolute;">
+  position: fixed;">
 </section>
+
+
+
 
 <!--The next section creates a framework for a navigation bar, so that viewers can turn
 animation layers on and off.The code that actually controls which layers are visible is located
@@ -90,12 +121,13 @@ the font-weight is "700," and the font size is "13px" -->
 
   <style>
 
+
     #menu {
       background: #E9E9E9;
       z-index: 1;
       top: 10px;
       left: 1050px;
-      position: relative;
+      position: fixed;
       border-radius: 3px;
       width: 120px;
       border: 1px solid rgba(0, 0, 0, 0.4);
@@ -216,7 +248,7 @@ the font-weight is "700," and the font size is "13px" -->
     }
 
     #menu cyperaceae.active {
-      background-color: #805b29;
+      background-color: #eb7b13;
       color: #f9f0e3;
     }
 
@@ -514,8 +546,7 @@ the font-weight is "700," and the font size is "13px" -->
   </aside>
 
 
-  <!-- Add map container... -->
-  <div id="map"></div>
+
   <script>
 
     //... and add a basemap! More styles are available at https://docs.mapbox.com/help/tutorials/carto/
@@ -536,7 +567,7 @@ the font-weight is "700," and the font size is "13px" -->
 
 //** CARTO VL functionality begins here **//
 //These lines link this code to a carto account. Enter your username and API key where prompted
-
+//REMOVE KEY BEFORE PUB
     carto.setDefaultAuth({
       username: 'widell',
       apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
@@ -622,8 +653,8 @@ order: desc(width())
 
             @duration: 42
             @animation: animation($time, @duration, fade(,1)),
-            color: opacity(#805b29,0.4)
-            strokeColor: opacity(#805b29,0.2)
+            color: opacity(#eb7b13,0.4)
+            strokeColor: opacity(#eb7b13,0.2)
             width: $cyperaceae
             filter: @animation
             strokeWidth: $cyperaceae/30 * @animation
@@ -724,16 +755,30 @@ order: desc(width())
     const iceViz = new carto.Viz(`
             @duration:42
             @animation: animation($age,@duration, fade(hold,.25))
-            color: opacity(#90959e,0.8)
+            color: opacity(#99daf2,0.8)
             strokeWidth: 0
             filter: @animation
 
-
-
       `);
 
-    //Sets your animations as map layers.
-    //As an argument in new carto.Layer(), use ‘object’ (is that the right word?), source, viz.
+//           //Request data for legend from the layer viz
+//           const widthLegend = width.getLegendData({
+//           });
+//
+//           let LegendList = //'';
+//
+//           // Create list elements for legend
+//
+//            Legend.data.forEach((legend, index) => {
+//
+//               LegendList +=
+//                   `<li><div class="circle" style="background: #DCDCDC; width:$ 5px; height: 5px;"></div></li>`;
+//           });
+//
+//           // Place list items in the content section of the title/legend box
+//           document.getElementById('legend').innerHTML = LegendList;
+//
+// });
 
     const alnusLayer = new carto.Layer('Alnus', pollenSource, alnusViz);
     const ambrosiaLayer = new carto.Layer('Ambrosia', pollenSource, ambrosiaViz);
@@ -745,9 +790,13 @@ order: desc(width())
     const quercusLayer = new carto.Layer('Quercus', pollenSource, quercusViz);
     const tsugaLayer = new carto.Layer('Tsuga', pollenSource, tsugaViz);
     const ulmusLayer = new carto.Layer('Ulmus', pollenSource, ulmusViz);
-
     const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
+
+
+
+
   </script>
+
 
   <script>
 
@@ -876,7 +925,7 @@ order: desc(width())
 
       $currentTime.innerText = parseInt(alnusViz.variables.animation.getProgressValue());
       $currentTime.innerText = parseInt(ambrosiaViz.variables.animation.getProgressValue());
-      $currentTime.innerText = parseInt(cyperaceaeViz.variables.animatio.getProgressValue());
+      $currentTime.innerText = parseInt(cyperaceaeViz.variables.animation.getProgressValue());
       $currentTime.innerText = parseInt(fagusViz.variables.animation.getProgressValue());
       $currentTime.innerText = parseInt(piceaViz.variables.animation.getProgressValue());
       $currentTime.innerText = parseInt(pinusViz.variables.animation.getProgressValue());
@@ -909,9 +958,9 @@ order: desc(width())
     ulmusLayer.addTo(map);
     fagusLayer.addTo(map);
 
-//This section enables menu bar functionality.
+//This section enables menu bar functionality
 
-//These top lines create the title pannel. This code does not produce interactivity
+
     var toggleableMapIds = ['Taxa'];
 
     for (var i = 0; i < toggleableMapIds.length; i++) {
