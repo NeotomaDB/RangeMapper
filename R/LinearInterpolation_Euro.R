@@ -65,11 +65,13 @@ final_output <- na.omit(timefltr_output)
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
 write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Eur.csv")
-inputFile <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Eur.csv"
+inputPollen <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Eur.csv"
+
 
 #writeLines(addresses, addressFile)
 
-writeLines(inputFile)
+writeLines(inputPollen)
+
 
 #This section posts the file you just created and saved locally to R
 
@@ -82,6 +84,7 @@ carto_api = "7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
 
 #Post the file!
 
-local_import(inputFile)
+local_import(inputPollen)
+
 
 
