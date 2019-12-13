@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Legend Width | CARTO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<script src="https://libs.cartocdn.com/carto-vl/v1.4.1/carto-vl.min.js"></script>
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
+<link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
+<link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+<style>
+  .circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+<aside class="toolbox">
+  <div class="box">
+      <header>
+          <h1>Rail Accidents by Weather</h1>
+      </header>
+      <!-- Add legend data -->
+      <section>
+          <div id="controls">
+              <ul id="content"></ul>
+          </div>
+      </section>
+  </div>
+</aside>
+
+<script>
+  const map = new mapboxgl.Map({
+      container: 'map',
+      style: carto.basemaps.positron,
+      center: [-96, 41],
+      zoom: 3
+  });
+
+  const nav = new mapboxgl.NavigationControl({
+      showCompass: false
+  });
+  map.addControl(nav, 'top-left');
+  map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
+
+  carto.setDefaultAuth({
+      username: 'widell',
+      apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
+  });
+
+  const source = new carto.source.Dataset("cartoinput_na18");
+  const viz = new carto.Viz(`
+      width: ramp($picea, [0, 25, 50])
+      color: opacity(green, 0.5)
+      strokeWidth: 0
+  `);
+  const layer = new carto.Layer('layer', source, viz);
+  layer.addTo(map);
+
+  // When layer loads, trigger legend event
+  layer.on('loaded', () => {
+
+      // Request data for legend from the layer viz
+      const widthLegend = layer.viz.width.getLegendData({
+        samples: 3
+      });
+
+      let widthLegendList = '';
+
+      // Create list elements for legend
+      widthLegend.data.forEach((legend, index) => {
+
+          widthLegendList +=
+              `<li><div class="circle" style="background: #44702f; width:${legend.value}px; height:${legend.value}px;"></div> ${legend.key.toFixed(0)}</li>`;
+console.log(widthLegendList)
+      });
+
+      // Place list items in the content section of the title/legend box
+      document.getElementById('content').innerHTML = widthLegendList;
+
+  });
+</script>
+
+</body>
+
+</html>
