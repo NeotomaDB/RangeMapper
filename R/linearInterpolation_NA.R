@@ -103,7 +103,8 @@ final_output$legendvalues = legendvalues
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
 
 write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv")
-inputFile <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv"
+inputPollen <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv"
+inputIcesheets <- "~/Desktop/Github/CartoAnimations/html/icesheets.geojson"
 
 #This section posts the file you just created and saved locally to R
 
@@ -116,7 +117,7 @@ carto_api = "7de5ebf57ee0f31ed45302fb9c0b3a90723921ae"
 
 #Post the file!
 
-local_import(inputFile)
-
+local_import(inputPollen)
+local_import(inputIcesheets)
 
 

@@ -15,21 +15,10 @@ Anna George (aegeorge2@wisc.edu)
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <title> North America | Pollen Mapper </title>
-  <script src="https://libs.cartocdn.com/carto-vl/v1.4.1/carto-vl.min.js"></script>
-  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
-  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
-  <link href="https://carto.com/developers/carto-vl/v1.4.1/examples/maps/style.css" rel="stylesheet">
-
-<!--first four links added for legend^^-->
-
   <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
+  <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
   <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
   <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
-  <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
-  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.54.0/mapbox-gl.css' rel='stylesheet' />
-  <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js"></script>
-  <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css" rel="stylesheet" />
-  <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
 
   <!--  Creates animation control box as a toolbox located in top left corner of the screen
 
@@ -625,7 +614,7 @@ order: desc(width())
 */
     const alnusViz = new carto.Viz(`
             @duration:42,
-            @animation: animation($time, @duration, fade(,1)),
+            @animation: animation($time, @duration, fade(4,6)),
             color: opacity(#b172b8,0.4)
             strokeColor: opacity(#b172b8,0.6)
             width: $alnus
@@ -637,7 +626,7 @@ order: desc(width())
 
     const ambrosiaViz = new carto.Viz(`
             @duration:42,
-            @animation: animation($time, @duration, fade(,1)),
+            @animation: animation($time, @duration, fade(4,6)),
             color: opacity(#d47463,0.4)
             strokeColor: opacity(#d47463,0.2)
             width: $ambrosia
@@ -651,7 +640,7 @@ order: desc(width())
     const cyperaceaeViz = new carto.Viz(`
 
             @duration: 42
-            @animation: animation($time, @duration, fade(,1)),
+            @animation: animation($time, @duration, fade(4,6)),
             color: opacity(#eb7b13,0.4)
             strokeColor: opacity(#eb7b13,0.2)
             width: $cyperaceae
@@ -662,7 +651,7 @@ order: desc(width())
 
     const fagusViz = new carto.Viz(`
             @duration: 42
-            @animation: animation($time, @duration, fade(,1)),
+            @animation: animation($time, @duration, fade(4,6)),
             color: opacity(#3d87d1,0.4)
             strokeColor: opacity(#3d87d1,0.2)
             width: $fagus
@@ -753,7 +742,7 @@ order: desc(width())
     //add animation to the ice sheet layer
     const iceViz = new carto.Viz(`
             @duration:42
-            @animation: animation($age,@duration, fade(hold,.25))
+            @animation: animation($age,@duration, fade(hold,1))
             color: opacity(#99daf2,0.8)
             strokeWidth: 0
             filter: @animation
