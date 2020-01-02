@@ -72,6 +72,25 @@ interp_dl <- data.frame(comp_dl[,1:10],
              cyperaceae = mean ( cyperaceae) * 100,
              poaceae = mean ( poaceae) * 100)
 
+# Add blank legendvalues column
+legendvalues <- rep(0,length.out = nrow(interp_dl))
+interp_dl$legendvalues <- rep(NULL,length.out = nrow(interp_dl))                 
+                    
+# Creates table for legend
+time_bins <- rep(seq(0, -21000, -500), each = 3)
+blank_pollen <- as.data.frame(matrix(0, ncol = ncol(interp_dl, nrow = length(time_bins))))
+c(rep(0, length.out = ncol(interp_dl)-4))
+
+legenddata <- data.frame(time_bins, 
+                         rep(0,length.out = length(time_bins)), 
+                         rep(0,length.out = length(time_bins)), 
+                         rep("legendsite",length.out = length(time_bins)), 
+                         cbind(), 
+                         rep(c(10, 50, 100),length.out = length(time_bins)))
+names(legenddata) <- c("time", "lat", "long", "site.name", names(5:ncol(interp_dl)), "legendvalues")
+
+interp_dl_legend <- rbind(interp_dl,legenddata)
+
 # Removes any observations from over 21,000 years ago
 timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
 final_output <- na.omit(timefltr_output)

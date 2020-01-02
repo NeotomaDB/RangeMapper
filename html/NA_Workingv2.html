@@ -80,8 +80,8 @@
   #menu {
     background: #E9E9E9;
     z-index: 1;
-    top: 10px;
-    left: 1050px;
+    top: 250px;
+    left: 50px;
     position: fixed;
     border-radius: 3px;
     width: 120px;
@@ -457,9 +457,13 @@ style= "left: 15px; width:100px; top: 210px; position: fixed"></div>
         font-style: heavy;
         font-weight: 700;
         font-size: 20px">
-        Animation
-        <button id="js-play-button">Play</button>
-        <button id="js-pause-button">Pause</button></h1>
+        Range Mapper
+    </h1>
+    <body>
+        <h2> Animation </h2>
+        <button id="js-play-button"><img src="play.png"></button>
+        <button id="js-pause-button"><img src="pause.png"></button>
+    </body>
     </header>
     <section>
       <p style="color:#494E6B;font-family: roboto, sans-serif;
@@ -825,7 +829,11 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
       // Create list elements for legend
       widthLegend.data.forEach((legend, index) => {
           widthLegendList +=
+<<<<<<< HEAD
               `<li><div class="circle" style="background: #99daf2; width:${legend.value}px; height:${legend.value}px;"></div> ${legend.key.toFixed(0)}</li>`;
+=======
+              `<li><div class="circle" style="background: black; width:${legend.value}px; height:${legend.value}px;"></div> ${legend.key.toFixed(0)}</li>`;
+>>>>>>> 0a5cf0d8abcc4cf9dd18749842e3062d21a7e30c
 console.log(widthLegendList)
       });
       // Place list items in the content section of the title/legend box

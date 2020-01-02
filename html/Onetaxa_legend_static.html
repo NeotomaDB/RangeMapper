@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--DOCTYPE html-->
 <html>
 
 <head>
@@ -9,6 +9,7 @@
 <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
 <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
 <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+
 <style>
   .circle {
   width: 8px;
@@ -36,6 +37,25 @@
 </aside>
 
 <script>
+// Request to CARTO account using the Fetch API
+fetch(`
+    https://cartojs-test.carto.com/api/v2/sql?q=SELECT(*) FROM aegeorge2.carto_input WHERE picea > 0; UPDATE populated_places SET tsuga = NULLIF(tsuga, 0)
+`)
+// we transform the response from the Fetch API into a JSON format
+.then((resp) => resp.json())
+
+.then((response) => {
+    // we get the data from the request response
+    console.log(response.rows[0])
+})
+.catch(function (error) {
+    // check if the request is returning an error
+    console.log(error)
+});
+
+//UPDATE carto_input SET picea = NULLIF(picea, 'NA')
+
+
   const map = new mapboxgl.Map({
       container: 'map',
       style: carto.basemaps.positron,
@@ -50,13 +70,19 @@
   map.addControl(new mapboxgl.FullscreenControl(), 'top-left');
 
   carto.setDefaultAuth({
-      username: 'widell',
-      apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
+      username: 'aegeorge2',
+      apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
   });
 
-  const source = new carto.source.Dataset("cartoinput_na18");
+  const source = new carto.source.Dataset("carto_input");
   const viz = new carto.Viz(`
-      width: ramp($picea, [0, 25, 50])
+      width: ramp($tsuga, [0, 25, 50])
+      color: opacity(green, 0.5)
+      strokeWidth: 0
+  `);
+
+  const viz2 = new carto.Viz(`
+      width: $picea, [0, 25, 50])
       color: opacity(green, 0.5)
       strokeWidth: 0
   `);
@@ -78,12 +104,12 @@
 
           widthLegendList +=
               `<li><div class="circle" style="background: #44702f; width:${legend.value}px; height:${legend.value}px;"></div> ${legend.key.toFixed(0)}</li>`;
-console.log(widthLegendList)
+
       });
 
       // Place list items in the content section of the title/legend box
       document.getElementById('content').innerHTML = widthLegendList;
-
+console.log(content)
   });
 </script>
 
