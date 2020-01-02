@@ -361,7 +361,7 @@ Our duration range runs between 1 second and 42 seconds-->
         */
 
         const pollenSource = new carto.source.Dataset('cartoinputeuro');
-        const iceSource = new carto.source.Dataset('euroice');
+        const iceSource = new carto.source.Dataset('icev8');
 
         /*The genuses included in this code are Alnus, Fagus, Picea and
         Quercus. We animate these trees using colors intended to convey
@@ -395,6 +395,13 @@ Our duration range runs between 1 second and 42 seconds-->
     order: desc(width())
 
     */
+
+      const legendViz = new carto.Viz(`
+          width: ramp($legendvalues, [10, 25, 50])
+          color: opacity(white, 0)
+          strokeWidth: 0
+      `);
+
         const alnusViz = new carto.Viz(`
             @duration:42
             @animation: animation($time, @duration, fade(,1)),
@@ -442,6 +449,7 @@ Our duration range runs between 1 second and 42 seconds-->
 
 //Sets your animations as map layers.
 //As an argument in new carto.Layer(), use ‘object’ (is that the right word?), source, viz.
+        const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
         const alnusLayer = new carto.Layer('Alnus', pollenSource, alnusViz);
         const fagusLayer = new carto.Layer('Fagus', pollenSource, fagusViz);
         const piceaLayer = new carto.Layer('Picea', pollenSource, piceaViz);
@@ -508,6 +516,7 @@ Our duration range runs between 1 second and 42 seconds-->
         }
 
         setInterval(updateProgress, 100);
+        legendLayer.addTo(map);
 
         alnusLayer.addTo(map);
         fagusLayer.addTo(map);
