@@ -18,7 +18,7 @@
   .circle {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 75%;
   margin-right: 8px;
 }
 </style>
@@ -58,29 +58,38 @@
       <!-- Add legend data -->
       <section>
           <div id="controls"
-          style="display: flex;
+          style="display: inherit;
                 flex-direction: inline;
                 flex-wrap: nowrap;
                 justify-content: left;
-                align-items: flex-end;">
+                align-items: flex-end;
+                left:-55px;
+                bottom:0px;
+                position: relative
+              ">
           </div>
           <div id="content"
           style= "list-style-type:none;
-                  display: flex;
+                  display: inherit;
                   flex-direction: inline;
                   flex-wrap: nowrap;
                   justify-content: left;
-                  align-items: flex-end; ">
+                  align-items: flex-end;
+                  left:-55px;
+                  bottom:0px;
+                  position: relative"
+
           </div>
+      </section>
+      <section>
+       <img src="neotoma.jpeg" alt="neotoma"
+       style="width:65px;height:55px;right: 20px; bottom: 50px; margin-top:-10px;
+       position: fixed;">
       </section>
   </div>
 
 </section>
-<section>
- <img src="neotoma.jpeg" alt="neotoma"
- style="width:65px;height:55px;right: 15px; bottom: 1px; margin-top:-10px;
- position: fixed;">
-</section>
+
 
 
 <style>
@@ -141,7 +150,7 @@
     color: #f9f0e3;
   }
   #menu alnus.active:hover {
-    background: #9286a3;
+    background: #914160;
   }
   #menu ambrosia {
     font-family: supria-sans, sans-serif;
@@ -169,7 +178,7 @@
     color: #f9f0e3;
   }
   #menu ambrosia.active:hover {
-    background: #b06d68;
+    background: #f7947e;
   }
   #menu cyperaceae {
     font-family: supria-sans, sans-serif;
@@ -195,7 +204,7 @@
     color: #f9f0e3;
   }
   #menu cyperaceae.active:hover {
-    background: #cc8e4b;
+    background: #fada73;
   }
   #menu fagus {
     font-family: supria-sans, sans-serif;
@@ -223,7 +232,7 @@
   color: #f9f0e3;
   }
   #menu fagus.active:hover {
-  background: #9ba150;
+  background: #5a8799;
   }
   #menu picea {
     font-family: supria-sans, sans-serif;
@@ -251,7 +260,7 @@
     color: #f9f0e3;
   }
   #menu picea.active:hover {
-    background: #25635c;
+    background: #a4c7a3;
   }
   #menu pinus {
     font-family: supria-sans, sans-serif;
@@ -279,7 +288,7 @@
     color: #f9f0e3;
   }
   #menu pinus.active:hover {
-    background: #7d2f2f;
+    background: #bf496b;
   }
   #menu poaceae {
     font-family: supria-sans, sans-serif;
@@ -307,7 +316,7 @@
     color: #f9f0e3;
   }
   #menu poaceae.active:hover {
-    background: #f5dc6e;
+    background: #ffc58a;
   }
   #menu quercus {
     font-family: supria-sans, sans-serif;
@@ -335,10 +344,10 @@
     color: #f9f0e3;
   }
   #menu quercus.active:hover {
-    background: #c45a4f;
+    background: #c2cfa9;
   }
   #menu tsuga {
-    font-family: supria-sans, sans-serif;
+    font-family: sans-serif;
     font-style: heavy;
     font-weight: 700;
     font-size: 13px;
@@ -363,7 +372,7 @@
     color: #f9f0e3;
   }
   #menu tsuga.active:hover {
-    background: #6a6982;
+    background: #4d3649;
   }
   #menu ulmus {
     font-family: supria-sans, sans-serif;
@@ -391,7 +400,7 @@
     color: #f9f0e3;
   }
   #menu ulmus.active:hover {
-    background: #8cafac;
+    background: #6fbdb7;
   }
 </style>
 
@@ -404,8 +413,7 @@ style= "left: 15px; width:100px; top: 210px; position: fixed"></div>
                 padding-right: 0px;">
     <header>
       <h1 style="color:#494E6B;
-        font-family: supria-sans, sans-serif;
-        font-style: heavy;
+        font-family: sans-serif;
         font-weight: 700;
         font-size: 20px">
         Animation
@@ -564,11 +572,11 @@ style= "left: 15px; width:100px; top: 210px; position: fixed"></div>
                   order: asc(width())
               `);
               const iceViz = new carto.Viz(`
-                      @duration:42
-                      @animation: animation($age,@duration, fade(hold,.25))
-                      color: opacity(#99daf2,1)
-                      strokeWidth: 0
-                      filter: @animation
+                  @duration:42
+                  @animation: animation($age,@duration, fade(hold,.15))
+                  color: opacity(#99daf2,1)
+                  strokeWidth: 0
+                  filter: @animation
                 `);
   const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
   const alnusLayer = new carto.Layer('Alnus', pollenSource, alnusViz);
