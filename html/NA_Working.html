@@ -47,9 +47,10 @@
 <body>
 <div id="map"></div>
 <section class="toolbox">
-  <div class="box"  style= "right: 15px; bottom: 1px; position: fixed">
+  <div class="box"  style="width: 200px; right: 15px; bottom: 1px; position: fixed">
       <header>
-        <h1 style="color:#494E6B;
+        <h1 style="text-align: center;
+            color:#494E6B;
           font-family: supria-sans, sans-serif;
           font-style: heavy;
           font-weight: 700;
@@ -505,11 +506,11 @@ style= "right: 15px; position: fixed"></div>
 
   carto.setDefaultAuth({
 
-      username: 'widell',
-      apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
+      username: 'aegeorge2',
+      apiKey: 'default_public'
   });
-  const pollenSource = new carto.source.Dataset("cartoinput_na_2");
-  const iceSource = new carto.source.Dataset('icesheets');
+  const pollenSource = new carto.source.Dataset("cartoinput_na_v2");
+  const iceSource = new carto.source.Dataset('cartoinput_na_v2');
 
   const legendViz = new carto.Viz(`
       width: ramp($legendvalues, [10, 25, 50])

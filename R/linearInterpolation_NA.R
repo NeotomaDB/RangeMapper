@@ -106,7 +106,8 @@ write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput
 inputPollen <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv"
 inputIcesheets <- "~/Desktop/Github/CartoAnimations/html/icesheets.geojson"
 
-#This section posts the file you just created and saved locally to R
+# This section posts the file you just created and saved locally to R
+# This needs 
 
 #your carto info
 carto_acc = "widell"
