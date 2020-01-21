@@ -95,8 +95,8 @@ interp_dl_legend <- rbind(interp_dl,legenddata)
 timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
 final_output <- na.omit(timefltr_output)
 
+#To make the legend
 legendvalues <- rep(c(10, 50, 100), length.out = nrow(final_output[,1]))
-
 final_output$legendvalues = legendvalues
 
 # Writes CSV file

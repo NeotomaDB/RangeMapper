@@ -65,6 +65,10 @@ interp_dl <- data.frame(comp_dl[,1:10],
 timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
 final_output <- na.omit(timefltr_output)
 
+#To make the legend
+legendvalues <- rep(c(10, 50, 100), length.out = nrow(final_output[,1]))
+final_output$legendvalues = legendvalues
+
 # Writes CSV file
 # Specify location of file via file path, i.e. file = "home/Code/CartoInputFile"
 
