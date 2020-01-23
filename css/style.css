@@ -1,0 +1,452 @@
+
+:root {
+    --main-bg-color: #E9E9E9;
+    --main-text-color: #494E6B;
+}
+
+
+#animation-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    align-content: flex-end;
+}
+
+
+/* legend styling */
+
+#legend-box {
+    position: fixed;
+    right: 15px;
+    bottom: 1px;
+    width: 20%;
+    height: 20%;
+    min-height: 155px;
+    min-width: 240px;
+    background: var(--main-bg-color);
+}
+
+#legend-head-text {
+    color:var(--main-text-color);
+    font-family: sans-serif;
+    font-style: "heavy";
+    font-weight: 700;
+}
+
+/* .legend-section {
+    display: flex;
+    flex-direction: column-reverse;
+    /* justify-content: space-between;
+    align-items: left;
+    align-content: flex-end;
+    width: 100%;
+    height: 100%;
+} */
+
+#controls {
+    width: 100%;
+}
+
+#content {
+    list-style-type:none;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.circle {
+    border-radius: 75%;
+    position: absolute;
+    border: 1px var(--main-text-color) solid;
+    bottom: 10%;
+    color: var(--main-text-color);
+}
+
+#circle100{
+    left: 10px;
+}
+
+#circle55{
+    left: 32px;
+}
+
+#circle10{
+    left: 55px;
+}
+
+#logo-div {
+    display: flex;
+    margin-top:-1%;
+    padding: 1px;
+}
+
+#neotoma-logo {
+    position: fixed;
+    width: 5%;
+    max-width: 130px;
+    max-height: 110px;
+    right: 2%;
+    bottom: 5%;
+}
+
+/* progress bar styling */
+
+#animation-toolbox {
+    left: 15px;
+    position: fixed;
+    width: 23%;
+}
+
+#animation-box {
+    background: var(--main-bg-color);
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+
+#animation-header {
+    color:var(--main-text-color);
+    font-family: sans-serif;
+    font-weight: 700;
+}
+
+.animation-rangebar {
+    color:var(--main-text-color);
+    font-family: sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    margin-top: 5px;
+    margin-bottom:5px
+}
+/* style="color:var(--main-text-color); font-family: roboto, sans-serif;
+font-style: normal;
+font-weight: 300;
+font-size: 15px;
+margin-top: 5px"
+
+
+      style="color:var(--main-text-color);
+      font-family: roboto, sans-serif;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 15px;
+      margin-top: 5px
+      margin-bottom: 5px;" */
+
+
+/* taxa selection menu styling */
+
+
+#menu {
+    left: 15px;
+    width:100px;
+    top: 210px;
+    position: fixed;
+    background: var(--main-bg-color);
+    z-index: 1;
+    border-radius: 3px;
+    width: 120px;
+    /* border: 1px solid rgba(0, 0, 0, 0.4); */
+    font-family: 'Open Sans', sans-serif;
+    box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
+  }
+  #menu taxa {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-bg-color);
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, .25);
+    text-align: center;
+    box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
+  }
+  #menu taxa:last-child {
+    border: none;
+  }
+  #menu taxa.active {
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+  }
+  #menu alnus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0px;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu alnus:last-child {
+    border: none;
+  }
+  #menu alnus:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu alnus.active {
+    background-color: #900C3F;
+    color: #f9f0e3;
+  }
+  #menu alnus.active:hover {
+    background: #914160;
+  }
+  #menu ambrosia {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0px;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu ambrosia:last-child {
+    border: none;
+    background-color: #7fa384;
+  }
+  #menu ambrosia:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu ambrosia.active {
+    background-color: #FF5733;
+    color: #f9f0e3;
+  }
+  #menu ambrosia.active:hover {
+    background: #f7947e;
+  }
+  #menu cyperaceae {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu cyperaceae:last-child {
+    border: none;
+  }
+  #menu cyperaceae:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu cyperaceae.active {
+    background-color: #FFC300;
+    color: #f9f0e3;
+  }
+  #menu cyperaceae.active:hover {
+    background: #fada73;
+  }
+  #menu fagus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu fagus:last-child {
+    border: none;
+    }
+    #menu fagus:hover {
+      background-color: var(--main-bg-color);
+      color: #ddab66;
+    }
+  #menu fagus.active {
+  background-color: #2A7B9B;
+  color: #f9f0e3;
+  }
+  #menu fagus.active:hover {
+  background: #5a8799;
+  }
+  #menu picea {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu picea:last-child {
+    border: none;
+  }
+  #menu picea:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu picea.active {
+    background-color: #57C785;
+    color: #f9f0e3;
+  }
+  #menu picea.active:hover {
+    background: #a4c7a3;
+  }
+  #menu pinus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu pinus:last-child {
+    border: none;
+  }
+  #menu Pinus:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu pinus.active {
+    background-color: #C7003A;
+    color: #f9f0e3;
+  }
+  #menu pinus.active:hover {
+    background: #bf496b;
+  }
+  #menu poaceae {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu poaceae:last-child {
+    border: none;
+  }
+  #menu poaceae:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu poaceae.active {
+    background-color: #FF8D19;
+    color: #f9f0e3;
+  }
+  #menu poaceae.active:hover {
+    background: #ffc58a;
+  }
+  #menu quercus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu quercus:last-child {
+    border: none;
+  }
+  #menu quercus:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu quercus.active {
+    background-color: #ADD55C;
+    color: #f9f0e3;
+  }
+  #menu quercus.active:hover {
+    background: #c2cfa9;
+  }
+  #menu tsuga {
+    font-family: sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu tsuga:last-child {
+    border: none;
+  }
+  #menu tsuga:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu tsuga.active {
+    background-color: #511849;
+    color: #f9f0e3;
+  }
+  #menu tsuga.active:hover {
+    background: #4d3649;
+  }
+  #menu ulmus {
+    font-family: supria-sans, sans-serif;
+    font-style: heavy;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--main-text-color);
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    text-align: center;
+  }
+  #menu ulmus:last-child {
+    border: none;
+  }
+  #menu ulmus:hover {
+    background-color: var(--main-bg-color);
+    color: #ddab66;
+  }
+  #menu ulmus.active {
+    background-color: #00BBAD;
+    color: #f9f0e3;
+  }
+  #menu ulmus.active:hover {
+    background: #6fbdb7;
+  }
