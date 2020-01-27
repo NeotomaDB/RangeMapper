@@ -78,7 +78,7 @@
   const pollenSource = new carto.source.Dataset("cartoinput_na_3");
   const iceSource = new carto.source.Dataset('icesheets');
   const legendViz = new carto.Viz(`
-      width: ramp($legendvalues, [10, 55, 100])
+      width: ramp($legendvalues, [25, 55, 100])
       color: opacity(white, 0)
       strokeWidth: 0
   `);
@@ -341,32 +341,60 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
       // Place list items in the content section of the title/legend box
       document.getElementById('content').innerHTML = widthLegendList;
   });
-  // var toggleableMapIds = ['Taxa'];
-  // for (var i = 0; i < toggleableMapIds.length; i++) {
-  //   var id = toggleableMapIds[i];
-  //   var link = document.createElement('Taxa');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableAlnusIds = [
-  //   'Alnus'
-  // ];
+  var toggleableMapIds = ['Taxa'];
+  for (var i = 0; i < toggleableMapIds.length; i++) {
+    var id = toggleableMapIds[i];
+    var link = document.createElement('Taxa');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+
+
+  var toggleableAlnusIds = ['Alnus', 'Ambrosia'];
+  for (var i = 0; i < toggleableAlnusIds.length; i++) {
+    var id = toggleableAlnusIds[i];
+    console.log(id)
+    var link = document.createElement('Alnus');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+
+
+
+
+  // var toggleableAlnusIds = ['Alnus'];
   // for (var i = 0; i < toggleableAlnusIds.length; i++) {
   //   var id = toggleableAlnusIds[i];
   //   var link = document.createElement('Alnus');
@@ -389,6 +417,7 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
   //   var layers = document.getElementById('menu');
   //   layers.appendChild(link);
   // }
+  //
   // var toggleableAmbrosiaIds = ['Ambrosia'];
   // for (var i = 0; i < toggleableAmbrosiaIds.length; i++) {
   //   var id = toggleableAmbrosiaIds[i];
