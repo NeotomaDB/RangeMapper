@@ -366,11 +366,11 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
   }
 
 
-  var toggleableAlnusIds = ['Alnus', 'Ambrosia'];
-  for (var i = 0; i < toggleableAlnusIds.length; i++) {
-    var id = toggleableAlnusIds[i];
+  var toggleableIds = ['Alnus', 'Ambrosia'];
+  for (var i = 0; i < toggleableIds.length; i++) {
+    var id = toggleableIds[i];
     console.log(id)
-    var link = document.createElement('Alnus');
+    var link = document.createElement(id);
     link.href = '#';
     link.className = 'active';
     link.textContent = id;
@@ -391,12 +391,9 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
     layers.appendChild(link);
   }
 
-
-
-
-  // var toggleableAlnusIds = ['Alnus'];
-  // for (var i = 0; i < toggleableAlnusIds.length; i++) {
-  //   var id = toggleableAlnusIds[i];
+  // var toggleableIds = ['Alnus'];
+  // for (var i = 0; i < toggleableIds.length; i++) {
+  //   var id = toggleableIds[i];
   //   var link = document.createElement('Alnus');
   //   link.href = '#';
   //   link.className = 'active';
