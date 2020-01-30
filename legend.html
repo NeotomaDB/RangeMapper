@@ -656,6 +656,12 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
   for (var i = 0; i < toggleableUlmusIds.length; i++) {
     var id = toggleableUlmusIds[i];
     var link = document.createElement('Ulmus');
+
+  var toggleableIds = ['Alnus', 'Ambrosia'];
+  for (var i = 0; i < toggleableIds.length; i++) {
+    var id = toggleableIds[i];
+    console.log(id)
+    var link = document.createElement(id);
     link.href = '#';
     link.className = 'active';
     link.textContent = id;
@@ -675,6 +681,238 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
     var layers = document.getElementById('menu');
     layers.appendChild(link);
   }
+
+  // var toggleableIds = ['Alnus'];
+  // for (var i = 0; i < toggleableIds.length; i++) {
+  //   var id = toggleableIds[i];
+  //   var link = document.createElement('Alnus');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  //
+  // var toggleableAmbrosiaIds = ['Ambrosia'];
+  // for (var i = 0; i < toggleableAmbrosiaIds.length; i++) {
+  //   var id = toggleableAmbrosiaIds[i];
+  //   var link = document.createElement('Ambrosia');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  // var toggleableCyperaceaeIds = ['Cyperaceae'];
+  // for (var i = 0; i < toggleableCyperaceaeIds.length; i++) {
+  //   var id = toggleableCyperaceaeIds[i];
+  //   var link = document.createElement('Cyperaceae');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  // var toggleableFagusIds = ['Fagus'];
+  // for (var i = 0; i < toggleableFagusIds.length; i++) {
+  //   var id = toggleableFagusIds[i];
+  //   var link = document.createElement('Fagus');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  // var toggleablePiceaIds = ['Picea'];
+  // for (var i = 0; i < toggleablePiceaIds.length; i++) {
+  //   var id = toggleablePiceaIds[i];
+  //   var link = document.createElement('Picea');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  // var toggleablePinusIds = ['Pinus'];
+  // for (var i = 0; i < toggleablePinusIds.length; i++) {
+  //   var id = toggleablePinusIds[i];
+  //   var link = document.createElement('Pinus');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  // var toggleablePoaceaeIds = ['Poaceae'];
+  // for (var i = 0; i < toggleablePoaceaeIds.length; i++) {
+  //   var id = toggleablePoaceaeIds[i];
+  //   var link = document.createElement('Poaceae');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  // var toggleableQuercusIds = ['Quercus'];
+  // for (var i = 0; i < toggleableQuercusIds.length; i++) {
+  //   var id = toggleableQuercusIds[i];
+  //   var link = document.createElement('Quercus');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  // var toggleableTsugaIds = ['Tsuga'];
+  // for (var i = 0; i < toggleableTsugaIds.length; i++) {
+  //   var id = toggleableTsugaIds[i];
+  //   var link = document.createElement('Tsuga');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
+  // var toggleableUlmusIds = ['Ulmus'];
+  // for (var i = 0; i < toggleableUlmusIds.length; i++) {
+  //   var id = toggleableUlmusIds[i];
+  //   var link = document.createElement('Ulmus');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
 </script>
 
 </body>
