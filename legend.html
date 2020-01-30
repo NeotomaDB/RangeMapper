@@ -19,6 +19,33 @@
 <!-- Map div -->
 <div id="map"></div>
 
+<!-- dropdown selector -->
+<!-- <div id="wraper-dropdown-selector">
+  <select id="js-dropdown-selector">
+      <option value="northamerica" selected>North America</option>
+      <option value="europe">Europe</option>
+  </select>
+</div> -->
+
+<style>
+    #wraper-dropdown-selector {
+        background-color: #d2eaef;
+        opacity: 0.8;
+        position: absolute;
+        top: 10px;
+        left: 30%;
+        width: auto;
+        height: auto;
+        padding: 10px;
+        display: block;
+        z-index: 9000;
+
+    }
+
+    #js-dropdown-selector input {
+        width: 200px;
+    }
+</style>
 
 <!-- Legend -->
 <section class="toolbox">
@@ -35,10 +62,12 @@
         </div>
     </div>
 </section>
-
+https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
 
 
 <div id="menu">
+    <header id="legend-head-text">Taxa</header>
+</div>
 
 <aside class=toolbox id="animation-toolbox">
   <div class="box" id="animation-box">
@@ -61,6 +90,7 @@
     </section>
 </aside>
 
+
 <script>
   const map = new mapboxgl.Map({
       container: 'map',
@@ -75,13 +105,33 @@
       username: 'widell',
       apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
   });
+
+
+// function updateSource() {
+//
+// const selector = document.getElementById("js-dropdown-selector");
+//   console.log(selector);
+// // change sql query with dropdown value
+// selector.on('change', function(e) {
+//   let value = e.target.value;
+//
+//   if (value == 'northamerica') {
+//     carto.source.Dataset(`cartoinput_na_3`);
+//   }
+//   else if (value == 'europe') {
+//       carto.source.Dataset(`cartoinputeuro`);
+//   }
+// });
+
   const pollenSource = new carto.source.Dataset("cartoinput_na_3");
   const iceSource = new carto.source.Dataset('icesheets');
   const legendViz = new carto.Viz(`
-      width: ramp($legendvalues, [25, 55, 100])
+      width: ramp($legendvalues, [10, 55, 100])
       color: opacity(white, 0)
       strokeWidth: 0
   `);
+
+
   const alnusViz = new carto.Viz(`
           @duration:42,
           @animation: animation($time, @duration, fade(4,6)),
@@ -341,62 +391,35 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
       // Place list items in the content section of the title/legend box
       document.getElementById('content').innerHTML = widthLegendList;
   });
-  var toggleableMapIds = ['Taxa'];
-  for (var i = 0; i < toggleableMapIds.length; i++) {
-    var id = toggleableMapIds[i];
-    var link = document.createElement('Taxa');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
+  // var toggleableMapIds = ['Taxa'];
+  // for (var i = 0; i < toggleableMapIds.length; i++) {
+  //   var id = toggleableMapIds[i];
+  //   var link = document.createElement('Taxa');
+  //   link.href = '#';
+  //   link.className = 'active';
+  //   link.textContent = id;
+  //   link.onclick = function(e) {
+  //     var clickedLayer = this.textContent;
+  //     e.preventDefault();
+  //     e.stopPropagation();
+  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+  //     if (visibility === 'visible') {
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+  //       this.className = '';
+  //     } else {
+  //       this.className = 'active';
+  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+  //     }
+  //   };
+  //   var layers = document.getElementById('menu');
+  //   layers.appendChild(link);
+  // }
 
 
-  var toggleableAlnusIds = ['Alnus', 'Ambrosia'];
-  for (var i = 0; i < toggleableAlnusIds.length; i++) {
-    var id = toggleableAlnusIds[i];
-    console.log(id)
-    var link = document.createElement('Alnus');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-
-
-
-
-  // var toggleableAlnusIds = ['Alnus'];
+  // var toggleableAlnusIds = ['Alnus', 'Ambrosia'];
   // for (var i = 0; i < toggleableAlnusIds.length; i++) {
   //   var id = toggleableAlnusIds[i];
+  //   console.log(id)
   //   var link = document.createElement('Alnus');
   //   link.href = '#';
   //   link.className = 'active';
@@ -418,213 +441,240 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
   //   layers.appendChild(link);
   // }
   //
-  // var toggleableAmbrosiaIds = ['Ambrosia'];
-  // for (var i = 0; i < toggleableAmbrosiaIds.length; i++) {
-  //   var id = toggleableAmbrosiaIds[i];
-  //   var link = document.createElement('Ambrosia');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableCyperaceaeIds = ['Cyperaceae'];
-  // for (var i = 0; i < toggleableCyperaceaeIds.length; i++) {
-  //   var id = toggleableCyperaceaeIds[i];
-  //   var link = document.createElement('Cyperaceae');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableFagusIds = ['Fagus'];
-  // for (var i = 0; i < toggleableFagusIds.length; i++) {
-  //   var id = toggleableFagusIds[i];
-  //   var link = document.createElement('Fagus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleablePiceaIds = ['Picea'];
-  // for (var i = 0; i < toggleablePiceaIds.length; i++) {
-  //   var id = toggleablePiceaIds[i];
-  //   var link = document.createElement('Picea');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleablePinusIds = ['Pinus'];
-  // for (var i = 0; i < toggleablePinusIds.length; i++) {
-  //   var id = toggleablePinusIds[i];
-  //   var link = document.createElement('Pinus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleablePoaceaeIds = ['Poaceae'];
-  // for (var i = 0; i < toggleablePoaceaeIds.length; i++) {
-  //   var id = toggleablePoaceaeIds[i];
-  //   var link = document.createElement('Poaceae');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableQuercusIds = ['Quercus'];
-  // for (var i = 0; i < toggleableQuercusIds.length; i++) {
-  //   var id = toggleableQuercusIds[i];
-  //   var link = document.createElement('Quercus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableTsugaIds = ['Tsuga'];
-  // for (var i = 0; i < toggleableTsugaIds.length; i++) {
-  //   var id = toggleableTsugaIds[i];
-  //   var link = document.createElement('Tsuga');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableUlmusIds = ['Ulmus'];
-  // for (var i = 0; i < toggleableUlmusIds.length; i++) {
-  //   var id = toggleableUlmusIds[i];
-  //   var link = document.createElement('Ulmus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
+
+
+
+  var toggleableAlnusIds = ['Alnus'];
+  for (var i = 0; i < toggleableAlnusIds.length; i++) {
+    var id = toggleableAlnusIds[i];
+    var link = document.createElement('Alnus');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+
+  var toggleableAmbrosiaIds = ['Ambrosia'];
+  for (var i = 0; i < toggleableAmbrosiaIds.length; i++) {
+    var id = toggleableAmbrosiaIds[i];
+    var link = document.createElement('Ambrosia');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+  var toggleableCyperaceaeIds = ['Cyperaceae'];
+  for (var i = 0; i < toggleableCyperaceaeIds.length; i++) {
+    var id = toggleableCyperaceaeIds[i];
+    var link = document.createElement('Cyperaceae');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+  var toggleableFagusIds = ['Fagus'];
+  for (var i = 0; i < toggleableFagusIds.length; i++) {
+    var id = toggleableFagusIds[i];
+    var link = document.createElement('Fagus');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+  var toggleablePiceaIds = ['Picea'];
+  for (var i = 0; i < toggleablePiceaIds.length; i++) {
+    var id = toggleablePiceaIds[i];
+    var link = document.createElement('Picea');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+  var toggleablePinusIds = ['Pinus'];
+  for (var i = 0; i < toggleablePinusIds.length; i++) {
+    var id = toggleablePinusIds[i];
+    var link = document.createElement('Pinus');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+  var toggleablePoaceaeIds = ['Poaceae'];
+  for (var i = 0; i < toggleablePoaceaeIds.length; i++) {
+    var id = toggleablePoaceaeIds[i];
+    var link = document.createElement('Poaceae');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+  var toggleableQuercusIds = ['Quercus'];
+  for (var i = 0; i < toggleableQuercusIds.length; i++) {
+    var id = toggleableQuercusIds[i];
+    var link = document.createElement('Quercus');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+  var toggleableTsugaIds = ['Tsuga'];
+  for (var i = 0; i < toggleableTsugaIds.length; i++) {
+    var id = toggleableTsugaIds[i];
+    var link = document.createElement('Tsuga');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
+  var toggleableUlmusIds = ['Ulmus'];
+  for (var i = 0; i < toggleableUlmusIds.length; i++) {
+    var id = toggleableUlmusIds[i];
+    var link = document.createElement('Ulmus');
+    link.href = '#';
+    link.className = 'active';
+    link.textContent = id;
+    link.onclick = function(e) {
+      var clickedLayer = this.textContent;
+      e.preventDefault();
+      e.stopPropagation();
+      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        this.className = '';
+      } else {
+        this.className = 'active';
+        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+      }
+    };
+    var layers = document.getElementById('menu');
+    layers.appendChild(link);
+  }
 </script>
 
 </body>

@@ -32,6 +32,7 @@
     font-family: sans-serif;
     font-style: "heavy";
     font-weight: 700;
+    text-align: center;
 }
 
 /* .legend-section {
@@ -69,10 +70,10 @@
 }
 
 #circle55{
-    left: 28px;
+    left: 32px;
 }
 
-#circle25{
+#circle10{
     left: 55px;
 }
 
@@ -150,6 +151,8 @@ margin-top: 5px"
     /* border: 1px solid rgba(0, 0, 0, 0.4); */
     font-family: 'Open Sans', sans-serif;
     box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
+    padding-top: 1%;
+    display: block;
   }
   #menu taxa {
     font-family: supria-sans, sans-serif;
@@ -164,7 +167,7 @@ margin-top: 5px"
     text-decoration: none;
     border-bottom: 1px solid rgba(0, 0, 0, .25);
     text-align: center;
-    box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
+    /* box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24); */
   }
   #menu taxa:last-child {
     border: none;
@@ -197,10 +200,10 @@ margin-top: 5px"
     background-color: #900C3F;
     color: #f9f0e3;
   }
-  #menu alnus.active:hover {
-    background: #914160;
+  #menu.active:hover {
+    filter:brightness(125%);
   }
-  #menu ambrosia {
+  /* #menu ambrosia {
     font-family: supria-sans, sans-serif;
     font-style: heavy;
     font-weight: 700;
@@ -449,4 +452,4 @@ margin-top: 5px"
   }
   #menu ulmus.active:hover {
     background: #6fbdb7;
-  }
+  } */
