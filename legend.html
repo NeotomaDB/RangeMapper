@@ -62,7 +62,6 @@
         </div>
     </div>
 </section>
-https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
 
 
 <div id="menu">
@@ -107,6 +106,9 @@ https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_sch
   });
 
 
+      const pollenSource = new carto.source.Dataset("cartoinput_na_3");
+      const iceSource = new carto.source.Dataset('icesheets');
+
 // function updateSource() {
 //
 // const selector = document.getElementById("js-dropdown-selector");
@@ -122,259 +124,179 @@ https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_sch
 //       carto.source.Dataset(`cartoinputeuro`);
 //   }
 // });
-
-  const pollenSource = new carto.source.Dataset("cartoinput_na_3");
-  const iceSource = new carto.source.Dataset('icesheets');
-  const legendViz = new carto.Viz(`
-      width: ramp($legendvalues, [10, 55, 100])
-      color: opacity(white, 0)
-      strokeWidth: 0
-  `);
+// https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
 
 
-  const alnusViz = new carto.Viz(`
-          @duration:42,
-          @animation: animation($time, @duration, fade(4,6)),
-          color: opacity(#900C3F,0.4)
-          strokeColor: opacity(#900C3F,0.6)
-          width: $alnus
-          filter: @animation
-          strokeWidth: $alnus/30 * @animation
-          order: asc(width())
+    var toggleableIds = ['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'];
+    var taxaColumns1 = ['$alnus', '$ambrosia', '$cyperaceae', '$fagus', '$picea', '$pinus', '$poaceae', '$quercus', '$tsuga', '$ulmus'];
+    var taxaColumns = ['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'];
+    var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#C7003A', '#FF8D19', '#ADD55C', '#511849', '#009973'];
+    var taxaViz = []
+    var taxaLayers = []
+//
+// for (var i = 0; i < taxaColumns.length; ++i)
+//     taxaVizNames[i] = taxaColumns[i] + "Viz"
+
+
+    for (var i = 0; i < taxaColumns.length; ++i) {
+        taxaColumn = '$' + taxaColumns[i]
+        taxaColor  = taxaColors[i]
+        // taxaVizName = taxaVizNames[i]
+        var newViz = new carto.Viz(`
+            @duration:42,
+            @animation: animation($time, @duration, fade(4,6)),
+            color: opacity(${taxaColor},0.4)
+            strokeColor: opacity(${taxaColor},0.2)
+            width: ${taxaColumn}
+            filter: @animation
+            strokeWidth: ${taxaColumn}/30 * @animation
+            order: asc(width())`
+        );
+        taxaViz[i] = newViz;
+        console.log(taxaViz)
+    }
+
+      const legendViz = new carto.Viz(`
+        width: ramp($legendvalues, [10, 55, 100])
+        color: opacity(white, 0)
+        strokeWidth: 0
       `);
-  const ambrosiaViz = new carto.Viz(`
-              @duration:42,
-              @animation: animation($time, @duration, fade(4,6)),
-              color: opacity(#FF5733,0.4)
-              strokeColor: opacity(#FF5733,0.2)
-              width: $ambrosia
-              filter: @animation
-              strokeWidth: $ambrosia/30 * @animation
-              order: asc(width())
-          `);
-          const cyperaceaeViz = new carto.Viz(`
-                  @duration: 42
-                  @animation: animation($time, @duration, fade(4,6)),
-                  color: opacity(#FFC300,0.4)
-                  strokeColor: opacity(#FFC300,0.2)
-                  width: $cyperaceae
-                  filter: @animation
-                  strokeWidth: $cyperaceae/30 * @animation
-                  order: asc(width())
-              `);
-          const fagusViz = new carto.Viz(`
-                  @duration: 42
-                  @animation: animation($time, @duration, fade(4,6)),
-                  color: opacity(#2A7B9B,0.4)
-                  strokeColor: opacity(#2A7B9B,0.2)
-                  width: $fagus
-                  filter: @animation
-                  strokeWidth: $fagus/30 * @animation
-                  order: asc(width())
-              `);
-          const piceaViz = new carto.Viz(`
-                  @duration:42
-                  @animation: animation($time, @duration, fade(4,6)),
-                  color: opacity(#57C785,0.4)
-                  strokeColor: opacity(#57C785,0.2)
-                  width: $picea
-                  filter: @animation
-                  strokeWidth: $picea/30 * @animation
-                  order: asc(width())
-              `);
-          const pinusViz = new carto.Viz(`
-                  @duration:42
-                  @animation: animation($time, @duration, fade(4,6)),
-                  color: opacity(#C7003A,0.4)
-                  strokeColor: opacity(#C7003A,0.2)
-                  width: $pinus
-                  filter: @animation
-                  strokeWidth: $pinus/30 * @animation
-                  order: asc(width())
-              `);
-          const poaceaeViz = new carto.Viz(`
-                  @duration:42
-                  @animation: animation($time, @duration, fade(4,6)),
-                  color: opacity(#FF8D19,0.4)
-                  strokeColor: opacity(#FF8D19,0.2)
-                  width: $poaceae
-                  filter: @animation
-                  strokeWidth: $poaceae/30 * @animation
-                  order: asc(width())
-              `);
-          const quercusViz = new carto.Viz(`
-                  @duration:42
-                  @animation: animation($time, @duration, fade(4,6)),
-                  color: opacity(#ADD55C,0.4)
-                  strokeColor: opacity(#ADD55C,0.2)
-                  width: $quercus
-                  filter: @animation
-                  strokeWidth: $quercus/30 * @animation
-                  order: asc(width())
-              `);
-          const tsugaViz = new carto.Viz(`
-                  @duration:42
-                  @animation: animation($time, @duration, fade(4,6)),
-                  color: opacity(#511849,0.4)
-                  strokeColor: opacity(#511849,0.2)
-                  width: $tsuga
-                  filter: @animation
-                  strokeWidth: $tsuga/30 * @animation
-                  order: asc(width())
-              `);
-          const ulmusViz = new carto.Viz(`
-                  @duration: 42
-                  @animation: animation($time, @duration, fade(4,6)),
-                  color: opacity(#00BBAD,0.4)
-                  strokeColor: opacity(#00BBAD,0.2)
-                  width: $ulmus
-                  filter: @animation
-                  strokeWidth: $ulmus/30 * @animation
-                  order: asc(width())
-              `);
-              const iceViz = new carto.Viz(`
-                  @duration:42
-                  @animation: animation($age,@duration, fade(hold,.15))
-                  color: opacity(#99daf2,1)
-                  strokeWidth: 0
-                  filter: @animation
-                `);
+
+      const iceViz = new carto.Viz(`
+          @duration:42
+          @animation: animation($age,@duration, fade(hold,.15))
+          color: opacity(#99daf2,1)
+          strokeWidth: 0
+          filter: @animation
+        `);
+
+    for (var i = 0; i < taxaColumns.length; ++i) {
+        currentViz = taxaViz[i]
+        currentTaxon = toggleableIds[i]
+        console.log(currentTaxon)
+        var taxaLayer = new carto.Layer(currentTaxon, pollenSource, currentViz);
+        taxaLayers[i] = taxaLayer
+    }
+
   const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
-  const alnusLayer = new carto.Layer('Alnus', pollenSource, alnusViz);
-  const ambrosiaLayer = new carto.Layer('Ambrosia', pollenSource, ambrosiaViz);
-  const cyperaceaeLayer = new carto.Layer('Cyperaceae', pollenSource, cyperaceaeViz);
-  const fagusLayer = new carto.Layer('Fagus', pollenSource, fagusViz);
-  const piceaLayer = new carto.Layer('Picea', pollenSource, piceaViz);
-  const pinusLayer = new carto.Layer('Pinus', pollenSource, pinusViz);
-  const poaceaeLayer = new carto.Layer('Poaceae', pollenSource, poaceaeViz);
-  const quercusLayer = new carto.Layer('Quercus', pollenSource, quercusViz);
-  const tsugaLayer = new carto.Layer('Tsuga', pollenSource, tsugaViz);
-  const ulmusLayer = new carto.Layer('Ulmus', pollenSource, ulmusViz);
   const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
-  const $progressRange = document.getElementById('js-progress-range');
-  const $playButton = document.getElementById('js-play-button');
-  const $pauseButton = document.getElementById('js-pause-button');
-  const $durationRange = document.getElementById('js-duration-range');
-  const $currentTime = document.getElementById('js-current-time');
-  // Links animations to control elements
-  // Create a listener for every animation layer you build
-  $playButton.addEventListener('click', () => {
-    alnusViz.variables.animation.play();
-    ambrosiaViz.variables.animation.play();
-    cyperaceaeViz.variables.animation.play();
-    fagusViz.variables.animation.play();
-    piceaViz.variables.animation.play();
-    pinusViz.variables.animation.play();
-    poaceaeViz.variables.animation.play();
-    quercusViz.variables.animation.play();
-    tsugaViz.variables.animation.play();
-    ulmusViz.variables.animation.play();
-    iceViz.variables.animation.play();
-  });
-  $pauseButton.addEventListener('click', () => {
-    alnusViz.variables.animation.pause();
-    ambrosiaViz.variables.animation.pause();
-    cyperaceaeViz.variables.animation.pause();
-    fagusViz.variables.animation.pause();
-    piceaViz.variables.animation.pause();
-    pinusViz.variables.animation.pause();
-    poaceaeViz.variables.animation.pause();
-    quercusViz.variables.animation.pause();
-    tsugaViz.variables.animation.pause();
-    ulmusViz.variables.animation.pause();
-    iceViz.variables.animation.pause();
-  });
-  $durationRange.addEventListener('change', () => {
-    alnusViz.variables.duration = parseInt($durationRange.value, 10);
-    ambrosiaViz.variables.duration = parseInt($durationRange.value, 10);
-    cyperaceaeViz.variables.duration = parseInt($durationRange.value, 10);
-    fagusViz.variables.duration = parseInt($durationRange.value, 10);
-    piceaViz.variables.duration = parseInt($durationRange.value, 10);
-    pinusViz.variables.duration = parseInt($durationRange.value, 10);
-    poaceaeViz.variables.duration = parseInt($durationRange.value, 10);
-    quercusViz.variables.duration = parseInt($durationRange.value, 10);
-    tsugaViz.variables.duration = parseInt($durationRange.value, 10);
-    ulmusViz.variables.duration = parseInt($durationRange.value, 10);
-    iceViz.variables.duration = parseInt($durationRange.value, 10);
-  });
-/*  $progressRange.addEventListener('change', () => {
-         alnusViz.variables.animation.setProgressPct($progressRange.value);
-         ambrosiaViz.variables.animation.setProgressPct($progressRange.value);
-         cyperaceaeViz.variables.animation.setProgressPct($progressRange.value);
-         fagusViz.variables.animation.setProgressPct($progressRange.value);
-         piceaViz.variables.animation.setProgressPct($progressRange.value);
-         pinusViz.variables.animation.setProgressPct($progressRange.value);
-         poaceaeViz.variables.animation.setProgressPct($progressRange.value);
-         quercusViz.variables.animation.setProgressPct($progressRange.value);
-         tsugaViz.variables.animation.setProgressPct($progressRange.value);
-         ulmusViz.variables.animation.setProgressPct($progressRange.value);
-         iceViz.variables.animation.setProgressPct($progressRange.value);
-     });
-     layer.on('updated', () => {
-     $progressRange.value = alnusViz.variables.animation.getProgressPct();
-     $progressRange.value = ambrosiaViz.variables.animation.getProgressPct();
-     $progressRange.value =cyperaceaeViz.variables.animation.getProgressPct();
-     $progressRange.value = fagusViz.variables.animation.getProgressPct();
-     $progressRange.value =piceaViz.variables.animation.getProgressPct();
-     $progressRange.value =pinusViz.variables.animation.getProgressPct();
-     $progressRange.value =poaceaeViz.variables.animation.getProgressPct();
-     $progressRange.value =quercusViz.variables.animation.getProgressPct();
-     $progressRange.value = tsugaViz.variables.animation.getProgressPct();
-     $progressRange.value = ulmusViz.variables.animation.getProgressPct();
- });
-//Adds progress bar interactivity
-/*  $progressRange.addEventListener('change', () => {
-alnusViz.variables.animation.setCurrent($progressRange.value);
-ambrosiaViz.variables.animation.setCurrent($progressRange.value);
-cyperaceaeViz.variables.animation.setCurrent($progressRange.value);
-fagusViz.variables.animation.setCurrent($progressRange.value);
-piceaViz.variables.animation.setCurrent($progressRange.value);
-pinusViz.variables.animation.setCurrent($progressRange.value);
-poaceaeViz.variables.animation.setCurrent($progressRange.value);
-quercusViz.variables.animation.setCurrent($progressRange.value);
-tsugaViz.variables.animation.setCurrent($progressRange.value);
-ulmusViz.variables.animation.setCurrent($progressRange.value);
-});*/
-//Updates progress bar and current time reader each 100 milliseconds with integer values
-  function updateProgress() {
-    $progressRange.value = alnusViz.variables.animation.getProgressValue();
-    $progressRange.value = ambrosiaViz.variables.animation.getProgressValue();
-    $progressRange.value = cyperaceaeViz.variables.animation.getProgressValue();
-    $progressRange.value = fagusViz.variables.animation.getProgressValue();
-    $progressRange.value = piceaViz.variables.animation.getProgressValue();
-    $progressRange.value = pinusViz.variables.animation.getProgressValue();
-    $progressRange.value = poaceaeViz.variables.animation.getProgressValue();
-    $progressRange.value = quercusViz.variables.animation.getProgressValue();
-    $progressRange.value = tsugaViz.variables.animation.getProgressValue();
-    $progressRange.value = ulmusViz.variables.animation.getProgressValue();
-    $currentTime.innerText = parseInt(alnusViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(ambrosiaViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(cyperaceaeViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(fagusViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(piceaViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(pinusViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(poaceaeViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(quercusViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(tsugaViz.variables.animation.getProgressValue());
-    $currentTime.innerText = parseInt(ulmusViz.variables.animation.getProgressValue());
-  }
-  /*
-  layer.on('updated', () => {
-      $progressRange.value = alnusViz.variables.animation.getProgressValue();
-  });
-  */
- setInterval(updateProgress, 100);
+//   const $progressRange = document.getElementById('js-progress-range');
+//   const $playButton = document.getElementById('js-play-button');
+//   const $pauseButton = document.getElementById('js-pause-button');
+//   const $durationRange = document.getElementById('js-duration-range');
+//   const $currentTime = document.getElementById('js-current-time');
+//   // Links animations to control elements
+//   // Create a listener for every animation layer you build
+//   $playButton.addEventListener('click', () => {
+//       for (var i = 0; i < taxaColumns.length; ++i) {
+//            var currentViz = taxaViz[i]
+//            currentViz.variables.animation.play();
+//       }
+//     iceViz.variables.animation.play();
+//   });
+//   $pauseButton.addEventListener('click', () => {
+//       for (var i = 0; i < taxaColumns.length; ++i) {
+//            currentViz = taxaViz[i]
+//            currentViz.variables.animation.pause();
+//        }
+//     // ambrosiaViz.variables.animation.pause();
+//     // cyperaceaeViz.variables.animation.pause();
+//     // fagusViz.variables.animation.pause();
+//     // piceaViz.variables.animation.pause();
+//     // pinusViz.variables.animation.pause();
+//     // poaceaeViz.variables.animation.pause();
+//     // quercusViz.variables.animation.pause();
+//     // tsugaViz.variables.animation.pause();
+//     // ulmusViz.variables.animation.pause();
+//     iceViz.variables.animation.pause();
+//   });
+//   $durationRange.addEventListener('change', () => {
+//     alnusViz.variables.duration = parseInt($durationRange.value, 10);
+//     ambrosiaViz.variables.duration = parseInt($durationRange.value, 10);
+//     cyperaceaeViz.variables.duration = parseInt($durationRange.value, 10);
+//     fagusViz.variables.duration = parseInt($durationRange.value, 10);
+//     piceaViz.variables.duration = parseInt($durationRange.value, 10);
+//     pinusViz.variables.duration = parseInt($durationRange.value, 10);
+//     poaceaeViz.variables.duration = parseInt($durationRange.value, 10);
+//     quercusViz.variables.duration = parseInt($durationRange.value, 10);
+//     tsugaViz.variables.duration = parseInt($durationRange.value, 10);
+//     ulmusViz.variables.duration = parseInt($durationRange.value, 10);
+//     iceViz.variables.duration = parseInt($durationRange.value, 10);
+//   });
+//   $progressRange.addEventListener('change', () => {
+//          alnusViz.variables.animation.setProgressPct($progressRange.value);
+//          ambrosiaViz.variables.animation.setProgressPct($progressRange.value);
+//          cyperaceaeViz.variables.animation.setProgressPct($progressRange.value);
+//          fagusViz.variables.animation.setProgressPct($progressRange.value);
+//          piceaViz.variables.animation.setProgressPct($progressRange.value);
+//          pinusViz.variables.animation.setProgressPct($progressRange.value);
+//          poaceaeViz.variables.animation.setProgressPct($progressRange.value);
+//          quercusViz.variables.animation.setProgressPct($progressRange.value);
+//          tsugaViz.variables.animation.setProgressPct($progressRange.value);
+//          ulmusViz.variables.animation.setProgressPct($progressRange.value);
+//          iceViz.variables.animation.setProgressPct($progressRange.value);
+//      });
+//      layer.on('updated', () => {
+//      $progressRange.value = alnusViz.variables.animation.getProgressPct();
+//      $progressRange.value = ambrosiaViz.variables.animation.getProgressPct();
+//      $progressRange.value =cyperaceaeViz.variables.animation.getProgressPct();
+//      $progressRange.value = fagusViz.variables.animation.getProgressPct();
+//      $progressRange.value =piceaViz.variables.animation.getProgressPct();
+//      $progressRange.value =pinusViz.variables.animation.getProgressPct();
+//      $progressRange.value =poaceaeViz.variables.animation.getProgressPct();
+//      $progressRange.value =quercusViz.variables.animation.getProgressPct();
+//      $progressRange.value = tsugaViz.variables.animation.getProgressPct();
+//      $progressRange.value = ulmusViz.variables.animation.getProgressPct();
+//  });
+// //Adds progress bar interactivity
+// $progressRange.addEventListener('change', () => {
+//     alnusViz.variables.animation.setCurrent($progressRange.value);
+//     ambrosiaViz.variables.animation.setCurrent($progressRange.value);
+//     cyperaceaeViz.variables.animation.setCurrent($progressRange.value);
+//     fagusViz.variables.animation.setCurrent($progressRange.value);
+//     piceaViz.variables.animation.setCurrent($progressRange.value);
+//     pinusViz.variables.animation.setCurrent($progressRange.value);
+//     poaceaeViz.variables.animation.setCurrent($progressRange.value);
+//     quercusViz.variables.animation.setCurrent($progressRange.value);
+//     tsugaViz.variables.animation.setCurrent($progressRange.value);
+//     ulmusViz.variables.animation.setCurrent($progressRange.value);
+// });
+// //Updates progress bar and current time reader each 100 milliseconds with integer values
+//   function updateProgress() {
+//     // $progressRange.value = alnusViz.variables.animation.getProgressValue();
+//     // $progressRange.value = ambrosiaViz.variables.animation.getProgressValue();
+//     // $progressRange.value = cyperaceaeViz.variables.animation.getProgressValue();
+//     // $progressRange.value = fagusViz.variables.animation.getProgressValue();
+//     // $progressRange.value = piceaViz.variables.animation.getProgressValue();
+//     // $progressRange.value = pinusViz.variables.animation.getProgressValue();
+//     // $progressRange.value = poaceaeViz.variables.animation.getProgressValue();
+//     // $progressRange.value = quercusViz.variables.animation.getProgressValue();
+//     // $progressRange.value = tsugaViz.variables.animation.getProgressValue();
+//     $progressRange.value = iceViz.variables.animation.getProgressValue();
+//     $currentTime.innerText = parseInt(iceViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(ambrosiaViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(cyperaceaeViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(fagusViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(piceaViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(pinusViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(poaceaeViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(quercusViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(tsugaViz.variables.animation.getProgressValue());
+//     // $currentTime.innerText = parseInt(ulmusViz.variables.animation.getProgressValue());
+//   }
+//
+//   layer.on('updated', () => {
+//       $progressRange.value = alnusViz.variables.animation.getProgressValue();
+//   });
+//
+//  setInterval(updateProgress, 100);
+
+for (var i = 0; i < taxaColumns.length; ++i) {
+    currentLayer = taxaLayers[i];
+    currentLayer.addTo(map);
+}
+
   legendLayer.addTo(map);
-  alnusLayer.addTo(map);
-  ambrosiaLayer.addTo(map);
-  cyperaceaeLayer.addTo(map);
-  piceaLayer.addTo(map);
-  pinusLayer.addTo(map);
-  poaceaeLayer.addTo(map);
-  quercusLayer.addTo(map);
-  tsugaLayer.addTo(map);
-  ulmusLayer.addTo(map);
-  fagusLayer.addTo(map);
   iceLayer.addTo(map);
   // When layer loads, trigger legend event
   legendLayer.on('loaded', () => {
@@ -391,277 +313,11 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
       // Place list items in the content section of the title/legend box
       document.getElementById('content').innerHTML = widthLegendList;
   });
-  // var toggleableMapIds = ['Taxa'];
-  // for (var i = 0; i < toggleableMapIds.length; i++) {
-  //   var id = toggleableMapIds[i];
-  //   var link = document.createElement('Taxa');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
 
-
-  // var toggleableAlnusIds = ['Alnus', 'Ambrosia'];
-  // for (var i = 0; i < toggleableAlnusIds.length; i++) {
-  //   var id = toggleableAlnusIds[i];
-  //   console.log(id)
-  //   var link = document.createElement('Alnus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  //
-
-
-
-  var toggleableAlnusIds = ['Alnus'];
-  for (var i = 0; i < toggleableAlnusIds.length; i++) {
-    var id = toggleableAlnusIds[i];
-    var link = document.createElement('Alnus');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-
-  var toggleableAmbrosiaIds = ['Ambrosia'];
-  for (var i = 0; i < toggleableAmbrosiaIds.length; i++) {
-    var id = toggleableAmbrosiaIds[i];
-    var link = document.createElement('Ambrosia');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-  var toggleableCyperaceaeIds = ['Cyperaceae'];
-  for (var i = 0; i < toggleableCyperaceaeIds.length; i++) {
-    var id = toggleableCyperaceaeIds[i];
-    var link = document.createElement('Cyperaceae');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-  var toggleableFagusIds = ['Fagus'];
-  for (var i = 0; i < toggleableFagusIds.length; i++) {
-    var id = toggleableFagusIds[i];
-    var link = document.createElement('Fagus');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-  var toggleablePiceaIds = ['Picea'];
-  for (var i = 0; i < toggleablePiceaIds.length; i++) {
-    var id = toggleablePiceaIds[i];
-    var link = document.createElement('Picea');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-  var toggleablePinusIds = ['Pinus'];
-  for (var i = 0; i < toggleablePinusIds.length; i++) {
-    var id = toggleablePinusIds[i];
-    var link = document.createElement('Pinus');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-  var toggleablePoaceaeIds = ['Poaceae'];
-  for (var i = 0; i < toggleablePoaceaeIds.length; i++) {
-    var id = toggleablePoaceaeIds[i];
-    var link = document.createElement('Poaceae');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-  var toggleableQuercusIds = ['Quercus'];
-  for (var i = 0; i < toggleableQuercusIds.length; i++) {
-    var id = toggleableQuercusIds[i];
-    var link = document.createElement('Quercus');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-  var toggleableTsugaIds = ['Tsuga'];
-  for (var i = 0; i < toggleableTsugaIds.length; i++) {
-    var id = toggleableTsugaIds[i];
-    var link = document.createElement('Tsuga');
-    link.href = '#';
-    link.className = 'active';
-    link.textContent = id;
-    link.onclick = function(e) {
-      var clickedLayer = this.textContent;
-      e.preventDefault();
-      e.stopPropagation();
-      var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-      if (visibility === 'visible') {
-        map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        this.className = '';
-      } else {
-        this.className = 'active';
-        map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-      }
-    };
-    var layers = document.getElementById('menu');
-    layers.appendChild(link);
-  }
-  var toggleableUlmusIds = ['Ulmus'];
-  for (var i = 0; i < toggleableUlmusIds.length; i++) {
-    var id = toggleableUlmusIds[i];
-    var link = document.createElement('Ulmus');
-
-  var toggleableIds = ['Alnus', 'Ambrosia'];
   for (var i = 0; i < toggleableIds.length; i++) {
     var id = toggleableIds[i];
-    console.log(id)
-    var link = document.createElement(id);
+    var taxonColor = taxaColors[i];
+    var link = document.createElement('taxa');
     link.href = '#';
     link.className = 'active';
     link.textContent = id;
@@ -674,245 +330,65 @@ ulmusViz.variables.animation.setCurrent($progressRange.value);
         map.setLayoutProperty(clickedLayer, 'visibility', 'none');
         this.className = '';
       } else {
-        this.className = 'active';
         map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        this.className = 'active'
       }
     };
     var layers = document.getElementById('menu');
     layers.appendChild(link);
-  }
+ }
 
-  // var toggleableIds = ['Alnus'];
-  // for (var i = 0; i < toggleableIds.length; i++) {
-  //   var id = toggleableIds[i];
-  //   var link = document.createElement('Alnus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  //
-  // var toggleableAmbrosiaIds = ['Ambrosia'];
-  // for (var i = 0; i < toggleableAmbrosiaIds.length; i++) {
-  //   var id = toggleableAmbrosiaIds[i];
-  //   var link = document.createElement('Ambrosia');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableCyperaceaeIds = ['Cyperaceae'];
-  // for (var i = 0; i < toggleableCyperaceaeIds.length; i++) {
-  //   var id = toggleableCyperaceaeIds[i];
-  //   var link = document.createElement('Cyperaceae');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableFagusIds = ['Fagus'];
-  // for (var i = 0; i < toggleableFagusIds.length; i++) {
-  //   var id = toggleableFagusIds[i];
-  //   var link = document.createElement('Fagus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleablePiceaIds = ['Picea'];
-  // for (var i = 0; i < toggleablePiceaIds.length; i++) {
-  //   var id = toggleablePiceaIds[i];
-  //   var link = document.createElement('Picea');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleablePinusIds = ['Pinus'];
-  // for (var i = 0; i < toggleablePinusIds.length; i++) {
-  //   var id = toggleablePinusIds[i];
-  //   var link = document.createElement('Pinus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleablePoaceaeIds = ['Poaceae'];
-  // for (var i = 0; i < toggleablePoaceaeIds.length; i++) {
-  //   var id = toggleablePoaceaeIds[i];
-  //   var link = document.createElement('Poaceae');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableQuercusIds = ['Quercus'];
-  // for (var i = 0; i < toggleableQuercusIds.length; i++) {
-  //   var id = toggleableQuercusIds[i];
-  //   var link = document.createElement('Quercus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableTsugaIds = ['Tsuga'];
-  // for (var i = 0; i < toggleableTsugaIds.length; i++) {
-  //   var id = toggleableTsugaIds[i];
-  //   var link = document.createElement('Tsuga');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
-  // var toggleableUlmusIds = ['Ulmus'];
-  // for (var i = 0; i < toggleableUlmusIds.length; i++) {
-  //   var id = toggleableUlmusIds[i];
-  //   var link = document.createElement('Ulmus');
-  //   link.href = '#';
-  //   link.className = 'active';
-  //   link.textContent = id;
-  //   link.onclick = function(e) {
-  //     var clickedLayer = this.textContent;
-  //     e.preventDefault();
-  //     e.stopPropagation();
-  //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-  //     if (visibility === 'visible') {
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-  //       this.className = '';
-  //     } else {
-  //       this.className = 'active';
-  //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-  //     }
-  //   };
-  //   var layers = document.getElementById('menu');
-  //   layers.appendChild(link);
-  // }
+
+   // var toggleableAlnusIds = ['Alnus', 'Ambrosia'];
+   // for (var i = 0; i < toggleableAlnusIds.length; i++) {
+   //   var id = toggleableAlnusIds[i];
+   //   console.log(id)
+   //   var link = document.createElement('Alnus');
+   //   link.href = '#';
+   //   link.className = 'active';
+   //   link.textContent = id;
+   //   link.onclick = function(e) {
+   //     var clickedLayer = this.textContent;
+   //     e.preventDefault();
+   //     e.stopPropagation();
+   //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+   //     if (visibility === 'visible') {
+   //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+   //       this.className = '';
+   //     } else {
+   //       this.className = 'active';
+   //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+   //     }
+   //   };
+   //   var layers = document.getElementById('menu');
+   //   layers.appendChild(link);
+   // }
+   //
+
+   // var toggleableAlnusIds = ['Alnus'];
+   // for (var i = 0; i < toggleableAlnusIds.length; i++) {
+   //   var id = toggleableAlnusIds[i];
+   //   var link = document.createElement('Alnus');
+   //   link.href = '#';
+   //   link.className = 'active';
+   //   link.textContent = id;
+   //   link.onclick = function(e) {
+   //     var clickedLayer = this.textContent;
+   //     e.preventDefault();
+   //     e.stopPropagation();
+   //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+   //     if (visibility === 'visible') {
+   //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+   //       this.className = '';
+   //     } else {
+   //       this.className = 'active';
+   //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+   //     }
+   //   };
+   //   var layers = document.getElementById('menu');
+   //   layers.appendChild(link);
+   // }
+
 </script>
 
 </body>

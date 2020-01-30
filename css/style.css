@@ -2,9 +2,7 @@
 :root {
     --main-bg-color: #E9E9E9;
     --main-text-color: #494E6B;
-    --first-taxa-color:
-
-
+    --taxa-1: #900C3F;
 
 }
 
@@ -153,67 +151,46 @@ margin-top: 5px"
     border-radius: 3px;
     width: 120px;
     /* border: 1px solid rgba(0, 0, 0, 0.4); */
-    font-family: 'Open Sans', sans-serif;
-    box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
-    padding-top: 1%;
-    display: block;
-  }
-  #menu taxa {
     font-family: supria-sans, sans-serif;
     font-style: heavy;
     font-weight: 700;
     font-size: 13px;
-    color: var(--main-bg-color);
+    color: var(--main-text-color);
+    box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
+    padding-top: 1%;
     display: block;
-    margin: 0;
-    padding: 0;
+}
+
+#menu taxa {
+    display: block;
     padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, .25);
+    /* text-decoration: none; */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
     text-align: center;
-    /* box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24); */
+    box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
   }
   #menu taxa:last-child {
     border: none;
   }
+
   #menu taxa.active {
-    background-color: var(--main-bg-color);
-    color: var(--main-text-color);
-  }
-
-
-  div.foo:nth-child(7n+1) a:hover  { color: #f15123; }
-
-  #menu {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0px;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu:last-child {
-    border: none;
-  }
-  #menu:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu.active {
-    background-color: #900C3F;
     color: #f9f0e3;
   }
-  #menu.active:hover {
-    background: #914160;
+/* 
+  #menu taxa:nth-of-type(1).active {
+      background: #900C3F;
+  } */
+
+  #menu taxa.active:hover {
+    filter:brightness(125%);
   }
 
 
-  /* #menu.id {
+
+
+ /* a:hover  { color: #f15123; } */
+/*
+  #menu alnus {
     font-family: supria-sans, sans-serif;
     font-style: heavy;
     font-weight: 700;
@@ -236,10 +213,8 @@ margin-top: 5px"
   #menu alnus.active {
     background-color: #900C3F;
     color: #f9f0e3;
-  }
-  #menu.active:hover {
-    filter:brightness(125%);
-  }
+  } */
+
   /* #menu ambrosia {
     font-family: supria-sans, sans-serif;
     font-style: heavy;
