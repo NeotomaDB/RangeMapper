@@ -47,6 +47,41 @@
 }
 </style>
 
+
+<aside class=toolbox id="animation-toolbox">
+    <div class="box" id="animation-box">
+        <header>
+            <h1 id="animation-header"> Range Mapper</h1>
+        </header>
+        <section id="animation-section">
+            <p class="animation-rangebar">
+                <button id="js-play-button"><img src="images/play.png"></button>
+                <button id="js-pause-button"><img src="images/pause.png"></button>
+                <input type="range" id="js-time-range" min="0" max="1" step="0.03">
+            </p>
+        </section>
+        <br/>
+        <section id="animation-section">
+            <p class="animation-rangebar">
+                Current: <span id="js-current-time" class="open-sans"></span>
+            </p>
+        </section>
+        <section id="animation-section">
+            <span class="animation-rangebar">Duration (seconds):</span>
+                <input type="range" id="js-duration-range" min="1" max="42" step="2">
+                <span style="margin-left: 5px" class="open-sans" id="js-duration-span">10</span>
+        </section>
+    </div>
+</aside>
+
+<div id="loader">
+    <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
+        <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
+            <circle class="CDB-LoaderIcon-path" cx="25" cy="25" r="20" fill="none"></circle>
+        </svg>
+    </div>
+</div>
+
 <!-- Legend -->
 <section class="toolbox">
     <div class="box" id="legend-box">
@@ -67,32 +102,6 @@
 <div id="menu">
     <header id="legend-head-text">Taxa</header>
 </div>
-
-<aside class=toolbox id="animation-toolbox">
-    <div class="box" id="animation-box">
-        <header>
-            <h1 id="animation-header"> Range Mapper
-                <button id="js-play-button"><img src="images/play.png"></button>
-                <button id="js-pause-button"><img src="images/pause.png"></button>
-            </h1>
-        </header>
-        <section id="animation-section">
-            <p class="animation-rangebar">
-                Progress: <input type="range" id="js-progress-range" min="-18000" max="0" step="500">
-            </p>
-        </section>
-        <section id="animation-section">
-            <p class="animation-rangebar">
-                Current: <span id="js-current-time" class="open-sans"></span>
-            </p>
-        </section>
-        <section id="animation-section">
-            <p class="animation-rangebar">
-                Duration: <input type="range" id="js-duration-range" min="1" max="42" step="2">
-            </p>
-        </section>
-    </div>
-</aside>
 
 
 <script>
@@ -130,12 +139,16 @@
     //   }
     // });
     // https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
-
-
+    //
+    //
     var toggleableIds = ['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'];
-    var taxaColumns1 = ['$alnus', '$ambrosia', '$cyperaceae', '$fagus', '$picea', '$pinus', '$poaceae', '$quercus', '$tsuga', '$ulmus'];
     var taxaColumns = ['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'];
+
+
+    // var toggleableIds = ['Alnus', 'Ambrosia', 'Picea', 'Quercus', 'Tsuga', 'Ulmus'];
+    // var taxaColumns = ['alnus', 'ambrosia', 'picea', 'quercus', 'tsuga', 'ulmus'];
     var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#C7003A', '#FF8D19', '#ADD55C', '#511849', '#009973'];
+    var legendSizes = [20,50,100]
     var taxaViz = []
     var taxaLayers = []
 
@@ -154,14 +167,7 @@
             order: asc(width())`
         );
         taxaViz[i] = newViz;
-        console.log(taxaViz)
     }
-
-    const legendViz = new carto.Viz(`
-        width: ramp($legendvalues, [10, 55, 100])
-        color: opacity(white, 0)
-        strokeWidth: 0
-        `);
 
     const iceViz = new carto.Viz(`
         @duration:42
@@ -171,88 +177,115 @@
         filter: @animation
         `);
 
+    taxaViz.push(iceViz);
+    console.log(taxaViz)
+
+    const legendViz = new carto.Viz(`
+        width: ramp($legendvalues, [${legendSizes}])
+        color: opacity(white, 0)
+        strokeWidth: 0
+        `);
+
+
     for (var i = 0; i < taxaColumns.length; ++i) {
         currentViz = taxaViz[i]
         currentTaxon = toggleableIds[i]
-        console.log(currentTaxon)
         var taxaLayer = new carto.Layer(currentTaxon, pollenSource, currentViz);
         taxaLayers[i] = taxaLayer
     }
 
-    const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
     const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
-    const $progressRange = document.getElementById('js-progress-range');
+    const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
+
+    taxaLayers.push(iceLayer);
+
+    // Add layers to map
+    taxaLayers.forEach(currentLayer => {
+        currentLayer.addTo(map);
+    });
+    legendLayer.addTo(map);
+
+
     const $playButton = document.getElementById('js-play-button');
     const $pauseButton = document.getElementById('js-pause-button');
     const $durationRange = document.getElementById('js-duration-range');
+    const $timeRange = document.getElementById('js-time-range');
+    const $spanDuration = document.getElementById('js-duration-span');
     const $currentTime = document.getElementById('js-current-time');
-        // Links animations to control elements
-        // Create a listener for every animation layer you build
-        for (var i = 0; i < taxaColumns.length; ++i) {
-            currentViz = taxaViz[i];
-            $playButton.addEventListener('click', () => {
-                currentViz.variables.animation.play();
-                iceViz.variables.animation.play();
-            });
+    const $progressRange = document.getElementById('js-progress-range');
 
-            $pauseButton.addEventListener('click', () => {
-                currentViz.variables.animation.pause();
-                iceViz.variables.animation.pause();
-            });
 
-            $durationRange.addEventListener('change', () => {
-                currentViz.variables.duration = parseInt($durationRange.value, 10);
-                iceViz.variables.duration = parseInt($durationRange.value, 10);
-            });
-            $progressRange.addEventListener('change', () => {
-                currentViz.variables.animation.setProgressPct($progressRange.value);
-                iceViz.variables.animation.setProgressPct($progressRange.value);
-            });
-            // layer.on('updated', () => {
-            //     $progressRange.value = currentViz.variables.animation.getProgressPct();
-            //     $progressRange.value = iceViz.variables.animation.getProgressPct();
-            // });
-            //Adds progress bar interactivity
-            $progressRange.addEventListener('change', () => {
-                currentViz.variables.animation.setCurrent($progressRange.value);
-                iceViz.variables.animation.setCurrent($progressRange.value);
-            });
-            //Updates progress bar and current time reader each 100 milliseconds with integer values
-            function updateProgress() {
-                $progressRange.value = currentViz.variables.animation.getProgressValue();
-                $progressRange.value = iceViz.variables.animation.getProgressValue();
-                $currentTime.innerText = parseInt(currentViz.variables.animation.getProgressValue());
-                $currentTime.innerText = parseInt(iceViz.variables.animation.getProgressValue());
-            }
+    // Save initial time range value
+    let last = $timeRange.value;
 
-            // layer.on('updated', () => {
-            //     $progressRange.value = currentViz.variables.animation.getProgressValue();
-            //     $progressRange.value = iceViz.variables.animation.getProgressValue();
-            // });
-        };
-        setInterval(updateProgress, 100);
-
-        for (var i = 0; i < taxaColumns.length; ++i) {
-            currentLayer = taxaLayers[i];
-            currentLayer.addTo(map);
-        }
-        legendLayer.addTo(map);
-        iceLayer.addTo(map);
-        // When layer loads, trigger legend event
-        legendLayer.on('loaded', () => {
-            // Request data for legend from the layer viz
-            const widthLegend = legendLayer.viz.width.getLegendData({
-                samples: 3
-            });
-            let widthLegendList = '';
-            // Create list elements for legend
-            widthLegend.data.forEach((legend, index) => {
-                widthLegendList +=
-                `<li><div class="circle" id="circle${legend.value}" style="width:${legend.value}px; height:${legend.value}px;"></div> ${legend.key.toFixed(0)}</li>`;
-            });
-            // Place list items in the content section of the title/legend box
-            document.getElementById('content').innerHTML = widthLegendList;
+    // Listen to interaction events
+    $durationRange.addEventListener('change', () => {
+        const duration = parseInt($durationRange.value, 10);
+        taxaViz.forEach(currentViz => {
+            // Update animation duration
+            currentViz.variables.duration = $spanDuration.innerHTML = duration
         });
+    });
+
+    $playButton.addEventListener('click', () => {
+        taxaViz.forEach(currentViz => {
+            // Play the animation
+            currentViz.variables.animation.play();
+        });
+    });
+
+    $pauseButton.addEventListener('click', () => {
+        taxaViz.forEach(currentViz => {
+            // Pause animation
+            currentViz.variables.animation.pause();
+        });
+    });
+
+    $timeRange.addEventListener('change', () => {
+        taxaViz.forEach(currentViz => {
+            // Update animation progress
+            currentViz.variables.animation.setProgressPct($timeRange.value);
+        });
+        last = $timeRange.value
+    });
+
+    // Listen to layer events
+    taxaLayers[0].on('updated', () => {
+        if ($timeRange.value == last) {
+            $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
+            last = $timeRange.value;
+        }
+        $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
+    });
+
+        taxaLayers[0].on('loaded', hideLoader);
+
+        // iceLayer.addTo(map);
+        // When layer loads, trigger legend event
+        // legendLayer.on('loaded', () => {
+        //     // Request data for legend from the layer viz
+        //     const widthLegend = legendLayer.viz.width.getLegendData({
+        //         samples: 3
+        //     });
+        //     let widthLegendList = '';
+        //     // Create list elements for legend
+        //     widthLegend.data.forEach((legend, index) => {
+        //         widthLegendList +=
+        //         `<li><div class="circle" id="circle${legend.value}" style="width:${legend.value}px; height:${legend.value}px;"></div> ${legend.key.toFixed(0)}</li>`;
+        //     });
+        //     // Place list items in the content section of the title/legend box
+        //     document.getElementById('content').innerHTML = widthLegendList;
+        // });
+
+        let widthLegendList = '';
+        legendSizes.forEach(currentSize => {
+            widthLegendList +=
+            `<li><div class="circle" id="circle${currentSize}" style="width:${currentSize}px; height:${currentSize}px;"></div> ${currentSize.toFixed(0)}</li>`;
+        });
+        // Place list items in the content section of the title/legend box
+        document.getElementById('content').innerHTML = widthLegendList;
+
+
 
         for (var i = 0; i < toggleableIds.length; i++) {
             var id = toggleableIds[i];
@@ -277,33 +310,7 @@
             var layers = document.getElementById('menu');
             layers.appendChild(link);
         }
-
-
-        // var toggleableAlnusIds = ['Alnus', 'Ambrosia'];
-        // for (var i = 0; i < toggleableAlnusIds.length; i++) {
-        //   var id = toggleableAlnusIds[i];
-        //   console.log(id)
-        //   var link = document.createElement('Alnus');
-        //   link.href = '#';
-        //   link.className = 'active';
-        //   link.textContent = id;
-        //   link.onclick = function(e) {
-        //     var clickedLayer = this.textContent;
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-        //     if (visibility === 'visible') {
-        //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        //       this.className = '';
-        //     } else {
-        //       this.className = 'active';
-        //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        //     }
-        //   };
-        //   var layers = document.getElementById('menu');
-        //   layers.appendChild(link);
-        // }
-        //
+// this.style.backgroundColor = taxonColor
 
         // var toggleableAlnusIds = ['Alnus'];
         // for (var i = 0; i < toggleableAlnusIds.length; i++) {
@@ -328,6 +335,10 @@
         //   var layers = document.getElementById('menu');
         //   layers.appendChild(link);
         // }
+
+        function hideLoader() {
+            document.getElementById('loader').style.opacity = '0';
+        }
 
         </script>
 
