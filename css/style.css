@@ -72,11 +72,11 @@
 }
 
 #circle50{
-    left: 32px;
+    left: 36px;
 }
 
 #circle20{
-    left: 55px;
+    left: 52px;
 }
 
 #logo-div {
@@ -189,8 +189,8 @@ margin-top: 5px"
 
 
  /* a:hover  { color: #f15123; } */
-/*
-  #menu alnus {
+
+  /* #menu alnus {
     font-family: supria-sans, sans-serif;
     font-style: heavy;
     font-weight: 700;
@@ -213,9 +213,9 @@ margin-top: 5px"
   #menu alnus.active {
     background-color: #900C3F;
     color: #f9f0e3;
-  } */
+  }
 
-  /* #menu ambrosia {
+  #menu ambrosia {
     font-family: supria-sans, sans-serif;
     font-style: heavy;
     font-weight: 700;

@@ -62,14 +62,13 @@
         </section>
         <br/>
         <section id="animation-section">
-            <p class="animation-rangebar">
-                Current: <span id="js-current-time" class="open-sans"></span>
+            <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
             </p>
         </section>
         <section id="animation-section">
             <span class="animation-rangebar">Duration (seconds):</span>
                 <input type="range" id="js-duration-range" min="1" max="42" step="2">
-                <span style="margin-left: 5px" class="open-sans" id="js-duration-span">10</span>
+                <span style="margin-left: 5px" class="open-sans" id="js-duration-span"><p id = durationid></p></span>
         </section>
     </div>
 </aside>
@@ -147,6 +146,10 @@
 
     // var toggleableIds = ['Alnus', 'Ambrosia', 'Picea', 'Quercus', 'Tsuga', 'Ulmus'];
     // var taxaColumns = ['alnus', 'ambrosia', 'picea', 'quercus', 'tsuga', 'ulmus'];
+    var initialDuration = 31.5
+    document.getElementById('durationid').innerHTML = initialDuration;
+
+
     var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#C7003A', '#FF8D19', '#ADD55C', '#511849', '#009973'];
     var legendSizes = [20,50,100]
     var taxaViz = []
@@ -157,8 +160,8 @@
         taxaColor  = taxaColors[i]
         // taxaVizName = taxaVizNames[i]
         var newViz = new carto.Viz(`
-            @duration:42,
-            @animation: animation($time, @duration, fade(4,6)),
+            @duration: ${initialDuration},
+            @animation: animation($time, @duration, fade(${initialDuration}/21,${initialDuration}/15.5)),
             color: opacity(${taxaColor},0.4)
             strokeColor: opacity(${taxaColor},0.2)
             width: ${taxaColumn}
@@ -170,7 +173,7 @@
     }
 
     const iceViz = new carto.Viz(`
-        @duration:42
+        @duration:${initialDuration}
         @animation: animation($age,@duration, fade(hold,.15))
         color: opacity(#99daf2,1)
         strokeWidth: 0
@@ -220,7 +223,7 @@
 
     // Listen to interaction events
     $durationRange.addEventListener('change', () => {
-        const duration = parseInt($durationRange.value, 10);
+        const duration = parseInt($durationRange.value, initialDuration);
         taxaViz.forEach(currentViz => {
             // Update animation duration
             currentViz.variables.duration = $spanDuration.innerHTML = duration
@@ -291,6 +294,7 @@
             var id = toggleableIds[i];
             var taxonColor = taxaColors[i];
             var link = document.createElement('taxa');
+            link.style.backgroundColor = taxonColor;
             link.href = '#';
             link.className = 'active';
             link.textContent = id;
@@ -301,10 +305,12 @@
                 var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
                 if (visibility === 'visible') {
                     map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                    this.style.backgroundColor = '#E9E9E9';
                     this.className = '';
                 } else {
-                    map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
                     this.className = 'active'
+                    this.style.backgroundColor = taxonColor;
+                    map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
                 }
             };
             var layers = document.getElementById('menu');
