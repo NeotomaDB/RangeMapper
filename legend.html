@@ -32,7 +32,7 @@
     background-color: #d2eaef;
     opacity: 0.8;
     position: absolute;
-    top: 10px;
+    top: -10px;
     left: 30%;
     width: auto;
     height: auto;
@@ -54,19 +54,21 @@
             <h1 id="animation-header"> Range Mapper</h1>
         </header>
         <section id="animation-section">
-            <p class="animation-rangebar">
+          <class="animation-rangebar">
                 <button id="js-play-button"><img src="images/play.png"></button>
                 <button id="js-pause-button"><img src="images/pause.png"></button>
-                <input type="range" id="js-time-range" min="0" max="1" step="0.03">
-            </p>
         </section>
-        <br/>
+        <section id="animation-section">
+          <p class="animation-rangebar">
+            Progress: <input type="range" id="js-time-range" min="0" max="1" step="0.03">
+          </p>
+          </section>
         <section id="animation-section">
             <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
             </p>
         </section>
         <section id="animation-section">
-            <span class="animation-rangebar">Duration (seconds):</span>
+            <span class="animation-rangebar">Duration:</span>
                 <input type="range" id="js-duration-range" min="1" max="42" step="2">
                 <span style="margin-left: 5px" class="open-sans" id="js-duration-span"><p id = durationid></p></span>
         </section>
@@ -253,15 +255,15 @@
     });
 
     // Listen to layer events
-    taxaLayers[0].on('updated', () => {
+    taxaLayers[i].on('updated', () => {
         if ($timeRange.value == last) {
-            $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
+            $timeRange.value = taxaViz[i].variables.animation.getProgressPct();
             last = $timeRange.value;
         }
-        $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
+        $currentTime.innerText = parseInt(taxaViz[i].variables.animation.getProgressValue());
     });
 
-        taxaLayers[0].on('loaded', hideLoader);
+        taxaLayers[i].on('loaded', hideLoader);
 
         // iceLayer.addTo(map);
         // When layer loads, trigger legend event
