@@ -65,6 +65,7 @@
     border: 1px var(--main-text-color) solid;
     bottom: 10%;
     color: var(--main-text-color);
+    background-color: 0.4
 }
 
 #circle100{
