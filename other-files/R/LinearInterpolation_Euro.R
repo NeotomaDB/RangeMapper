@@ -56,7 +56,10 @@ interp_dl <- data.frame(comp_dl[,1:10],
                         picea = rowSums(comp_dl[, grep("Picea*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         quercus = rowSums(comp_dl[, grep("Quercus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts) %>%
   group_by(time, lat, long, site.name) %>%
-  summarize( fagus = mean ( fagus) * 100, alnus = mean ( alnus) * 100, picea = mean (picea) * 100, quercus = mean (quercus) * 100)
+  summarize( Fagus = mean ( fagus) * 100, 
+             Alnus = mean ( alnus) * 100, 
+             Picea = mean (picea) * 100, 
+             Quercus = mean (quercus) * 100)
 
 # Removes any observations from over 21,000 years ago
 timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
@@ -68,8 +71,8 @@ final_output$legendvalues = legendvalues
 
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
-write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Eur.csv")
-inputPollen <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Eur.csv"
+write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_Eur.csv")
+inputPollen <- "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_Eur.csv"
 
 
 #writeLines(addresses, addressFile)

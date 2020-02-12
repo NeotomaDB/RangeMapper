@@ -55,11 +55,11 @@ interp_dl <- data.frame(comp_dl[,1:10],
                         #callitris = rowSums(comp_dl[, grep("Callitris*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         phyllocladus = rowSums(comp_dl[, grep("Phyllocladus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts) %>%
   group_by(time, lat, long, site.name) %>%
-  summarize( nothofagus = mean ( nothofagus) * 100, 
-             phyllocladus = mean ( phyllocladus) * 100, 
-             casuarina = mean (casuarina) * 100, 
+  summarize( Nothofagus = mean ( nothofagus) * 100, 
+             Phyllocladus = mean ( phyllocladus) * 100, 
+             Casuarina = mean (casuarina) * 100, 
             # callitris = mean (callitris) * 100, 
-             eucalyptus = mean (eucalyptus) * 100)
+             Eucalyptus = mean (eucalyptus) * 100)
 
 # Removes any observations from over 21,000 years ago
 timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
@@ -72,8 +72,8 @@ final_output$legendvalues = legendvalues
 # Writes CSV file
 # Specify location of file via file path, i.e. file = "home/Code/CartoInputFile"
 
-write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Aus.csv")
-inputFile <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_Aus.csv"
+write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus.csv")
+inputFile <- "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus.csv"
 
 
 #This section posts the file you just created and saved locally to R
