@@ -61,16 +61,16 @@ interp_dl <- data.frame(comp_dl[,1:10],
                         cyperaceae = rowSums(comp_dl[, grep("Cyperaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
                         poaceae = rowSums(comp_dl[, grep("Poaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts)%>%
   group_by(time, lat, long, site.name) %>%
-  summarize( alnus = mean ( alnus) * 100, 
-             fagus = mean ( fagus) * 100, 
-             picea = mean ( picea) * 100,
-             pinus = mean ( pinus) * 100, 
-             quercus = mean (quercus) * 100, 
-             tsuga = mean (tsuga) * 100,
-             ulmus = mean ( ulmus) * 100,
-             ambrosia = mean ( ambrosia) * 100, 
-             cyperaceae = mean ( cyperaceae) * 100,
-             poaceae = mean ( poaceae) * 100)
+  summarize( Alnus = mean ( alnus) * 100, 
+             Fagus = mean ( fagus) * 100, 
+             Picea = mean ( picea) * 100,
+             Pinus = mean ( pinus) * 100, 
+             Quercus = mean (quercus) * 100, 
+             Tsuga = mean (tsuga) * 100,
+             Ulmus = mean ( ulmus) * 100,
+             Ambrosia = mean ( ambrosia) * 100, 
+             Cyperaceae = mean ( cyperaceae) * 100,
+             Poaceae = mean ( poaceae) * 100)
 
 # Add blank legendvalues column
 legendvalues <- rep(0,length.out = nrow(interp_dl))
@@ -102,9 +102,9 @@ final_output$legendvalues = legendvalues
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
 
-write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv")
-inputPollen <- "~/Desktop/Github/CartoAnimations/CSVs/CartoInput_NA.csv"
-inputIcesheets <- "~/Desktop/Github/CartoAnimations/html/icesheets.geojson"
+write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_NA.csv")
+inputPollen <- "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_NA.csv"
+inputIcesheets <- "~/Desktop/Github/CartoAnimations/other-files/old-carto-html/icesheets.geojson"
 
 # This section posts the file you just created and saved locally to R
 # This needs 
