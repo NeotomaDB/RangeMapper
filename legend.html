@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="https://libs.cartocdn.com/carto-vl/v1.4.1/carto-vl.min.js"></script>
+    <script src="https://libs.cartocdn.com/carto-vl/v1.4.4/carto-vl.min.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
     <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
@@ -20,12 +20,12 @@
     <div id="map"></div>
 
     <!-- dropdown selector -->
-    <!-- <div id="wraper-dropdown-selector">
-    <select id="js-dropdown-selector">
-    <option value="northamerica" selected>North America</option>
-    <option value="europe">Europe</option>
-</select>
-</div> -->
+    <div id="wraper-dropdown-selector">
+        <select id="js-dropdown-selector">
+            <option value="northamerica">North America</option>
+            <option value="europe">Europe</option>
+        </select>
+    </div>
 
 <style>
 #wraper-dropdown-selector {
@@ -119,24 +119,23 @@
     });
 
 
-    const pollenSource = new carto.source.Dataset("cartoinput_na_3");
+    var pollenSource = new carto.source.Dataset("cartoinput_na_3");
     const iceSource = new carto.source.Dataset('icesheets');
 
-    // function updateSource() {
-    //
-    // const selector = document.getElementById("js-dropdown-selector");
-    //   console.log(selector);
-    // // change sql query with dropdown value
-    // selector.on('change', function(e) {
-    //   let value = e.target.value;
-    //
-    //   if (value == 'northamerica') {
-    //     carto.source.Dataset(`cartoinput_na_3`);
-    //   }
-    //   else if (value == 'europe') {
-    //       carto.source.Dataset(`cartoinputeuro`);
-    //   }
-    // });
+    function updateSource() {
+        const selector = document.getElementById("js-dropdown-selector");
+        console.log(selector);
+        // change sql query with dropdown value
+        selector.on('change', function(e) {
+            let value = e.target.value;
+            if (value == 'northamerica') {
+                var pollenSource = carto.source.Dataset(`cartoinput_na_3`);
+            }
+            else if (value == 'europe') {
+              var pollenSource  = carto.source.Dataset(`cartoinputeuro`);
+            }
+        })
+    };
     // https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
     //
     //
@@ -208,7 +207,6 @@
     });
     legendLayer.addTo(map);
 
-
     const $playButton = document.getElementById('js-play-button');
     const $pauseButton = document.getElementById('js-pause-button');
     const $durationRange = document.getElementById('js-duration-range');
@@ -261,7 +259,7 @@
         $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
     });
 
-        taxaLayers[0].on('loaded', hideLoader);
+        legendLayer.on('loaded', hideLoader);
 
         // iceLayer.addTo(map);
         // When layer loads, trigger legend event
@@ -318,35 +316,17 @@
             var layers = document.getElementById('menu');
             layers.appendChild(link);
         }
-// this.style.backgroundColor = taxonColor
 
-        // var toggleableAlnusIds = ['Alnus'];
-        // for (var i = 0; i < toggleableAlnusIds.length; i++) {
-        //   var id = toggleableAlnusIds[i];
-        //   var link = document.createElement('Alnus');
-        //   link.href = '#';
-        //   link.className = 'active';
-        //   link.textContent = id;
-        //   link.onclick = function(e) {
-        //     var clickedLayer = this.textContent;
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        //     var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-        //     if (visibility === 'visible') {
-        //       map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        //       this.className = '';
-        //     } else {
-        //       this.className = 'active';
-        //       map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        //     }
-        //   };
-        //   var layers = document.getElementById('menu');
-        //   layers.appendChild(link);
+        // for (var i = 1; i < taxaLayers.length; i++) {
+        //     taxonLayer = taxaLayers[i]
+        //     console.log(taxa)
+        //     taxonLayer.hide();
         // }
 
         function hideLoader() {
             document.getElementById('loader').style.opacity = '0';
         }
+
 
         </script>
 
