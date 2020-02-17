@@ -24,6 +24,7 @@
         <select id="js-dropdown-selector">
             <option value="northamerica">North America</option>
             <option value="europe">Europe</option>
+            <option value="australia">Australia</option>
         </select>
     </div>
 
@@ -122,92 +123,139 @@
 
 
     var pollenSource = new carto.source.Dataset("cartoinput_na_3");
-    const iceSource = new carto.source.Dataset('icesheets');
+    var iceSource = new carto.source.Dataset('icesheets');
 
-    function updateSource() {
+    // function updateSource() {
         const selector = document.getElementById("js-dropdown-selector");
-        console.log(selector);
-        // change sql query with dropdown value
-        selector.on('change', function(e) {
-            let value = e.target.value;
-            if (value == 'northamerica') {
-                var pollenSource = carto.source.Dataset(`cartoinput_na_3`);
-            }
-            else if (value == 'europe') {
-              var pollenSource  = carto.source.Dataset(`cartoinputeuro`);
-            }
-        })
-    };
+        selector.addEventListener("change", setContinent);
+
+    // };
+
+    // var continent = document.getElementById('js-dropdown-selector');
+    //
+    // continent.addEventListener("change", setContinent);
+
+    //
+    // function setContinent() {
+    //     if continent.value = northamerica {
+    //         pollenSource
+    //     }
+    //
+
+    // }
+
+
     // https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
     //
     //
-    var toggleableIds = ['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'];
-    var taxaColumns = ['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'];
 
+    var continents = ['northamerica', 'europe', 'australia']
+    var contSource = [`cartoinput_na_3`, `cartoinputeuro`, `cartoinput_aus_2`];
+    var contIDs = [['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'],
+                ['Alnus', 'Fagus', 'Picea', 'Quercus'], ['Casuarina', 'Eucalyptus', 'Nothofagus', 'Phyllocladus']];
+    var contColumns = [['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'],
+                ['alnus', 'fagus', 'picea', 'quercus'],['casuarina', 'eucalyptus', 'nothofagus', 'phyllocladus']];
+    var conticeSource = ['icesheets','icev8',]
+    var continentArr = []
 
-    // var toggleableIds = ['Alnus', 'Ambrosia', 'Picea', 'Quercus', 'Tsuga', 'Ulmus'];
-    // var taxaColumns = ['alnus', 'ambrosia', 'picea', 'quercus', 'tsuga', 'ulmus'];
-    var initialDuration = 31.5
-    document.getElementById('durationid').innerHTML = initialDuration;
-
+    for (var i = 0; i < continents.length; i++){
+        continentArr[i] = [continents[i], contSource[i], contIDs[i], contColumns[i], conticeSource[i]]
+    }
 
     var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#C7003A', '#FF8D19', '#ADD55C', '#511849', '#009973'];
     var legendSizes = [20,50,100]
+    var initialDuration = 31.5
+    document.getElementById('durationid').innerHTML = initialDuration;
+    var allViz = []
+    var allLayers = []
     var taxaViz = []
     var taxaLayers = []
+    var currentTaxaViz = []
+    var currentTaxaLayers = []
 
-    for (var i = 0; i < taxaColumns.length; ++i) {
-        taxaColumn = '$' + taxaColumns[i]
-        taxaColor  = taxaColors[i]
-        // taxaVizName = taxaVizNames[i]
-        var newViz = new carto.Viz(`
-            @duration: ${initialDuration},
-            @animation: animation($time, @duration, fade(${initialDuration}/21,${initialDuration}/15.5)),
-            color: opacity(${taxaColor},0.4)
-            strokeColor: opacity(${taxaColor},0.2)
-            width: ${taxaColumn}
+    // continentArr.forEach(continent => {
+    for (var i = 0; i < continentArr.length; i++){
+        continent = continentArr[i];
+        var continentName = continent[0];
+        var pollenSource = new carto.source.Dataset(continent[1]);
+        var toggleableIds = continent[2];
+        var taxaColumns = continent[3];
+        createViz();
+        createLayer();
+        // if (continentName == 'northamerica' || continentName == 'europe'){
+        if (continentName == 'northamerica'){
+            var iceSource = new carto.source.Dataset(continent[4]);
+            iceViz = createIceViz();
+            currentTaxaViz.push(iceViz);
+            const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
+            currentTaxaLayers.push(iceLayer);
+        }
+        allViz[i] = currentTaxaViz;
+        allLayers[i] = currentTaxaLayers;
+    };
+
+    function createViz(){
+        for (var i = 0; i < taxaColumns.length; ++i) {
+            taxaColumn = '$' + taxaColumns[i]
+            taxaColor  = taxaColors[i]
+            var newViz = new carto.Viz(`
+                @duration: ${initialDuration},
+                @animation: animation($time, @duration, fade(${initialDuration}/21,${initialDuration}/15.5)),
+                color: opacity(${taxaColor},0.4)
+                strokeColor: opacity(${taxaColor},0.2)
+                width: ${taxaColumn}
+                filter: @animation
+                strokeWidth: ${taxaColumn}/30 * @animation
+                order: asc(width())`
+            );
+            currentTaxaViz[i] = newViz;
+        }
+        console.log(currentTaxaViz)
+        return currentTaxaViz
+    }
+
+    function createIceViz(){
+        var iceViz = new carto.Viz(`
+            @duration:${initialDuration}
+            @animation: animation($age,@duration, fade(hold,.15))
+            color: opacity(#99daf2,1)
+            strokeWidth: 0
             filter: @animation
-            strokeWidth: ${taxaColumn}/30 * @animation
-            order: asc(width())`
-        );
-        taxaViz[i] = newViz;
+            `);
+        return iceViz
     }
 
-    const iceViz = new carto.Viz(`
-        @duration:${initialDuration}
-        @animation: animation($age,@duration, fade(hold,.15))
-        color: opacity(#99daf2,1)
-        strokeWidth: 0
-        filter: @animation
-        `);
-
-    taxaViz.push(iceViz);
-    console.log(taxaViz)
-
-    const legendViz = new carto.Viz(`
-        width: ramp($legendvalues, [${legendSizes}])
-        color: opacity(white, 0)
-        strokeWidth: 0
-        `);
+        function createLayer(){
+            for (var i = 0; i < taxaColumns.length; ++i) {
+                currentViz = currentTaxaViz[i]
+                currentTaxon = toggleableIds[i]
+                var currentLayer = new carto.Layer(currentTaxon, pollenSource, currentViz);
+                currentTaxaLayers[i] = currentLayer
+            }
+            return currentTaxaLayers
+        }
 
 
-    for (var i = 0; i < taxaColumns.length; ++i) {
-        currentViz = taxaViz[i]
-        currentTaxon = toggleableIds[i]
-        var taxaLayer = new carto.Layer(currentTaxon, pollenSource, currentViz);
-        taxaLayers[i] = taxaLayer
-    }
-
-    const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
-    const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
-
-    taxaLayers.push(iceLayer);
-
+    var taxaViz = allViz[0]
+    var taxaLayers = allLayers[0]
+    console.log(taxaLayers)
     // Add layers to map
     taxaLayers.forEach(currentLayer => {
         currentLayer.addTo(map);
     });
-    legendLayer.addTo(map);
+
+
+
+    // const legendViz = new carto.Viz(`
+    //     width: ramp($legendvalues, [${legendSizes}])
+    //     color: opacity(white, 0)
+    //     strokeWidth: 0
+    //     `);
+    // const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
+    // legendLayer.addTo(map);
+
+
+
 
     const $playButton = document.getElementById('js-play-button');
     const $pauseButton = document.getElementById('js-pause-button');
@@ -261,7 +309,7 @@
         $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
     });
 
-        legendLayer.on('loaded', hideLoader);
+        taxaLayers[0].on('loaded', hideLoader);
 
         // iceLayer.addTo(map);
         // When layer loads, trigger legend event
@@ -318,6 +366,33 @@
             var layers = document.getElementById('menu');
             layers.appendChild(link);
         }
+
+        // change sql query with dropdown value
+        function setContinent(taxaLayers) {
+            console.log(taxaLayers)
+            taxaLayers.forEach(currentLayer => {
+                currentLayer.remove();
+            });
+            if (selector.value == 'northamerica') {
+                // var toggleableIds = ['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'];
+                // var taxaColumns = ['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'];
+                var taxaViz = allViz[0]
+                var taxaLayers = allLayers[0]
+                // createViz();
+                // createLayer();
+            }
+            else if (selector.value == 'europe') {
+                var taxaViz = allViz[1]
+                var taxaLayers = allLayers[1]
+            }
+            else if (selector.value == 'australia') {
+                var taxaViz = allViz[2]
+                var taxaLayers = allLayers[2]
+            }
+            taxaLayers.forEach(currentLayer => {
+                currentLayer.addTo(map);
+            });
+        };
 
         // for (var i = 1; i < taxaLayers.length; i++) {
         //     taxonLayer = taxaLayers[i]
