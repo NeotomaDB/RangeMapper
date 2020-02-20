@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Range Mapper | North America</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://libs.cartocdn.com/carto-vl/v1.4.4/carto-vl.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
+    <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
+    <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Map div -->
+    <div id="map"></div>
+
+    <!-- dropdown selector -->
+    <div id="wraper-dropdown-selector">
+        <select id="js-dropdown-selector">
+            <option value="northamerica">North America</option>
+            <option value="europe">Europe</option>
+            <option value="australia">Australia</option>
+        </select>
+    </div>
+
+<style>
+#wraper-dropdown-selector {
+    background-color: #d2eaef;
+    opacity: 0.8;
+    position: absolute;
+    top: 10px;
+    left: 30%;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    display: block;
+    z-index: 9000;
+
+}
+
+#js-dropdown-selector input {
+    width: 200px;
+}
+</style>
+
+
+<aside class=toolbox id="animation-toolbox">
+    <div class="box" id="animation-box">
+        <header>
+            <h1 id="animation-header"> Range Mapper</h1>
+        </header>
+        <section id="animation-section">
+            <p class="animation-rangebar">
+                <button id="js-play-button"><img src="images/play.png"></button>
+                <button id="js-pause-button"><img src="images/pause.png"></button>
+                <input type="range" id="js-time-range" min="0" max="1" step="0.03">
+            </p>
+        </section>
+        <br/>
+        <section id="animation-section">
+            <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
+            </p>
+        </section>
+        <section id="animation-section">
+            <span class="animation-rangebar">Duration (seconds):</span>
+                <input type="range" id="js-duration-range" min="1" max="42" step="2">
+                <span style="margin-left: 5px" class="open-sans" id="js-duration-span"><p id = durationid></p></span>
+        </section>
+    </div>
+</aside>
+
+<div id="loader">
+    <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
+        <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
+            <circle class="CDB-LoaderIcon-path" cx="25" cy="25" r="20" fill="none"></circle>
+        </svg>
+    </div>
+</div>
+
+<!-- Legend -->
+<section class="toolbox">
+    <div class="box" id="legend-box">
+        <header id="legend-head-text">
+            <div>Percent Abundance</div>
+        </header>
+        <!-- Add legend data -->
+        <!-- <section class="legend-section"> -->
+        <div id="controls" class="legend-controls">
+            <ul id="content" class="legend-content"> </ul>
+        </div>
+        <div id="logo-div"> <img id="neotoma-logo" src="images/neotoma.jpeg" alt="neotoma">
+        </div>
+    </div>
+</section>
+
+
+<div id="menu">
+    <header id="legend-head-text">Taxa</header>
+</div>
+
+
+<script>
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: carto.basemaps.positron,
+        center: [-96, 41],
+        zoom: 3
+    });
+    // const nav = new mapboxgl.NavigationControl({
+    //     showCompass: false
+    const nav = new mapboxgl.NavigationControl();
+     map.addControl(nav, 'top-right');
+    // });
+    carto.setDefaultAuth({
+        username: 'widell',
+        apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
+    });
+
+
+    var pollenSource = new carto.source.Dataset("cartoinput_na_3");
+    var iceSource = new carto.source.Dataset('icesheets');
+
+    // function updateSource() {
+        const selector = document.getElementById("js-dropdown-selector");
+        selector.addEventListener("change", setContinent);
+
+    // };
+
+    // var continent = document.getElementById('js-dropdown-selector');
+    //
+    // continent.addEventListener("change", setContinent);
+
+    //
+    // function setContinent() {
+    //     if continent.value = northamerica {
+    //         pollenSource
+    //     }
+    //
+
+    // }
+
+
+    // https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
+    //
+    //
+
+    var continents = ['northamerica', 'europe', 'australia']
+    var contSource = [`cartoinput_na_3`, `cartoinputeuro`, `cartoinput_aus_2`];
+    var contIDs = [['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'],
+                ['Alnus', 'Fagus', 'Picea', 'Quercus'], ['Casuarina', 'Eucalyptus', 'Nothofagus', 'Phyllocladus']];
+    var contColumns = [['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'],
+                ['alnus', 'fagus', 'picea', 'quercus'],['casuarina', 'eucalyptus', 'nothofagus', 'phyllocladus']];
+    var conticeSource = ['icesheets','icev8',]
+    var continentArr = []
+
+    for (var i = 0; i < continents.length; i++){
+        continentArr[i] = [continents[i], contSource[i], contIDs[i], contColumns[i], conticeSource[i]]
+    }
+
+    var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#C7003A', '#FF8D19', '#ADD55C', '#511849', '#009973'];
+    var legendSizes = [20,50,100]
+    var initialDuration = 31.5
+    document.getElementById('durationid').innerHTML = initialDuration;
+    var allViz = []
+    var allLayers = []
+    var taxaViz = []
+    var taxaLayers = []
+    var currentTaxaViz = []
+    var currentTaxaLayers = []
+
+    // continentArr.forEach(continent => {
+    for (var i = 0; i < continentArr.length; i++){
+        continent = continentArr[i];
+        var continentName = continent[0];
+        var pollenSource = new carto.source.Dataset(continent[1]);
+        var toggleableIds = continent[2];
+        var taxaColumns = continent[3];
+        createViz();
+        createLayer();
+        // if (continentName == 'northamerica' || continentName == 'europe'){
+        if (continentName == 'northamerica'){
+            var iceSource = new carto.source.Dataset(continent[4]);
+            iceViz = createIceViz();
+            currentTaxaViz.push(iceViz);
+            const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
+            currentTaxaLayers.push(iceLayer);
+        }
+        allViz[i] = currentTaxaViz;
+        allLayers[i] = currentTaxaLayers;
+    };
+
+    function createViz(){
+        for (var i = 0; i < taxaColumns.length; ++i) {
+            taxaColumn = '$' + taxaColumns[i]
+            taxaColor  = taxaColors[i]
+            var newViz = new carto.Viz(`
+                @duration: ${initialDuration},
+                @animation: animation($time, @duration, fade(${initialDuration}/21,${initialDuration}/15.5)),
+                color: opacity(${taxaColor},0.4)
+                strokeColor: opacity(${taxaColor},0.2)
+                width: ${taxaColumn}
+                filter: @animation
+                strokeWidth: ${taxaColumn}/30 * @animation
+                order: asc(width())`
+            );
+            currentTaxaViz[i] = newViz;
+        }
+        console.log(currentTaxaViz)
+        return currentTaxaViz
+    }
+
+    function createIceViz(){
+        var iceViz = new carto.Viz(`
+            @duration:${initialDuration}
+            @animation: animation($age,@duration, fade(hold,.15))
+            color: opacity(#99daf2,1)
+            strokeWidth: 0
+            filter: @animation
+            `);
+        return iceViz
+    }
+
+        function createLayer(){
+            for (var i = 0; i < taxaColumns.length; ++i) {
+                currentViz = currentTaxaViz[i]
+                currentTaxon = toggleableIds[i]
+                var currentLayer = new carto.Layer(currentTaxon, pollenSource, currentViz);
+                currentTaxaLayers[i] = currentLayer
+            }
+            return currentTaxaLayers
+        }
+
+
+    var taxaViz = allViz[0]
+    var taxaLayers = allLayers[0]
+    console.log(taxaLayers)
+    // Add layers to map
+    taxaLayers.forEach(currentLayer => {
+        currentLayer.addTo(map);
+    });
+
+
+
+    // const legendViz = new carto.Viz(`
+    //     width: ramp($legendvalues, [${legendSizes}])
+    //     color: opacity(white, 0)
+    //     strokeWidth: 0
+    //     `);
+    // const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
+    // legendLayer.addTo(map);
+
+
+
+
+    const $playButton = document.getElementById('js-play-button');
+    const $pauseButton = document.getElementById('js-pause-button');
+    const $durationRange = document.getElementById('js-duration-range');
+    const $timeRange = document.getElementById('js-time-range');
+    const $spanDuration = document.getElementById('js-duration-span');
+    const $currentTime = document.getElementById('js-current-time');
+    const $progressRange = document.getElementById('js-progress-range');
+
+
+    // Save initial time range value
+    let last = $timeRange.value;
+
+    // Listen to interaction events
+    $durationRange.addEventListener('change', () => {
+        const duration = parseInt($durationRange.value, initialDuration);
+        taxaViz.forEach(currentViz => {
+            // Update animation duration
+            currentViz.variables.duration = $spanDuration.innerHTML = duration
+        });
+    });
+
+    $playButton.addEventListener('click', () => {
+        taxaViz.forEach(currentViz => {
+            // Play the animation
+            currentViz.variables.animation.play();
+        });
+    });
+
+    $pauseButton.addEventListener('click', () => {
+        taxaViz.forEach(currentViz => {
+            // Pause animation
+            currentViz.variables.animation.pause();
+        });
+    });
+
+    $timeRange.addEventListener('change', () => {
+        taxaViz.forEach(currentViz => {
+            // Update animation progress
+            currentViz.variables.animation.setProgressPct($timeRange.value);
+        });
+        last = $timeRange.value
+    });
+
+    // Listen to layer events
+    taxaLayers[0].on('updated', () => {
+        if ($timeRange.value == last) {
+            $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
+            last = $timeRange.value;
+        }
+        $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
+    });
+
+        taxaLayers[0].on('loaded', hideLoader);
+
+        // iceLayer.addTo(map);
+        // When layer loads, trigger legend event
+        // legendLayer.on('loaded', () => {
+        //     // Request data for legend from the layer viz
+        //     const widthLegend = legendLayer.viz.width.getLegendData({
+        //         samples: 3
+        //     });
+        //     let widthLegendList = '';
+        //     // Create list elements for legend
+        //     widthLegend.data.forEach((legend, index) => {
+        //         widthLegendList +=
+        //         `<li><div class="circle" id="circle${legend.value}" style="width:${legend.value}px; height:${legend.value}px;"></div> ${legend.key.toFixed(0)}</li>`;
+        //     });
+        //     // Place list items in the content section of the title/legend box
+        //     document.getElementById('content').innerHTML = widthLegendList;
+        // });
+
+        let widthLegendList = '';
+        legendSizes.forEach(currentSize => {
+            widthLegendList +=
+            `<li><div class="circle" id="circle${currentSize}" style="width:${currentSize}px; height:${currentSize}px;"></div> ${currentSize.toFixed(0)}</li>`;
+        });
+        // Place list items in the content section of the title/legend box
+        document.getElementById('content').innerHTML = widthLegendList;
+
+
+
+        for (var i = 0; i < toggleableIds.length; i++) {
+            var id = toggleableIds[i];
+            var taxonColor = taxaColors[i];
+            var link = document.createElement('taxa');
+            link.style.backgroundColor = taxonColor;
+            link.href = '#';
+            link.className = 'active';
+            link.textContent = id;
+            link.onclick = function(e) {
+                var clickedLayer = this.textContent;
+                e.preventDefault();
+                e.stopPropagation();
+                var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+                var colorPosition = toggleableIds.indexOf(clickedLayer)
+                var newColor = taxaColors[colorPosition]
+                if (visibility === 'visible') {
+                    map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                    this.style.backgroundColor = '#E9E9E9';
+                    this.className = '';
+                } else {
+                    this.className = 'active'
+                    this.style.backgroundColor = newColor;
+                    map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+                }
+            };
+            var layers = document.getElementById('menu');
+            layers.appendChild(link);
+        }
+
+        // change sql query with dropdown value
+        function setContinent(taxaLayers) {
+            console.log(taxaLayers)
+            taxaLayers.forEach(currentLayer => {
+                currentLayer.remove();
+            });
+            if (selector.value == 'northamerica') {
+                // var toggleableIds = ['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'];
+                // var taxaColumns = ['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'];
+                var taxaViz = allViz[0]
+                var taxaLayers = allLayers[0]
+                // createViz();
+                // createLayer();
+            }
+            else if (selector.value == 'europe') {
+                var taxaViz = allViz[1]
+                var taxaLayers = allLayers[1]
+            }
+            else if (selector.value == 'australia') {
+                var taxaViz = allViz[2]
+                var taxaLayers = allLayers[2]
+            }
+            taxaLayers.forEach(currentLayer => {
+                currentLayer.addTo(map);
+            });
+        };
+
+        // for (var i = 1; i < taxaLayers.length; i++) {
+        //     taxonLayer = taxaLayers[i]
+        //     console.log(taxa)
+        //     taxonLayer.hide();
+        // }
+
+        function hideLoader() {
+            document.getElementById('loader').style.opacity = '0';
+        }
+
+
+        </script>
+
+    </body>
+
+    </html>
