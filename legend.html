@@ -260,15 +260,15 @@
 
 
 
-    // getEventListeners()
+    getEventListeners()
     //
-    // function getEventListeners() {
+    function getEventListeners() {
     // Listen to interaction events
     $durationRange.addEventListener('change', () => {
-        var duration = parseInt($durationRange.value, initialDuration);
+        var duration = parseInt($durationRange.value, 10);
         taxaViz.forEach(currentViz => {
             // Update animation duration
-            currentViz.variables.duration = duration
+            currentViz.variables.duration = $spanDuration.innerHTML = duration
         });
         // paceViz.variables.duration = $spanDuration.innerHTML = duration
         taxaViz[0].variables.duration = $spanDuration.innerHTML = duration
@@ -311,10 +311,12 @@
 
     $timeRange.addEventListener('change', () => {
         // changeTimeRange()
+        paceViz.variables.animation.setProgressPct($timeRange.value);
         taxaViz.forEach(currentViz => {
             // Update animation progress
             currentViz.variables.animation.setProgressPct($timeRange.value);
         });
+
         last = $timeRange.value
     });
 
@@ -363,7 +365,7 @@
     // }
 
 
-// }
+}
 
         taxaLayers[0].on('loaded', hideLoader);
 
@@ -462,7 +464,7 @@
             //     currentViz.variables.animation.setProgressPct(paceViz.variables.animation.getProgressPct());
             // });
             // last = $timeRange.value
-
+            getEventListeners()
             createLegend()
 
         };
