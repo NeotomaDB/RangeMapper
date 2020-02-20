@@ -74,7 +74,7 @@ interp_dl <- data.frame(comp_dl[,1:10],
 
 # Add blank legendvalues column
 legendvalues <- rep(0,length.out = nrow(interp_dl))
-interp_dl$legendvalues <- rep(NULL,length.out = nrow(interp_dl))                 
+interp_dl$legendvalues <- rep(0,length.out = nrow(interp_dl))                 
                     
 # Creates table for legend
 time_bins <- rep(seq(0, -21000, -500), each = 3)
