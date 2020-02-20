@@ -19,43 +19,25 @@
     <!-- Map div -->
     <div id="map"></div>
 
-    <!-- dropdown selector -->
-    <div id="wraper-dropdown-selector">
-        <select id="js-dropdown-selector">
-            <option value="northamerica">North America</option>
-            <option value="europe">Europe</option>
-            <option value="australia">Australia</option>
-        </select>
-    </div>
-
-<style>
-#wraper-dropdown-selector {
-    background-color: #d2eaef;
-    opacity: 0.8;
-    position: absolute;
-    top: 10px;
-    left: 30%;
-    width: auto;
-    height: auto;
-    padding: 10px;
-    display: block;
-    z-index: 9000;
-
-}
-
-#js-dropdown-selector input {
-    width: 200px;
-}
-</style>
-
-
 <aside class=toolbox id="animation-toolbox">
     <div class="box" id="animation-box">
         <header>
             <h1 id="animation-header"> Range Mapper</h1>
+            <!-- dropdown selector -->
+                <select id="continent-selector" onchange="setContinent()">
+                    <!-- <option selected = "selected"></option> -->
+                    <option value="northamerica">North America</option>
+                    <option value="europe">Europe</option>
+                    <option value="australia">Australia</option>
+                </select>
         </header>
         <section id="animation-section">
+            <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
+            </p>
+        </section>
+        <section id="animation-section">
             <p class="animation-rangebar">
+                <!-- <button id="js-play-pause-button"><img src="images/play.png"></button> -->
                 <button id="js-play-button"><img src="images/play.png"></button>
                 <button id="js-pause-button"><img src="images/pause.png"></button>
                 <input type="range" id="js-time-range" min="0" max="1" step="0.03">
@@ -63,12 +45,8 @@
         </section>
         <br/>
         <section id="animation-section">
-            <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
-            </p>
-        </section>
-        <section id="animation-section">
             <span class="animation-rangebar">Duration (seconds):</span>
-                <input type="range" id="js-duration-range" min="1" max="42" step="2">
+                <input type="range" id="js-duration-range" min="10" max="42" step="2">
                 <span style="margin-left: 5px" class="open-sans" id="js-duration-span"><p id = durationid></p></span>
         </section>
     </div>
@@ -105,49 +83,6 @@
 
 
 <script>
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: carto.basemaps.positron,
-        center: [-96, 41],
-        zoom: 3
-    });
-    // const nav = new mapboxgl.NavigationControl({
-    //     showCompass: false
-    const nav = new mapboxgl.NavigationControl();
-     map.addControl(nav, 'top-right');
-    // });
-    carto.setDefaultAuth({
-        username: 'widell',
-        apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
-    });
-
-
-    var pollenSource = new carto.source.Dataset("cartoinput_na_3");
-    var iceSource = new carto.source.Dataset('icesheets');
-
-    // function updateSource() {
-        const selector = document.getElementById("js-dropdown-selector");
-        selector.addEventListener("change", setContinent);
-
-    // };
-
-    // var continent = document.getElementById('js-dropdown-selector');
-    //
-    // continent.addEventListener("change", setContinent);
-
-    //
-    // function setContinent() {
-    //     if continent.value = northamerica {
-    //         pollenSource
-    //     }
-    //
-
-    // }
-
-
-    // https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
-    //
-    //
 
     var continents = ['northamerica', 'europe', 'australia']
     var contSource = [`cartoinput_na_3`, `cartoinputeuro`, `cartoinput_aus_2`];
@@ -156,22 +91,46 @@
     var contColumns = [['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'],
                 ['alnus', 'fagus', 'picea', 'quercus'],['casuarina', 'eucalyptus', 'nothofagus', 'phyllocladus']];
     var conticeSource = ['icesheets','icev8',]
+    var allExtents = [[-96, 41], [20, 57], [125, -30]]
+    var currentExtent = allExtents[0]
     var continentArr = []
+
+    var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#996699', '#C7003A', '#FF8D19', '#ADD55C', '#511849'];
+    var legendSizes = [20,50,100]
+    var initialDuration = 31.5
+    var allViz = []
+    var allLayers = []
+    // var allToggleableIds = []
+    var taxaViz = []
+    var taxaLayers = []
+
+    // function updateExtent(){
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: carto.basemaps.positron,
+            center: currentExtent,
+            zoom: 3
+        });
+    // }
+    // updateExtent()
+    // const nav = new mapboxgl.NavigationControl({
+    //     showCompass: false
+    const nav = new mapboxgl.NavigationControl();
+    map.addControl(nav, 'bottom-left');
+    // });
+    carto.setDefaultAuth({
+        username: 'widell',
+        apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
+    });
+
+    // https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
+
+
 
     for (var i = 0; i < continents.length; i++){
         continentArr[i] = [continents[i], contSource[i], contIDs[i], contColumns[i], conticeSource[i]]
     }
-
-    var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#C7003A', '#FF8D19', '#ADD55C', '#511849', '#009973'];
-    var legendSizes = [20,50,100]
-    var initialDuration = 31.5
     document.getElementById('durationid').innerHTML = initialDuration;
-    var allViz = []
-    var allLayers = []
-    var taxaViz = []
-    var taxaLayers = []
-    var currentTaxaViz = []
-    var currentTaxaLayers = []
 
     // continentArr.forEach(continent => {
     for (var i = 0; i < continentArr.length; i++){
@@ -180,6 +139,8 @@
         var pollenSource = new carto.source.Dataset(continent[1]);
         var toggleableIds = continent[2];
         var taxaColumns = continent[3];
+        var currentTaxaViz = [];
+        var currentTaxaLayers = [];
         createViz();
         createLayer();
         // if (continentName == 'northamerica' || continentName == 'europe'){
@@ -190,6 +151,8 @@
             const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
             currentTaxaLayers.push(iceLayer);
         }
+        // taxaViz.push(rootPaceViz);
+        // taxaLayers.push(rootPaceLayer);
         allViz[i] = currentTaxaViz;
         allLayers[i] = currentTaxaLayers;
     };
@@ -210,7 +173,6 @@
             );
             currentTaxaViz[i] = newViz;
         }
-        console.log(currentTaxaViz)
         return currentTaxaViz
     }
 
@@ -225,74 +187,130 @@
         return iceViz
     }
 
-        function createLayer(){
-            for (var i = 0; i < taxaColumns.length; ++i) {
-                currentViz = currentTaxaViz[i]
-                currentTaxon = toggleableIds[i]
-                var currentLayer = new carto.Layer(currentTaxon, pollenSource, currentViz);
-                currentTaxaLayers[i] = currentLayer
-            }
-            return currentTaxaLayers
+    function createLayer(){
+        for (var i = 0; i < taxaColumns.length; ++i) {
+            currentViz = currentTaxaViz[i]
+            currentTaxon = toggleableIds[i]
+            var currentLayer = new carto.Layer(currentTaxon, pollenSource, currentViz);
+            currentTaxaLayers[i] = currentLayer
         }
+        return currentTaxaLayers
+    }
 
+
+    var paceSource = new carto.source.Dataset(contSource[0])
+
+    const paceViz = new carto.Viz(`
+        @duration: ${initialDuration},
+        @animation: animation($time, @duration, fade(${initialDuration}/21,${initialDuration}/15.5)),
+        width: $legendvalues
+        color: opacity(white, 0)
+        strokeWidth: 0
+        filter: @animation
+        `);
+
+    const paceLayer = new carto.Layer('legend', paceSource, paceViz);
+    paceLayer.addTo(map);
 
     var taxaViz = allViz[0]
     var taxaLayers = allLayers[0]
-    console.log(taxaLayers)
+    var toggleableIds = continentArr[0][2]
+
     // Add layers to map
     taxaLayers.forEach(currentLayer => {
         currentLayer.addTo(map);
     });
+    createLegend()
 
 
+    // let paceViz = taxaViz[taxaViz.length - 1]
+    // let paceLayer = taxaLayers[taxaLayers.length - 1]
 
-    // const legendViz = new carto.Viz(`
-    //     width: ramp($legendvalues, [${legendSizes}])
-    //     color: opacity(white, 0)
-    //     strokeWidth: 0
-    //     `);
-    // const legendLayer = new carto.Layer('legend', pollenSource, legendViz);
-    // legendLayer.addTo(map);
-
-
-
-
+    // const $playPauseButton = document.getElementById('js-play-pause-button');
     const $playButton = document.getElementById('js-play-button');
     const $pauseButton = document.getElementById('js-pause-button');
     const $durationRange = document.getElementById('js-duration-range');
     const $timeRange = document.getElementById('js-time-range');
     const $spanDuration = document.getElementById('js-duration-span');
     const $currentTime = document.getElementById('js-current-time');
-    const $progressRange = document.getElementById('js-progress-range');
-
+    const $continentSelection = document.getElementById('continent-selector')
 
     // Save initial time range value
+    $timeRange.value = 0
     let last = $timeRange.value;
 
+
+    // taxaLayers[0].on('updated', () => {
+    //     // getEventListeners()
+    //     // console.log(paceViz.variables.animation.getProgressPct())
+    //     // taxaViz.forEach(currentViz => {
+    //     //     // Update animation progress
+    //     //     currentViz.variables.animation.setProgressPct(paceViz.variables.animation.getProgressPct());
+    //     //     console.log($timeRange.value)
+    //     // });
+    //     // paceViz.variables.animation.setProgressPct($timeRange.value);
+    //
+    //     // console.log(taxaViz[0].variables.animation.getProgressPct())
+    //     // // $timeRange.value = paceViz.variables.animation.getProgressPct();
+    //     // // pauseAnimation();
+    //     // console.log($timeRange.value)
+    //     changeTimeRange()
+    //     changeCurrentTime()
+    // });
+
+
+
+    // getEventListeners()
+    //
+    // function getEventListeners() {
     // Listen to interaction events
     $durationRange.addEventListener('change', () => {
-        const duration = parseInt($durationRange.value, initialDuration);
+        var duration = parseInt($durationRange.value, initialDuration);
         taxaViz.forEach(currentViz => {
             // Update animation duration
-            currentViz.variables.duration = $spanDuration.innerHTML = duration
+            currentViz.variables.duration = duration
         });
+        // paceViz.variables.duration = $spanDuration.innerHTML = duration
+        taxaViz[0].variables.duration = $spanDuration.innerHTML = duration
+
     });
 
+    // $playPauseButton.addEventListener("click", playPause);
+    // myVideo = document.getElementById("myvid");
+    // function playPause() {
+    //     if (myVideo.paused) {
+    //         myVideo.play();
+    //         ppbutton.innerHTML = "Pause";
+    //         }
+    //     else  {
+    //         myVideo.pause();
+    //         ppbutton.innerHTML = "Play";
+    //         }
+    // }
+
     $playButton.addEventListener('click', () => {
+        paceViz.variables.animation.play();
         taxaViz.forEach(currentViz => {
             // Play the animation
             currentViz.variables.animation.play();
         });
+        console.log(paceViz.variables.animation.getProgressPct())
+
     });
+
+
 
     $pauseButton.addEventListener('click', () => {
         taxaViz.forEach(currentViz => {
             // Pause animation
             currentViz.variables.animation.pause();
         });
+        paceViz.variables.animation.pause();
     });
 
+
     $timeRange.addEventListener('change', () => {
+        // changeTimeRange()
         taxaViz.forEach(currentViz => {
             // Update animation progress
             currentViz.variables.animation.setProgressPct($timeRange.value);
@@ -300,22 +318,60 @@
         last = $timeRange.value
     });
 
-    // Listen to layer events
     taxaLayers[0].on('updated', () => {
+        // changeCurrentTime()
         if ($timeRange.value == last) {
             $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
+            // last = $timeRange.value;
+            // $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
             last = $timeRange.value;
         }
+        // $currentTime.innerText = parseInt(paceViz.variables.animation.getProgressValue());
         $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
+
     });
+
+
+    //
+    // // Listen to layer events
+    // paceLayer.on('updated', () => {
+    //     changeCurrentTime()
+    // });
+
+
+
+    // function changeTimeRange(){
+    //     console.log($timeRange.value)
+    //     // paceViz.variables.animation.setProgressPct($timeRange.value);
+    //     // taxaViz.forEach(currentViz => {
+    //     //     // Update animation progress
+    //     //     currentViz.variables.animation.setProgressPct($timeRange.value);
+    //     // });
+    //     // last = $timeRange.value
+    // }
+    //
+    // function changeCurrentTime(){
+    //     if ($timeRange.value == last) {
+    //         // $timeRange.value = paceViz.variables.animation.getProgressPct();
+    //         // last = $timeRange.value;
+    //         $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
+    //         last = $timeRange.value;
+    //     }
+    //     // $currentTime.innerText = parseInt(paceViz.variables.animation.getProgressValue());
+    //     $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
+    //
+    // }
+
+
+// }
 
         taxaLayers[0].on('loaded', hideLoader);
 
         // iceLayer.addTo(map);
         // When layer loads, trigger legend event
-        // legendLayer.on('loaded', () => {
+        // paceLayer.on('loaded', () => {
         //     // Request data for legend from the layer viz
-        //     const widthLegend = legendLayer.viz.width.getLegendData({
+        //     const widthLegend = paceLayer.viz.width.getLegendData({
         //         samples: 3
         //     });
         //     let widthLegendList = '';
@@ -337,7 +393,11 @@
         document.getElementById('content').innerHTML = widthLegendList;
 
 
-
+    function createLegend() {
+        var layers = document.getElementById("menu");
+        while (layers.childNodes.length > 2) {
+            layers.removeChild(layers.lastChild);
+        }
         for (var i = 0; i < toggleableIds.length; i++) {
             var id = toggleableIds[i];
             var taxonColor = taxaColors[i];
@@ -353,7 +413,7 @@
                 var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
                 var colorPosition = toggleableIds.indexOf(clickedLayer)
                 var newColor = taxaColors[colorPosition]
-                if (visibility === 'visible') {
+                if (visibility == 'visible') {
                     map.setLayoutProperty(clickedLayer, 'visibility', 'none');
                     this.style.backgroundColor = '#E9E9E9';
                     this.className = '';
@@ -363,40 +423,52 @@
                     map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
                 }
             };
-            var layers = document.getElementById('menu');
             layers.appendChild(link);
         }
+    }
 
+
+        // selector.addEventListener("change", setContinent);
         // change sql query with dropdown value
-        function setContinent(taxaLayers) {
-            console.log(taxaLayers)
+        function setContinent() {
+            var selectedContID = document.getElementById('continent-selector');
+            var selectedCont = selectedContID.value
+            // paceLayer.remove();
             taxaLayers.forEach(currentLayer => {
                 currentLayer.remove();
             });
-            if (selector.value == 'northamerica') {
-                // var toggleableIds = ['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'];
-                // var taxaColumns = ['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'];
-                var taxaViz = allViz[0]
-                var taxaLayers = allLayers[0]
-                // createViz();
-                // createLayer();
+
+            if (selectedCont == 'northamerica') {
+                n = 0
             }
-            else if (selector.value == 'europe') {
-                var taxaViz = allViz[1]
-                var taxaLayers = allLayers[1]
+            else if (selectedCont == 'europe') {
+                n = 1
             }
-            else if (selector.value == 'australia') {
-                var taxaViz = allViz[2]
-                var taxaLayers = allLayers[2]
-            }
+            else if (selectedCont == 'australia') {
+                n = 2
+            };
+            taxaViz = allViz[n];
+            taxaLayers = allLayers[n];
+            toggleableIds = continentArr[n][2];
+            currentExtent = allExtents[n];
+            map.panTo(currentExtent);
             taxaLayers.forEach(currentLayer => {
                 currentLayer.addTo(map);
             });
+            // paceLayer.addTo(map);
+            // last = paceViz.variables.animation.getProgressPct()
+            // taxaViz.forEach(currentViz => {
+            //     // Update animation progress
+            //     currentViz.variables.animation.setProgressPct(paceViz.variables.animation.getProgressPct());
+            // });
+            // last = $timeRange.value
+
+            createLegend()
+
         };
 
         // for (var i = 1; i < taxaLayers.length; i++) {
         //     taxonLayer = taxaLayers[i]
-        //     console.log(taxa)
         //     taxonLayer.hide();
         // }
 

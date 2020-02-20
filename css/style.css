@@ -6,7 +6,6 @@
 
 }
 
-
 #animation-section {
     display: flex;
     flex-direction: row;
@@ -15,8 +14,31 @@
     align-content: flex-end;
 }
 
-
+#continentSelector{
+    position: absolute;
+    right: 1%;
+    align-items: right
+}
 /* legend styling */
+
+#wraper-dropdown-selector {
+    background-color: #d2eaef;
+    opacity: 0.8;
+    position: absolute;
+    top: 10px;
+    left: 30%;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    display: block;
+    z-index: 9000;
+
+}
+
+#js-dropdown-selector input {
+    width: 200px;
+}
+
 
 #legend-box {
     position: fixed;
