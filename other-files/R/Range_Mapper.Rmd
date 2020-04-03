@@ -1,5 +1,5 @@
 ---
-title: "Pollen_Mapper"
+title: "Range_Mapper_R"
 author: "Anna George, Williams Lab" 
 affiliation: "University of Wisconsin - Madison"
 date: "2/27/2019"
@@ -22,8 +22,7 @@ date: "2/27/2019"
 ---
 
 ##Introduction
-
-Welcome to Range Mapper, a repository (is this the right word?) that allows researchers, web developers, students and other users to extract taxa-specific, spatio-temporal data from the Neotoma Paleoecology Database Collective [@williams2017neotoma]. This code also establishes a channel between Neotoma and Carto, an online mapping platform where Neotoma data can be visualized and transformed through Carto's user interface.[https://carto.com/attribution/] (NOTE FOR ANNA-- how/what do we site here? Is this what's happening?). 
+. 
 
 Building this R pathway was helpful to us in our attempts to model global forest turnover over the last 21,000 years, using pollen records archived on Neotoma. Our models are a few of many that could be possible with code that links Neotoma's deep paleoecological data repository to Carto's intuitive and vibrant mapping technology.
 
@@ -32,11 +31,6 @@ Our code integrates previous methods established by @williams2017neotoma and @go
 #### RStudio ----I coppied this part straight from bulk baconizing. Is this standard? do I need to cite?
 
 Many people working with R may choose to use [RStudio](http://rstudio.com).  If you are using RStudio, you can customize elements of this document (for example, removing this header information) and then use the *knit* button to compile the code into an HTML document, while generating the neccessary output files (see the [README file](https://github.com/neotomadb) in the GitHub repository).
-
-
-### Providing Feedback and Contribution
-
-We welcome user contributions to this project. All contributors are expected to follow the code of conduct. Contributors should fork this project and make a pull request indicating the nature of the changes and the intended utility. Further information for this workflow can be found on the GitHub Pull Request Tutorial webpage (stole from neotoma API, if not true delete). If, in any place instructions are not clear or more details are required please feel free to contact us by either [raising a GitHub Issue for this repository](Insert Link), or by emailing (?) directly at (?). 
 
 
 ## Connecting to Neotoma
