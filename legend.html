@@ -90,7 +90,7 @@
                 ['Alnus', 'Fagus', 'Picea', 'Quercus'], ['Casuarina', 'Eucalyptus', 'Nothofagus', 'Phyllocladus']];
     var contColumns = [['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'],
                 ['alnus', 'fagus', 'picea', 'quercus'],['casuarina', 'eucalyptus', 'nothofagus', 'phyllocladus']];
-    var conticeSource = ['icesheets','icev8',]
+    var conticeSource = ['icesheets', 'euro_ice', '']
     var allExtents = [[-96, 41], [20, 57], [125, -30]]
     var currentExtent = allExtents[0]
     var continentArr = []
@@ -151,6 +151,22 @@
             const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
             currentTaxaLayers.push(iceLayer);
         }
+        if (continentName == 'europe'){
+          var iceSource = new carto.source.Dataset(continent[4]);
+          iceViz = createIceViz();
+          currentTaxaViz.push(iceViz);
+          const iceLayer = new carto.Layer('euro_ice', iceSource, iceViz);
+          currentTaxaLayers.push(iceLayer);
+        }
+
+        // if (continentName = 'europe'){
+        //     var iceSource = new carto.source.Dataset(continent[4]);
+        //     iceViz = createIceViz();
+        //     currentTaxaViz.push(iceViz);
+        //     const iceLayer = new carto.Layer('euro_ice', iceSource, iceViz);
+        //     currentTaxaLayers.push(iceLayer);
+        // }
+
         // taxaViz.push(rootPaceViz);
         // taxaLayers.push(rootPaceLayer);
         allViz[i] = currentTaxaViz;
