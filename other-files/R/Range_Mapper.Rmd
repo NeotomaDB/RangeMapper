@@ -69,59 +69,66 @@ Third, set your boundary ages. We use a minimum of 21,000 years ago and set our 
 
 Combined, these parameters are recorded in the metadata for the taxon in a specified location.
 
-The final step creates a list of all the taxon dataset numbers.
 
-```{r data_query}
+```{r }
+# Set your taxa, location, and time period of interest
+taxa <- c('Nothofagus','Eucalyptus', 'Casuarina', 'Phyllocladus', 'Callitris')
+  #  c('Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus') 
+  #  c('Alnus', 'Fagus', 'Picea', 'Quercus')
+location <- c(105, -51, 177, 10)
+  #c(-130, 24, -34, 65) 
+  #c(-11, 35, 47, 72) 
+  #c(105, -51, 177, 10)
+age.young <- 0
+age.old <- 21000
 
-nothofagus_datasets <- get_dataset(taxonname = 'Nothofagus*',
-                              loc = c(105, -51, 177, 10),
-                              ageyoung = 0,
-                              ageold = 21000)
+```
 
-eucalyptus_datasets <- get_dataset(taxonname = 'Eucalyptus*',
-                                loc = c(105, -51, 177, 10), 
-                                ageyoung = 0, 
-                                ageold = 21000)
+
+
+The final step creates a list of all the taxon dataset numbers, removing duplicate datasets.
+
+## Appending and downloading your lists
+
+The last two lines download all your datasets as RDS files. You may want to change the name "data_downloads" to something more specific, especially if you plan on downloading multiple datasets. Set your own file path.
+
+```{r selecting and downloading datasets}
+taxa.Datasets <- list()
+
+# Get dataset information for all taxa
+for (i in 1:length(taxa)){ 
+  taxa.Datasets <- append(taxa.Datasets,(get_dataset(taxonname = paste0(taxa[i],"*"),
+                                loc = location,
+                                ageyoung = age.young,
+                                ageold = age.old)))
+}
 
 #can_datasets <- neotoma::get_dataset(datasettype = 'pollen', 
                                      #ageold = 15000, ageyoung = -100,
                                      #gpid = "Canada")
 
-nothofagus_dataset_numbers <- as.numeric(names(nothofagus_datasets))
-eucalyptus_dataset_numbers <- as.numeric(names(eucalyptus_datasets))
+dataset.numbers <- unique(as.numeric(names(taxa.Datasets)))
+
+pollen.download <- get_download(dataset.numbers)
+
+saveRDS(pollen.download, file = "PollenAus-21.RData")
+
+#saveRDS(pollen.download, file = "PollenNA.RData")
 
 ```
 
-## Appending and downloading your lists
 
-The first line in this dataset prepares the empty list you'll fill with your extracted data later. Nothing to add to this line!
-
-The second line combines lists of different taxa dataset numbers for the records you've pulled. Add each taxon as a comma-separated argument to this vector.
-
-The third line removes duplicate dataset numbers from your new list. Again, nothing to update here.
-
-The last two lines download all your datasets as RDS files. You may want to change the name "data_downloads" to something more specific, especially if you plan on downloading multiple datasets. Set your own file path.
-
-```{r download}
-site_dataset_numbers = list()
-
-site_dataset_numbers <- append(site_dataset_numbers, c(nothofagus_dataset_numbers,
-                                                       eucalyptus_dataset_numbers))
-all_dataset_numbers <- as.numeric(unique(site_dataset_numbers))
-
-data_downloads <- get_download(all_dataset_numbers)
-
-saveRDS(data_downloads, file = "~/Desktop/Neotoma.RData")
-```
 
 ## Compliling Data
 
 In this next section, you'll be working with data you've already downloaded from Neotoma. Now, you'll retrieve that data and prepare it for mapping. Note that data_downloads may be a generic name, if you've chosen to call your file something more specific.
 
 ```{r compile}
-data_downloads <- readRDS("~/Desktop/Neotoma.RData")
+pollen.download <- readRDS("~/Desktop/Neotoma.RData")
 
-comp_dl <- compile_downloads(data_downloads)
+pollen.comp <- compile_downloads(pollen.download)
+pollen.comp.clean <- pollen.comp[pollen.comp$date.type != "Radiocarbon years BP",]
+
 ```
 
 ## Linear Interpolation
@@ -130,14 +137,54 @@ This chunk fetches total counts for each taxon observation at every site and lin
 
 
 ```{r linear interpolation}
-tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
+tot.cnts <- rowSums(pollen.comp.clean[,11:ncol(pollen.comp.clean)], na.rm=TRUE)
 
-interp_dl <- data.frame(comp_dl[,1:10],
-                        time = - (round(comp_dl$age / 500, 0) * 500),
-                        nothofagus = rowSums(comp_dl[, grep("Nothofagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        eucalyptus = rowSums(comp_dl[, grep("Eucalyptus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts)  %>%
-dplyr::group_by(time, lat, long, site.name) %>% 
-  summarize(nothofagus = mean (nothofagus) * 100, eucalyptus = mean (eucalyptus) * 100)
+interp_dl <- data.frame(pollen.comp.clean[,1:10],
+                        time = - (round(pollen.comp.clean$age / 500, 0) * 500),
+                        nothofagus = rowSums(pollen.comp.clean[, grep("Nothofagus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
+                        eucalyptus = rowSums(pollen.comp.clean[, grep("Eucalyptus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
+                        casuarina = rowSums(pollen.comp.clean[, grep("Casuarina*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
+                        callitris = pollen.comp.clean[,"Callitris"] / tot.cnts,
+                        phyllocladus = rowSums(pollen.comp.clean[, grep("Phyllocladus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts) %>%
+  group_by(time, lat, long, site.name) %>%
+  summarize( Nothofagus = mean ( nothofagus) * 100, 
+             Phyllocladus = mean ( phyllocladus) * 100, 
+             Casuarina = mean (casuarina) * 100, 
+             Callitris = mean (callitris) * 100, 
+             Eucalyptus = mean (eucalyptus) * 100)
+
+common <- c('Beech', 'Celery Pine', 'She-Oak', 'Cypress-Pine', 'Eucalyptus')
+
+plant.data <- data.frame()
+for (i in 1:length(common)) {
+  taxon = common[i]
+  samples = interp_dl[,i+4]
+  names(samples) <- "samples"
+  taxa = rep(taxon,nrow(samples))
+  current.taxon.data <- cbind(interp_dl[,1:4],samples,taxa)
+  plant.data <- rbind(plant.data,current.taxon.data)
+}
+
+colnames(plant.data)[colnames(plant.data) == '...6'] <- 'taxa'
+plant.data <- plant.data[order(plant.data$time,plant.data$site.name),]
+
+
+# Removes any observations from over 21,000 years ago
+timefltr_output <- dplyr::filter(plant.data, time >= -21000)
+final_output <- na.omit(timefltr_output)
+
+final.output.no0 <- final_output[final_output$samples != 0,]
+
+# #To make the legend
+# legendvalues <- rep(c(10, 50, 100), length.out = nrow(final_output[,1]))
+# final_output$legendvalues = legendvalues
+
+# Writes CSV file
+# Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
+
+write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus_V2.csv")
+write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus_V2_no0.csv")
+
 
 ```
 
@@ -146,7 +193,7 @@ dplyr::group_by(time, lat, long, site.name) %>%
 These next lines remove any observations from beyond the maxiumim age you recorded in your file.
 
 ```{r filter}
-timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
+timefltr_output <- dplyr::filter(interp_dl, time >= -age.old)
 final_output <- na.omit(timefltr_output)
 ```
 

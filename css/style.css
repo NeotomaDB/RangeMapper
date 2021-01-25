@@ -1,6 +1,6 @@
 
 :root {
-    --main-bg-color: #E9E9E9;
+    --main-bg-color: #D9E9E9E9;
     --main-text-color: #494E6B;
     --taxa-1: #900C3F;
 
@@ -44,16 +44,15 @@
     position: fixed;
     right: 15px;
     bottom: 1px;
-    width: 20%;
-    height: 20%;
-    min-height: 155px;
-    min-width: 240px;
+    height: 175px;
+    width: 200px;
+    font-family: sans-serif;
     background: var(--main-bg-color);
+    opacity: 80%;
 }
 
 #legend-head-text {
     color:var(--main-text-color);
-    font-family: sans-serif;
     font-style: "heavy";
     font-weight: 700;
     text-align: center;
@@ -69,16 +68,19 @@
     height: 100%;
 } */
 
-#controls {
+#circ-box {
     width: 100%;
 }
 
-#content {
+#circ-content {
     list-style-type:none;
-    align-items: center;
-    justify-content: center;
+    align-items: right;
+    font-weight: 300;
+    /* justify-content: center; */
     display: flex;
     flex-direction: column-reverse;
+    text-align: right;
+    padding-right: 10%
 }
 
 .circle {
@@ -91,15 +93,15 @@
 }
 
 #circle100{
-    left: 10px;
+    left: 18px;
 }
 
 #circle50{
     left: 36px;
 }
 
-#circle20{
-    left: 52px;
+#circle25{
+    left: 50px;
 }
 
 #logo-div {
@@ -111,10 +113,10 @@
 #neotoma-logo {
     position: fixed;
     width: 5%;
-    max-width: 130px;
-    max-height: 110px;
-    right: 2%;
-    bottom: 5%;
+    width: 65px;
+    height: 55px;
+    right: 25px;
+    bottom: 35px;
 }
 
 /* progress bar styling */

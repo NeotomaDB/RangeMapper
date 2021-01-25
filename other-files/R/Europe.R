@@ -13,7 +13,7 @@ library(neotoma)
 
 # Choose interesting taxa:
 # NA pollen taxa: Fagus, Picea, Quercus, Spruce, Tsuga
-# European pollen taxa: Alnus, Fagus, Picea, Quercus, Spruce
+# European pollen taxa: Alnus, Fagus, Picea, Quercus
 # Australian pollen taxa: Nothofagus, Eucalyptus, Casuarina, Callitris, Pyllocladus
 # Mammal taxa: Bison, Smilodon/Panthera, Equus, Rodentia, Mammut, Mammuthus
 

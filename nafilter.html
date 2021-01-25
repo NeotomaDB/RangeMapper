@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Animation | CARTO VL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="robots" content="noindex">
+<script src="https://libs.cartocdn.com/carto-vl/v1.4.4/carto-vl.min.js"></script>
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
+<link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
+<link href="https://carto.com/developers/carto-vl/v1.4.4/examples/maps/style.css" rel="stylesheet">
+<style type="text/css">
+#legend-box {
+    position: fixed;
+    right: 15px;
+    bottom: 1px;
+    width: 15%;
+    height: 23%;
+    min-height: 50px;
+    min-width: 200px;
+    background: var(--main-bg-color);
+}
+
+#legend-head-text {
+    color:var(--main-text-color);
+    font-family: sans-serif;
+    font-style: "heavy";
+    font-weight: 700;
+    text-align: center;
+}
+
+.legend-content {
+    right: 5px
+}
+
+/* .legend-section {
+    display: flex;
+    flex-direction: column-reverse;
+    /* justify-content: space-between;
+    align-items: left;
+    align-content: flex-end;
+    width: 100%;
+    height: 100%;
+} */
+
+#circ-box {
+    width: 100%;
+}
+
+#circ-content {
+    list-style-type:none;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.circle {
+    border-radius: 75%;
+    position: absolute;
+    border: 1px var(--main-text-color) solid;
+    bottom: 10%;
+    color: var(--main-text-color);
+    background-color: 0.4
+}
+
+#circle100{
+    left: 18px;
+}
+
+#circle50{
+    left: 36px;
+}
+
+#circle25{
+    left: 56px;
+}
+
+#logo-div {
+    display: flex;
+    margin-top:-1%;
+    padding: 1px;
+}
+
+#neotoma-logo {
+    position: fixed;
+    width: 5%;
+    max-width: 130px;
+    max-height: 110px;
+    right: 5%;
+    bottom: 5%;
+}
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+<!-- Legend -->
+<section class="toolbox">
+    <div class="box" id="legend-box">
+        <header id="legend-head-text">
+            <div>Percent Abundance</div>
+        </header>
+        <!-- Add legend data -->
+        <!-- <section class="legend-section"> -->
+        <div id="circ-box">
+            <ul id="circ-content" class="legend-content"> </ul>
+        </div>
+        <div id="logo-div"> <img id="neotoma-logo" src="images/neotoma.jpeg" alt="neotoma">
+        </div>
+    </div>
+</section>
+<script>
+  const map = new mapboxgl.Map({
+      container: 'map',
+      style: carto.basemaps.positron,
+      center: [-96, 41],
+      zoom: 10,
+      scrollZoom: false
+  });
+
+  var legendSizes = [25,50,100]
+  // const widthLegend =
+  let widthLegendList = '';
+  legendSizes.forEach(currentSize => {
+      currentWidth = 50*Math.pow((currentSize/25),0.5716)
+      console.log(currentWidth)
+      widthLegendList +=
+      `<li"><div class="circle" id="circle${currentSize}" style="width:${currentWidth}px; height:${currentWidth}px;"></div> ${currentSize}</li>`;
+  });
+  console.log(widthLegendList)
+  // Place list items in the content section of the title/legend box
+  document.getElementById('circ-content').innerHTML = widthLegendList;
+
+
+</script>
+</body>
+
+</html>

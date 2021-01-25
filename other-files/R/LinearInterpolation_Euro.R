@@ -49,29 +49,53 @@ tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
 # European pollen taxa: Alnus, Fagus, Picea, Quercus, Spruce
 # Linearly interpolates each taxa in bins of 500 years
 
-interp_dl <- data.frame(comp_dl[,1:10],
-                        time = - (round(comp_dl$age / 500, 0) * 500),
-                        alnus = rowSums(comp_dl[, grep("Alnus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        fagus = rowSums(comp_dl[, grep("Fagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        picea = rowSums(comp_dl[, grep("Picea*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        quercus = rowSums(comp_dl[, grep("Quercus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts) %>%
-  group_by(time, lat, long, site.name) %>%
-  summarize( Fagus = mean ( fagus) * 100, 
-             Alnus = mean ( alnus) * 100, 
-             Picea = mean (picea) * 100, 
-             Quercus = mean (quercus) * 100)
+tot.cnts <- rowSums(pollen.comp.clean[,11:ncol(pollen.comp.clean)], na.rm=TRUE)
+
+interp_dl <- data.frame(pollen.comp.clean[,1:10],
+                        time = - (round(pollen.comp.clean$age / 500, 0) * 500),
+                        alnus = rowSums(pollen.comp.clean[, grep("Alnus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
+                        fagus = rowSums(pollen.comp.clean[, grep("Fagus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
+                        picea = rowSums(pollen.comp.clean[, grep("Picea*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
+                        quercus = rowSums(pollen.comp.clean[, grep("Quercus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts) %>%
+  dplyr::group_by(time, lat, long, site.name) %>% 
+  summarize( Fagus   = mean(fagus)   * 100, 
+             Alnus   = mean(alnus)   * 100, 
+             Picea   = mean(picea)   * 100, 
+             Quercus = mean(quercus) * 100)
+
+common <- c('Beech', 'Alder', 'Spruce', 'Oak')
+
+plant.data <- data.frame()
+for (i in 1:length(common)) {
+  taxon = common[i]
+  samples = interp_dl[,i+4]
+  names(samples) <- "samples"
+  taxa = rep(taxon,nrow(samples))
+  current.taxon.data <- cbind(interp_dl[,1:4],samples,taxa)
+  plant.data <- rbind(plant.data,current.taxon.data)
+}
+
+colnames(plant.data)[colnames(plant.data) == '...6'] <- 'taxa'
+plant.data <- plant.data[order(plant.data$time,plant.data$site.name),]
+
+
+names.check <- cbind(colnames(comp_dl[1, grep("Alnus*", colnames(comp_dl))]),
+                     colnames(comp_dl[1, grep("Fagus*", colnames(comp_dl))]),
+                     colnames(comp_dl[1, grep("Picea*", colnames(comp_dl))]),
+                     colnames(comp_dl[1, grep("Quercus*", colnames(comp_dl))]))
+
 
 # Removes any observations from over 21,000 years ago
-timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
+timefltr_output <- dplyr::filter(plant.data, time >= -21000)
 final_output <- na.omit(timefltr_output)
 
-#Adds legend values
-legendvalues <- rep(c(10, 50, 100), length.out = nrow(final_output[,1]))
-final_output$legendvalues = legendvalues
+final.output.no0 <- final_output[final_output$samples != 0,]
 
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
-write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_Eur.csv")
+write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Euro_V2.csv")
+write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Euro_V2_no0.csv")
+
 inputPollen <- "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_Eur.csv"
 
 
