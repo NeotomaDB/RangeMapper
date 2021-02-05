@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Range Mapper | North America</title>
+    <title>Range Mapper</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -19,10 +19,10 @@
     <!-- Map div -->
     <div id="map"></div>
 
-<aside class=toolbox id="animation-toolbox">
+<aside class="toolbox" id="animation-toolbox">
     <div class="box" id="animation-box">
         <header>
-            <h1 id="animation-header"> Range Mapper</h1>
+            <h1 id="animation-header"> Range Mapper
             <!-- dropdown selector -->
                 <select id="continent-selector" onchange="setContinent()">
                     <!-- <option selected = "selected"></option> -->
@@ -30,6 +30,7 @@
                     <option value="europe">Europe</option>
                     <option value="australia">Oceania</option>
                 </select>
+            </h1>
         </header>
         <section id="animation-section">
             <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
@@ -41,17 +42,18 @@
                 <input type="range" id="js-progress-range" min="0" max="1" step="0.04">
             </p>
         </section>
-        <br/>
+        <hr/>
         <section id="animation-section">
-            <span class="animation-rangebar">Duration (seconds):</span>
+            <div class="animation-rangebar">Duration (seconds):
                 <input type="range" id="js-duration-range" min="10" max="60" step="2">
-                <span style="margin-left: 5px" class="open-sans" id="js-duration-span"><p id = durationid></p></span>
+                <span style="margin-left: 2px" class="open-sans" id="js-duration-span"></span>
+            </div>
         </section>
-        <footer class="js-footer"></footer>
+        <hr/>
         <!-- Add legend data -->
         <section>
             <div id="controls">
-                <ul id="content"></ul>
+                <ul id="content" class="taxa-content"></ul>
             </div>
         </section>
     </div>
@@ -81,10 +83,10 @@
     </div>
 </section>
 
-
+<!--
 <div id="menu">
     <header id="legend-head-text">Taxa</header>
-</div>
+</div> -->
 
 
 <script>
@@ -98,8 +100,8 @@
     var currentExtent = allExtents[0]
     var continentArr = []
     var allPollenSources = []
-    // var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#996699', '#C7003A', '#FF8D19', '#ADD55C', '#511849'];
-    var initialDuration = 40
+    var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#996699', '#C7003A', '#FF8D19', '#ADD55C', '#511849'];
+    var initialDuration = 31.5
     var allViz = []
     var allLayers = []
     var allToggleableIds = [] // maybe get rid of
@@ -122,7 +124,7 @@
         // apiKey: 'heU_1wb2M466etB6mh-UjA'
     });
 
-    document.getElementById('durationid').innerHTML = initialDuration;
+    document.getElementById('js-duration-span').innerHTML = initialDuration;
 
     for (var i = 0; i < continents.length; i++){
         continentArr[i] = [continents[i], contSource[i], conticeSource[i], allTaxaTypes[i]]
@@ -135,12 +137,15 @@
 
     // setupMap(0)
     var taxaViz = new carto.Viz(`
-        @duration: 30
-        @animation: animation(linear($time), @duration, fade(${initialDuration}/15,${initialDuration}/21))
-        color: opacity(ramp($taxa,prism),0.45)
-        width: (50*(($samples / 25) ^ 0.5716)) * @animation
-        strokeWidth: 0.2
-        strokeColor: opacity(ramp($taxa,prism),0.2)
+        @duration: ${initialDuration}
+        @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+        @animation: animation(linear($time), @duration, fade(${initialDuration}/21,${initialDuration}/15.5));
+        color: opacity(ramp($taxa,@colors),0.45);
+        width: (50*(($samples / 25) ^ 0.5716));
+        filter: @animation
+        strokeWidth: 0.2;
+        strokeColor: opacity(ramp($taxa,prism),0.2);
+
     `);
     var taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
     var iceLayer = createIceLayer(0)
