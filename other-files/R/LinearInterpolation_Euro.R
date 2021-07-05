@@ -38,13 +38,14 @@ library(rCartoAPI)
 # Loads downloaded RData object
 # See downloadDatasets.R to download datasets
 
-tree_downloads <- readRDS("Europe_sites.RData")
+tree_downloads <- readRDS("PollenEurope-21.RData")
 
 # Creates one spreadsheet of all downloads
 comp_dl <- compile_downloads(tree_downloads)
+comp.rc <- comp_dl[comp_dl$date.type != "Radiocarbon years BP",]
 
 # Gets total counts for each observation at each site
-tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
+tot_cnts <- rowSums(comp.rc[,11:ncol(comp.rc)], na.rm=TRUE)
 
 # European pollen taxa: Alnus, Fagus, Picea, Quercus, Spruce
 # Linearly interpolates each taxa in bins of 500 years
@@ -53,10 +54,10 @@ tot.cnts <- rowSums(pollen.comp.clean[,11:ncol(pollen.comp.clean)], na.rm=TRUE)
 
 interp_dl <- data.frame(pollen.comp.clean[,1:10],
                         time = - (round(pollen.comp.clean$age / 500, 0) * 500),
-                        alnus = rowSums(pollen.comp.clean[, grep("Alnus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
-                        fagus = rowSums(pollen.comp.clean[, grep("Fagus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
-                        picea = rowSums(pollen.comp.clean[, grep("Picea*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
-                        quercus = rowSums(pollen.comp.clean[, grep("Quercus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts) %>%
+                        alnus = pollen.comp.clean[, grep("Alnus*", colnames(pollen.comp.clean))] / tot.cnts,
+                        fagus = pollen.comp.clean[, grep("Fagus*", colnames(pollen.comp.clean))] / tot.cnts,
+                        picea = pollen.comp.clean[, grep("Picea*", colnames(pollen.comp.clean))] / tot.cnts,
+                        quercus = pollen.comp.clean[, grep("Quercus*", colnames(pollen.comp.clean))] / tot.cnts) %>%
   dplyr::group_by(time, lat, long, site.name) %>% 
   summarize( Fagus   = mean(fagus)   * 100, 
              Alnus   = mean(alnus)   * 100, 
@@ -93,8 +94,8 @@ final.output.no0 <- final_output[final_output$samples != 0,]
 
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
-write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Euro_V2.csv")
-write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Euro_V2_no0.csv")
+write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Euro_V3.csv")
+write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Euro_V3_no0.csv")
 
 inputPollen <- "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_Eur.csv"
 

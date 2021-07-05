@@ -42,6 +42,8 @@ tree_downloads <- readRDS("PollenNA.RData")
 comp_dl <- compile_downloads(tree_downloads)
 comp_dl <- comp_dl[comp_dl$date.type != "Radiocarbon years BP",]
 
+comp_dl <- pollen.comp.clean
+
 # Gets total counts for each observation at each site
 tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
 
@@ -74,17 +76,17 @@ tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
 #              Poaceae = mean ( poaceae) * 100)
 taxa <- c('Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus')
 interp_dl <- data.frame(comp_dl[,1:10],
-                        time = - (round(comp_dl$age / 500, 0) * 500),
-                        alnus = rowSums(comp_dl[, grep("Alnus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        fagus = rowSums(comp_dl[, grep("Fagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        picea = rowSums(comp_dl[, grep("Picea*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        pinus = rowSums(comp_dl[, grep("Pinus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        quercus = rowSums(comp_dl[, grep("Quercus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        tsuga = rowSums(comp_dl[, grep("Tsuga*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        ulmus = rowSums(comp_dl[, grep("Ulmus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        ambrosia = rowSums(comp_dl[, grep("Ambrosia*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        cyperaceae = rowSums(comp_dl[, grep("Cyperaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        poaceae = rowSums(comp_dl[, grep("Poaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts)%>%
+                        time       = - (round(comp_dl$age / 500, 0) * 500),
+                        alnus      = comp_dl[, grep("Alnus*", colnames(comp_dl))] / tot_cnts,
+                        fagus      = comp_dl[, grep("Fagus*", colnames(comp_dl))] / tot_cnts,
+                        picea      = comp_dl[, grep("Picea*", colnames(comp_dl))] / tot_cnts,
+                        pinus      = comp_dl[, grep("Pinus*", colnames(comp_dl))] / tot_cnts,
+                        quercus    = comp_dl[, grep("Quercus*", colnames(comp_dl))] / tot_cnts,
+                        tsuga      = comp_dl[, grep("Tsuga*", colnames(comp_dl))] / tot_cnts,
+                        ulmus      = comp_dl[, grep("Ulmus*", colnames(comp_dl))] / tot_cnts,
+                        ambrosia   = comp_dl[, grep("Ambrosia", colnames(comp_dl))] / tot_cnts,
+                        cyperaceae = comp_dl[, grep("Cyperaceae*", colnames(comp_dl))] / tot_cnts,
+                        poaceae    = comp_dl[, grep("Poaceae*", colnames(comp_dl))] / tot_cnts) %>%
   group_by(time, lat, long, site.name) %>%
   summarize( Alnus = mean ( alnus) * 100, 
              Fagus = mean ( fagus) * 100, 
@@ -145,8 +147,8 @@ final.output.no0 <- final_output[final_output$samples != 0,]
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
 
-write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_NA_V5.csv")
-write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_NA_V5_no0.csv")
+write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_NA_V6.csv")
+write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_NA_V6_no0.csv")
 
 inputPollen <- "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_NA.csv"
 inputIcesheets <- "~/Desktop/Github/CartoAnimations/other-files/old-carto-html/icesheets.geojson"

@@ -1,6 +1,6 @@
 ---
 title: "Range_Mapper_R"
-author: "Anna George, Williams Lab" 
+author: "Adrian George and Sydney Widell, Williams Lab" 
 affiliation: "University of Wisconsin - Madison"
 date: "2/27/2019"
 #bibliography: ?
@@ -48,7 +48,7 @@ library(neotoma)
 library(dplyr)
 library(httr)
 library(devtools)
-library(rCartoAPI)
+# library(rCartoAPI)
 ```
 
 ## Retrieving Neotoma data
@@ -72,15 +72,17 @@ Combined, these parameters are recorded in the metadata for the taxon in a speci
 
 ```{r }
 # Set your taxa, location, and time period of interest
-taxa <- c('Nothofagus','Eucalyptus', 'Casuarina', 'Phyllocladus', 'Callitris')
-  #  c('Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus') 
-  #  c('Alnus', 'Fagus', 'Picea', 'Quercus')
-location <- c(105, -51, 177, 10)
-  #c(-130, 24, -34, 65) 
-  #c(-11, 35, 47, 72) 
-  #c(105, -51, 177, 10)
-age.young <- 0
-age.old <- 21000
+location <- 
+ c(-130, 24, -34, 65) # North America
+  # c(-11, 35, 47, 72)   # Europe
+ # c(105, -51, 177, 10) # Oceania
+
+taxa <- c('Alnus', 'Ambrosia', 'Cyperaceae')#, #'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus') # North America
+    # c('Alnus', 'Fagus', 'Picea', 'Quercus') # Europe
+ #c('Nothofagus','Eucalyptus', 'Casuarina', 'Phyllocladus', 'Callitris') # Oceania
+
+age_young <- 0
+age_old <- 21000
 
 ```
 
@@ -93,27 +95,31 @@ The final step creates a list of all the taxon dataset numbers, removing duplica
 The last two lines download all your datasets as RDS files. You may want to change the name "data_downloads" to something more specific, especially if you plan on downloading multiple datasets. Set your own file path.
 
 ```{r selecting and downloading datasets}
-taxa.Datasets <- list()
+taxa_datasets <- list()
+dataset_types <- c("pollen", "pollen surface sample")
 
-# Get dataset information for all taxa
-for (i in 1:length(taxa)){ 
-  taxa.Datasets <- append(taxa.Datasets,(get_dataset(taxonname = paste0(taxa[i],"*"),
-                                loc = location,
-                                ageyoung = age.young,
-                                ageold = age.old)))
+# Get dataset information for pollen core and pollen surface samples for all taxa
+for (i in 1:length(taxa)) {
+  for (j in 1:length(dataset_types)){
+    current_type     <- dataset_types[j]
+    current_datasets <- get_dataset(
+      datasettype = current_type,
+      taxonname   = paste0(taxa[i], "*"),
+      loc         = location,
+      ageyoung    = age_young,
+      ageold      = age_old
+    )
+    taxa_datasets <- append(taxa_datasets, current_datasets)
+  }
 }
 
-#can_datasets <- neotoma::get_dataset(datasettype = 'pollen', 
-                                     #ageold = 15000, ageyoung = -100,
-                                     #gpid = "Canada")
+dataset.numbers <- unique(as.numeric(names(taxa_datasets))) # Remove repeat dataset numbers
 
-dataset.numbers <- unique(as.numeric(names(taxa.Datasets)))
+pollen_download <- get_download(dataset.numbers)
 
-pollen.download <- get_download(dataset.numbers)
+# saveRDS(pollen_download, file = "PollenAus-21.RData")
 
-saveRDS(pollen.download, file = "PollenAus-21.RData")
-
-#saveRDS(pollen.download, file = "PollenNA.RData")
+saveRDS(pollen_download, file = "PollenNA.RData")
 
 ```
 
@@ -124,11 +130,21 @@ saveRDS(pollen.download, file = "PollenAus-21.RData")
 In this next section, you'll be working with data you've already downloaded from Neotoma. Now, you'll retrieve that data and prepare it for mapping. Note that data_downloads may be a generic name, if you've chosen to call your file something more specific.
 
 ```{r compile}
-pollen.download <- readRDS("~/Desktop/Neotoma.RData")
+pollen_download <- readRDS("PollenNA.RData")
+pollen_download <- readRDS("PollenEurope-21.RData")
+pollen_download <- readRDS("PollenAus-21.RData")
+1415 + 1414 + 30 # NA + Europe + Australesia = 2859
 
-pollen.comp <- compile_downloads(pollen.download)
-pollen.comp.clean <- pollen.comp[pollen.comp$date.type != "Radiocarbon years BP",]
+taxa_list <- neotoma::taxa(pollen_download)
+taxa_list <- as.data.frame(taxa_list)
+no.aqua <- taxa_list[(taxa_list$ecological.group == "TRSH" | taxa_list$ecological.group == "UPHE") & taxa_list$variable.element == 'pollen',]
 
+compiled_pollen <- compile_downloads(pollen_download)
+compiled_pollen.rc <- compiled_pollen[compiled_pollen$date.type != "Radiocarbon years BP",]
+compiled_pollen.clean <- cbind(compiled_pollen.rc[,1:10],compiled_pollen.rc[,colnames(compiled_pollen.rc) %in% no.aqua$taxon.name])
+length(unique(compiled_pollen.clean$dataset))
+# NA: 917, Eur; 275, Aus:12 = 1204
+917+275+12
 ```
 
 ## Linear Interpolation
@@ -137,30 +153,30 @@ This chunk fetches total counts for each taxon observation at every site and lin
 
 
 ```{r linear interpolation}
-tot.cnts <- rowSums(pollen.comp.clean[,11:ncol(pollen.comp.clean)], na.rm=TRUE)
+tot.cnts <- rowSums(compiled_pollen.clean[,11:ncol(compiled_pollen.clean)], na.rm=TRUE)
 
-interp_dl <- data.frame(pollen.comp.clean[,1:10],
-                        time = - (round(pollen.comp.clean$age / 500, 0) * 500),
-                        nothofagus = rowSums(pollen.comp.clean[, grep("Nothofagus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
-                        eucalyptus = rowSums(pollen.comp.clean[, grep("Eucalyptus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
-                        casuarina = rowSums(pollen.comp.clean[, grep("Casuarina*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts,
-                        callitris = pollen.comp.clean[,"Callitris"] / tot.cnts,
-                        phyllocladus = rowSums(pollen.comp.clean[, grep("Phyllocladus*", colnames(pollen.comp.clean))], na.rm = TRUE) / tot.cnts) %>%
+interp_dl <- data.frame(compiled_pollen.clean[,1:10],
+                        time = - (round(compiled_pollen.clean$age / 500, 0) * 500),
+                        nothofagus = compiled_pollen.clean[, grep("Nothofagus*", colnames(compiled_pollen.clean))] / tot.cnts,
+                        eucalyptus = compiled_pollen.clean[, grep("Eucalyptus*", colnames(compiled_pollen.clean))] / tot.cnts,
+                        casuarina = compiled_pollen.clean[, "Casuarina"] / tot.cnts,
+                        callitris = compiled_pollen.clean[,"Callitris"] / tot.cnts,
+                        phyllocladus = compiled_pollen.clean[, grep("Phyllocladus*", colnames(compiled_pollen.clean))] / tot.cnts) %>%
   group_by(time, lat, long, site.name) %>%
-  summarize( Nothofagus = mean ( nothofagus) * 100, 
-             Phyllocladus = mean ( phyllocladus) * 100, 
+  summarize(Nothofagus = mean (nothofagus) * 100, 
+          Phyllocladus = mean (phyllocladus) * 100, 
              Casuarina = mean (casuarina) * 100, 
              Callitris = mean (callitris) * 100, 
-             Eucalyptus = mean (eucalyptus) * 100)
+            Eucalyptus = mean (eucalyptus) * 100)
 
-common <- c('Beech', 'Celery Pine', 'She-Oak', 'Cypress-Pine', 'Eucalyptus')
+common <- c('Southern Beech', 'Celery Pine', 'She-Oak', 'Cypress-Pine', 'Eucalyptus')
 
 plant.data <- data.frame()
 for (i in 1:length(common)) {
-  taxon = common[i]
-  samples = interp_dl[,i+4]
+  taxon          <- common[i]
+  samples        <- interp_dl[,i+4]
   names(samples) <- "samples"
-  taxa = rep(taxon,nrow(samples))
+  taxa           <- rep(taxon,nrow(samples))
   current.taxon.data <- cbind(interp_dl[,1:4],samples,taxa)
   plant.data <- rbind(plant.data,current.taxon.data)
 }
@@ -182,8 +198,8 @@ final.output.no0 <- final_output[final_output$samples != 0,]
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
 
-write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus_V2.csv")
-write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus_V2_no0.csv")
+write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus_V3.csv")
+write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus_V3_no0.csv")
 
 
 ```
@@ -193,7 +209,7 @@ write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/Ca
 These next lines remove any observations from beyond the maxiumim age you recorded in your file.
 
 ```{r filter}
-timefltr_output <- dplyr::filter(interp_dl, time >= -age.old)
+timefltr_output <- dplyr::filter(interp_dl, time >= -age_old)
 final_output <- na.omit(timefltr_output)
 ```
 
@@ -218,5 +234,5 @@ carto_api = "api key"
 #test_connection()
 
 #Post the file!
-local_import(inputFile)
+# local_import(inputFile)
 ```

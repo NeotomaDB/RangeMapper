@@ -2,86 +2,136 @@
 <html>
 
 <head>
-    <title>Range Mapper</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+    <title>Range Mapper</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
     <script src="https://libs.cartocdn.com/carto-vl/v1.4.4/carto-vl.min.js"></script>
+
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
     <!-- <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script> -->
     <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- <link rel="stylesheet" href="https://libs.cartocdn.com/airship-style/v2.4.1/airship.css">
+    <script type="module" src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.esm.js"></script>
+    <script nomodule="" src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.js"></script>
+    <script src="https://libs.cartocdn.com/airship-bridge/v2.4.1/asbridge.js"></script> -->
+
+    <!-- <style>
+      .as-map-footer {
+        max-width: 812px;
+      }
+    </style> -->
 </head>
-
 <body>
-
-    <!-- Map div -->
+<!-- <body class="as-app-body"> -->
+    <!-- <div class="as-app">
+        <div class="as-content">
+            <main class="as-main">
+                <div class="as-map-area"> -->
     <div id="map"></div>
-
-<aside class="toolbox" id="animation-toolbox">
-    <div class="box" id="animation-box">
-        <header>
-            <h1 id="animation-header"> Range Mapper
-            <!-- dropdown selector -->
-                <select id="continent-selector" onchange="setContinent()">
+                    <!-- <div class="as-map-panels">
+                       <div class="as-panel as-panel--top as-panel--left">
+                         <div class="as-panel__element"> -->
+                <!-- <div class="as-map-footer">
+                    <div class="as-box">
+                        <as-animation-controls-widget
+                        animated
+                        heading="Animation"
+                        description="Try seeking and pausing"
+                        >
+                    </as-animation-controls-widget>
+                </div>
+                <div class="as-box">
+                    <as-category-widget show-clear-button> </as-category-widget>
+                </div>
+            </div> -->
+    <aside class="toolbox" id="animation-toolbox">
+        <div class="box" id="animation-box">
+            <header>
+                <h1 id="animation-header"> Range Mapper </h1>
+            </header>
+            <hr/>
+            <label for="standard-select"></label>
+            <div class="select">
+                <select id="standard-select" onchange="setContinent(taxaLayer)">           <!-- dropdown selector -->
                     <!-- <option selected = "selected"></option> -->
                     <option value="northamerica">North America</option>
                     <option value="europe">Europe</option>
-                    <option value="australia">Oceania</option>
+                    <option value="oceania">Oceania</option>
                 </select>
-            </h1>
-        </header>
-        <section id="animation-section">
-            <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
-            </p>
-        </section>
-        <section id="animation-section">
-            <p class="animation-rangebar">
-                <button><img id="js-play-pause-button" src="images/pause.png"></button>
-                <input type="range" id="js-progress-range" min="0" max="1" step="0.04">
-            </p>
-        </section>
-        <hr/>
-        <section id="animation-section">
-            <div class="animation-rangebar">Duration (seconds):
-                <input type="range" id="js-duration-range" min="10" max="60" step="2">
-                <span style="margin-left: 2px" class="open-sans" id="js-duration-span"></span>
+                <span class="focus"></span>
             </div>
-        </section>
-        <hr/>
-        <!-- Add legend data -->
-        <section>
-            <div id="controls">
-                <ul id="content" class="taxa-content"></ul>
-            </div>
-        </section>
-    </div>
-</aside>
+            <hr/>
+            <section id="animation-section">
+                <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
+                </p>
+            </section>
+            <section id="animation-section">
+                <p class="animation-rangebar">
+                    <button><img id="js-play-pause-button" src="images/pause.png"></button>
+                    <input type="range" id="js-progress-range" min="0" max="1" step="0.04">
+                </p>
+            </section>
+            <hr/>
+            <section id="animation-section">
+                <div class="animation-rangebar">Duration (seconds):
+                    <input type="range" id="js-duration-range" min="10" max="60" step="2">
+                    <span style="margin-left: 2px" class="open-sans" id="js-duration-span"></span>
+                </div>
+            </section>
+            <hr/>
+            <!-- Add legend data -->
+            <section>
+                <div id="controls">
+                    <ul id="content" class="taxa-content"></ul>
+                </div>
+            </section>
+        </div>
+    </aside>
 
-<div id="loader">
-    <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
-        <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
-            <circle class="CDB-LoaderIcon-path" cx="25" cy="25" r="20" fill="none"></circle>
-        </svg>
+    <!-- <div id="menu">
+        <header id="legend-head-text">Taxa</header>
+    </div> -->
+
+
+    <div id="loader">
+        <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
+            <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
+                <circle class="CDB-LoaderIcon-path" cx="25" cy="25" r="20" fill="none"></circle>
+            </svg>
+        </div>
     </div>
+
+    <!-- Legend -->
+    <section class="toolbox">
+        <div class="box" id="legend-box">
+            <header id="legend-head-text">
+                <div>Percent Abundance</div>
+            </header>
+            <!-- Add legend data -->
+            <!-- <section class="legend-section"> -->
+            <div id="circ-box">
+                <ul id="circ-content" class="legend-content"> </ul>
+            </div>
+            <div id="logo-div"> <img id="neotoma-logo" src="images/neotoma.jpeg" alt="neotoma">
+            </div>
+        </div>
+    </section>
+        <!-- </div>
+</div> -->
+<!-- </div>
+            </div>
+        </main>
+    </div> -->
 </div>
 
-<!-- Legend -->
-<section class="toolbox">
-    <div class="box" id="legend-box">
-        <header id="legend-head-text">
-            <div>Percent Abundance</div>
-        </header>
-        <!-- Add legend data -->
-        <!-- <section class="legend-section"> -->
-        <div id="circ-box">
-            <ul id="circ-content" class="legend-content"> </ul>
-        </div>
-        <div id="logo-div"> <img id="neotoma-logo" src="images/neotoma.jpeg" alt="neotoma">
-        </div>
-    </div>
-</section>
+
 
 <!--
 <div id="menu">
@@ -91,11 +141,11 @@
 
 <script>
   const s = carto.expressions;
-    var continents = ['northamerica', 'europe', 'australia']
+    var continents = ['northamerica', 'europe', 'oceania']
     // var contSource = [`cartoinput_na_3`, `cartoinputeuro`, `cartoinput_aus_2`];
-    var contSource = ["cartoinput_na_v5_no0", `cartoinput_euro_v2`, `cartoinput_aus_v2`];
-    var allTaxaTypes = [['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm'], ['Alder', 'Beech', 'Spruce', 'Oak'], ['She-Oak', 'Eucalyptus', 'Beech', 'Celery Pine', 'Cypress-Pine']];
-    var conticeSource = ['na_ice', 'euro_ice', '']
+    var contSource = ["cartoinput_na_v6", `cartoinput_euro_v3`, `cartoinput_aus_v3`];
+    var allTaxaTypes = [['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm'], ['Alder', 'Beech', 'Spruce', 'Oak'], ['She-Oak', 'Eucalyptus', 'Southern Beech', 'Celery Pine', 'Cypress-Pine']];
+    var conticeSource = ['na_ice_1', 'euro_ice', '']
     var allExtents = [[-96, 41], [20, 57], [125, -30]]
     var currentExtent = allExtents[0]
     var continentArr = []
@@ -113,8 +163,6 @@
         zoom: 3
     });
 
-    const nav = new mapboxgl.NavigationControl();
-    map.addControl(nav, 'bottom-left');
     // });
     carto.setDefaultAuth({
         username: 'aegeorge2',
@@ -124,31 +172,55 @@
         // apiKey: 'heU_1wb2M466etB6mh-UjA'
     });
 
+    const nav = new mapboxgl.NavigationControl();
+    map.addControl(nav, 'bottom-left');
+
     document.getElementById('js-duration-span').innerHTML = initialDuration;
 
-    for (var i = 0; i < continents.length; i++){
+    for (let i = 0; i < continents.length; i++){
         continentArr[i] = [continents[i], contSource[i], conticeSource[i], allTaxaTypes[i]]
     }
 
     // continentArr.forEach(createViz)
 
-    var taxaTypes = continentArr[0][3]
-    var taxaSource = new carto.source.Dataset(continentArr[0][1]);
+    let taxaTypes = continentArr[0][3]
+    let taxaSource = new carto.source.Dataset(continentArr[0][1]);
 
-    // setupMap(0)
-    var taxaViz = new carto.Viz(`
+    let commonStyles = `
         @duration: ${initialDuration}
         @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
-        @animation: animation(linear($time), @duration, fade(${initialDuration}/21,${initialDuration}/15.5));
+        @animation: animation(linear($time), @duration, fade(30/21,30/15.5));
         color: opacity(ramp($taxa,@colors),0.45);
         width: (50*(($samples / 25) ^ 0.5716));
         filter: @animation
         strokeWidth: 0.2;
         strokeColor: opacity(ramp($taxa,prism),0.2);
+    `
 
+    // setupMap(0)
+    const taxaViz = new carto.Viz(`
+        @duration: 31.5
+        @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+        @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
+        color: opacity(ramp($taxa,@colors),0.45);
+        width: (50*(($samples / 25) ^ 0.5716));
+        filter: @animation
+        strokeWidth: 0.2;
+        strokeColor: opacity(ramp($taxa,prism),0.2);
     `);
-    var taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
-    var iceLayer = createIceLayer(0)
+    let euroViz = new carto.Viz(`
+        ${commonStyles}
+    `);
+    let oceaniaViz = new carto.Viz(`
+        ${commonStyles}
+    `);
+
+    const taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
+    let iceLayer = createIceLayer(0)
+
+
+    // const animationControlsWidget = document.querySelector("as-animation-controls-widget");
+    // const categoryWidget = document.querySelector("as-category-widget");
 
 //     // Add layers to map
 //     // taxaLayer.forEach(currentLayer => {
@@ -156,6 +228,23 @@
         iceLayer.addTo(map);
     // });
     // createLegend(0)
+
+          // const bridge = new AsBridge.VLBridge({
+          //   carto: carto,
+          //   map: map,
+          //   layer: taxaLayer,
+          //   source: taxaSource,
+          // });
+          // bridge.animationControls(animationControlsWidget, 'year', {
+          //
+          //     variableName: 'animation'
+          // });
+          // bridge.category(categoryWidget, 'taxa', {
+          //   readOnly: false,
+          // });
+          //
+          // bridge.build();
+
 
     const $playPauseButton = document.getElementById('js-play-pause-button');
     const $durationRange = document.getElementById('js-duration-range');
@@ -231,11 +320,22 @@
 
         // When layer loads, trigger legend event
         taxaLayer.on('loaded', () => {
-            hideLoader()
             generateLegend();
             setupWidget();
+            hideLoader()
         });
 
+        let initialized = true;
+
+        // When layer loads, trigger legend event
+        // playing with when the legend functions individually are used
+        taxaLayer.on('updated', () => {
+            if (!initialized) {
+                generateLegend();
+                // setupWidget();
+                initialized = true;
+            }
+    });
         // let initialized = false;
 
         // taxaLayer.on('updated', () => {
@@ -342,12 +442,13 @@
         function generateLegend() {
             // Request data for legend from the layer viz
             let legend = taxaLayer.viz.color.getLegendData();
-            console.log(legend)
+            // console.log(legend)
             // Create list elements for legend
             let legendList = legend.data.map((legend, index) => {
                 const color = rgbToHex(legend.value);
                 const key = legend.key.toLowerCase().replace(' ', '-');
                 const selected = taxaTypes.includes(legend.key);
+                console.log(selected)
 
                 // Use "js-checkbox" class to get all the checkbox elements from the widget
                 // Use "data-taxa-type" attribute to set the category for each checkbox
@@ -359,6 +460,7 @@
                             type="checkbox"
                             name="categories"
                             data-taxa-type="${legend.key}"
+                            visible="true"
                         checked>
                         <span class="point-mark" style="background-color:${color};"></span>
                         <label for="js-checkbox-${key}">
@@ -386,12 +488,17 @@
             // 2. Get the category through the "data-taxa-type" attribute
             const category = checkboxElement.getAttribute('data-taxa-type');
             // 3. Toggle the chosen category from the global taxaTypes array
-            console.log(taxaTypes)
+            console.log(category)
             taxaTypes = _toggle(taxaTypes, category);
+            console.log(taxaTypes)
             // 4. Check / uncheck the checkbox element
             checkboxElement.checked = taxaTypes.includes(category);
             // 5. Update the filter
+            test = taxaViz.filter
             taxaViz.filter.blendTo(s.in(s.prop('taxa'), taxaTypes));
+            console.log(taxaViz.filter)
+            //taxaViz.variables.animation.setProgressPct($progressRange.value);
+
         }
 
         //** Helper Methods **//
@@ -406,6 +513,40 @@
             return arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
         }
 
+        // function createLegend() {
+        //     var layers = document.getElementById("menu");
+        //     while (layers.childNodes.length > 2) {
+        //         layers.removeChild(layers.lastChild);
+        //     }
+        //     for (var i = 0; i < allTaxaTypes[1].length; i++) {
+        //         var id = allTaxaTypes[1][i];
+        //         var taxonColor = taxaColors[i];
+        //         var link = document.createElement('taxa');
+        //         link.style.backgroundColor = taxonColor;
+        //         link.href = '#';
+        //         link.className = 'active';
+        //         link.textContent = id;
+        //         link.onclick = function(e) {
+        //             var clickedLayer = this.textContent;
+        //             console.log(clickedLayer)
+        //             e.preventDefault();
+        //             e.stopPropagation();
+        //             var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+        //             var colorPosition = toggleableIds.indexOf(clickedLayer)
+        //             var newColor = taxaColors[colorPosition]
+        //             if (visibility == 'visible') {
+        //                 map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+        //                 this.style.backgroundColor = '#E9E9E9';
+        //                 this.className = '';
+        //             } else {
+        //                 this.className = 'active'
+        //                 this.style.backgroundColor = newColor;
+        //                 map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+        //             }
+        //         };
+        //         layers.appendChild(link);
+        //     }
+        // }
         // function setupMap(n){
         //     var taxaSource = new carto.source.Dataset(continentArr[n][1]);
         //     taxaViz = createViz();
@@ -431,7 +572,7 @@
         // };
 
         function checkLegendData(){
-            let selectedContID = document.getElementById('continent-selector');
+            let selectedContID = document.getElementById('standard-select');
             let continentName = selectedContID.value
             if (continentName == 'northamerica') {
                 n = 0
@@ -439,7 +580,7 @@
             else if (continentName == 'europe') {
                 n = 1
             }
-            else if (continentName == 'australia') {
+            else if (continentName == 'oceania') {
                 n = 2
             };
             taxaTypes = continentArr[n][3]
@@ -447,13 +588,13 @@
             let legend = taxaLayer.viz.color.getLegendData();
 
             let equal = (legend.data.length === taxaTypes.length);
-            console.log(legend.data.length)
+            console.log(taxaLayer.viz)
             if (legend.data.length === taxaTypes.length){
             //     initialized = false
             // };
             // if (!initialized) {
-                generateLegend();
-                setupWidget();
+                // generateLegend();
+                // setupWidget();
                 initialized = true;
                 // console.log(initialized)
                 stopCheckLegend();
@@ -479,20 +620,26 @@
 
         // selector.addEventListener("change", setContinent);
         // change sql query with dropdown value
-        function setContinent() {
-            let selectedContID = document.getElementById('continent-selector');
+        function setContinent(taxaLayer) {
+            let selectedContID = document.getElementById('standard-select');
             let continentName = selectedContID.value
+            // taxaLayer.hide()
             if (continentName == 'northamerica') {
                 n = 0
+                taxaLayer.show()
             }
             else if (continentName == 'europe') {
                 n = 1
+                // if (typeof euroLayer === 'undefined') {
+                // let euroSource = new carto.source.Dataset(continentArr[n][1]);
+                // let euroLayer = new carto.Layer('eurolayer', euroSource, euroViz);
+                // }
             }
-            else if (continentName == 'australia') {
+            else if (continentName == 'oceania') {
                 n = 2
+                // let oceaniaSource = new carto.source.Dataset(continentArr[n][1]);
+                // let euroLayer = new carto.Layer('paclayer', oceaniaSource, oceaniaViz);
             };
-            // taxaLayer.remove()
-            let taxaSource = new carto.source.Dataset(continentArr[n][1]);
             if (continentName === 'northamerica' || continentName === 'europe'){
                 var iceSource = new carto.source.Dataset(continentArr[n][2]);
                 iceLayer.update(iceSource, iceViz);
@@ -500,6 +647,9 @@
             } else {
                 iceLayer.hide()
             };
+
+            let taxaSource = new carto.source.Dataset(continentArr[n][1]);
+
             currentExtent = allExtents[n];
             map.panTo(currentExtent);
             // let taxaViz = new carto.Viz(`
