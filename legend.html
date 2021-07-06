@@ -495,9 +495,19 @@
             checkboxElement.checked = taxaTypes.includes(category);
             // 5. Update the filter
             test = taxaViz.filter
-            taxaViz.filter.blendTo(s.in(s.prop('taxa'), taxaTypes));
-            console.log(taxaViz.filter)
+            //taxaViz.filter.blendTo(s.in(s.prop('taxa'), taxaTypes));
+            console.log(taxaLayer.visible)
             //taxaViz.variables.animation.setProgressPct($progressRange.value);
+
+                        if (visibility == 'visible') {
+                            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                            this.style.backgroundColor = '#E9E9E9';
+                            this.className = '';
+                        } else {
+                            this.className = 'active'
+                            this.style.backgroundColor = newColor;
+                            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+                        }
 
         }
 
