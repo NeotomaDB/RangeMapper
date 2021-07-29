@@ -275,38 +275,51 @@
 
     });
 
-    // $playPauseButton.addEventListener("click", playPause);
-    // myVideo = document.getElementById("myvid");
-    // function playPause() {
-    //     if (myVideo.paused) {
-    //         myVideo.play();
-    //         ppbutton.innerHTML = "Pause";
-    //         }
-    //     else  {
-    //         myVideo.pause();
-    //         ppbutton.innerHTML = "Play";
-    //         }
-    // }
+    $playPauseButton.addEventListener('click', playPause);
 
-    $playButton.addEventListener('click', () => {
-        paceViz.variables.animation.play();
-        taxaViz.forEach(currentViz => {
+    function playPause() {
+        paused = taxaViz.variables.animation._paused;
+        if (paused) {
             // Play the animation
-            currentViz.variables.animation.play();
-        });
-        console.log(paceViz.variables.animation.getProgressPct())
+            paceViz.variables.animation.play();
+            taxaViz.forEach(currentViz => {
+                // Play the animation
+                currentViz.variables.animation.play();
+            });
+            console.log(paceViz.variables.animation.getProgressPct())
+            iceViz.variables.animation.play();
+            document.getElementById("js-play-pause-button").src="images/pause.png";
+        } else  {
+            // Pause the animation
+            taxaViz.forEach(currentViz => {
+                // Pause animation
+                currentViz.variables.animation.pause();
+            });
+            paceViz.variables.animation.pause();
+            iceViz.variables.animation.pause();
+            document.getElementById("js-play-pause-button").src="images/play.png";
+        }
+    };
 
-    });
-
-
-
-    $pauseButton.addEventListener('click', () => {
-        taxaViz.forEach(currentViz => {
-            // Pause animation
-            currentViz.variables.animation.pause();
-        });
-        paceViz.variables.animation.pause();
-    });
+    // $playButton.addEventListener('click', () => {
+    //     paceViz.variables.animation.play();
+    //     taxaViz.forEach(currentViz => {
+    //         // Play the animation
+    //         currentViz.variables.animation.play();
+    //     });
+    //     console.log(paceViz.variables.animation.getProgressPct())
+    //
+    // });
+    //
+    //
+    //
+    // $pauseButton.addEventListener('click', () => {
+    //     taxaViz.forEach(currentViz => {
+    //         // Pause animation
+    //         currentViz.variables.animation.pause();
+    //     });
+    //     paceViz.variables.animation.pause();
+    // });
 
 
     $timeRange.addEventListener('change', () => {
