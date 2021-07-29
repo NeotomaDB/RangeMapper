@@ -38,7 +38,7 @@
         <section id="animation-section">
             <p class="animation-rangebar">
                 <button><img id="js-play-pause-button" src="images/pause.png"></button>
-                <input type="range" id="js-progress-range" min="0" max="1" step="0.04">
+                <input type="range" id="js-time-range" min="0" max="1" step="0.04">
             </p>
         </section>
         <br/>
@@ -235,7 +235,7 @@
 
     // Save initial time range value
     $timeRange.value = 0
-    let last = $timeRange.value;
+    let last = 0;
 
 
     // taxaLayers[0].on('updated', () => {
@@ -276,7 +276,7 @@
     $playPauseButton.addEventListener('click', playPause);
 
     function playPause() {
-        paused = taxaViz.variables.animation._paused;
+        paused = taxaViz[1].variables.animation._paused;
         if (paused) {
             // Play the animation
             paceViz.variables.animation.play();
