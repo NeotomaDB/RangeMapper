@@ -37,10 +37,8 @@
         </section>
         <section id="animation-section">
             <p class="animation-rangebar">
-                <!-- <button id="js-play-pause-button"><img src="images/play.png"></button> -->
-                <button id="js-play-button"><img src="images/play.png"></button>
-                <button id="js-pause-button"><img src="images/pause.png"></button>
-                <input type="range" id="js-time-range" min="0" max="1" step="0.03">
+                <button><img id="js-play-pause-button" src="images/pause.png"></button>
+                <input type="range" id="js-progress-range" min="0" max="1" step="0.04">
             </p>
         </section>
         <br/>
@@ -227,8 +225,8 @@
     // let paceLayer = taxaLayers[taxaLayers.length - 1]
 
     // const $playPauseButton = document.getElementById('js-play-pause-button');
-    const $playButton = document.getElementById('js-play-button');
-    const $pauseButton = document.getElementById('js-pause-button');
+    const $playPauseButton = document.getElementById('js-play-pause-button');
+    // const $pauseButton = document.getElementById('js-pause-button');
     const $durationRange = document.getElementById('js-duration-range');
     const $timeRange = document.getElementById('js-time-range');
     const $spanDuration = document.getElementById('js-duration-span');
