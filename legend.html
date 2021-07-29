@@ -495,19 +495,31 @@
             checkboxElement.checked = taxaTypes.includes(category);
             // 5. Update the filter
             test = taxaViz.filter
-            //taxaViz.filter.blendTo(s.in(s.prop('taxa'), taxaTypes));
-            console.log(taxaLayer.visible)
-            //taxaViz.variables.animation.setProgressPct($progressRange.value);
+            test = taxaViz.variables.animation.getProgressPct();
+            console.log(test)
+            taxaViz.filter.blendTo(new carto.Viz(`
+                @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
+                color: opacity(ramp($taxa,@colors),0.45);
+                filter: @animation and $taxa in ${taxaTypes}
+                strokeWidth: 0.2;
+                strokeColor: opacity(ramp($taxa,prism),0.2);
+            `));
+            // taxaViz.filter.blendTo(s.in(s.prop('taxa'), taxaTypes));
 
-                        if (visibility == 'visible') {
-                            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-                            this.style.backgroundColor = '#E9E9E9';
-                            this.className = '';
-                        } else {
-                            this.className = 'active'
-                            this.style.backgroundColor = newColor;
-                            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-                        }
+
+            taxaLayer.update
+
+            taxaViz.variables.animation.setProgressPct(test);
+            console.log(test)
+                        // if (visibility == 'visible') {
+                        //     map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                        //     this.style.backgroundColor = '#E9E9E9';
+                        //     this.className = '';
+                        // } else {
+                        //     this.className = 'active'
+                        //     this.style.backgroundColor = newColor;
+                        //     map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+                        // }
 
         }
 
