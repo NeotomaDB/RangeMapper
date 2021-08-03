@@ -61,27 +61,23 @@ src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.js"
 const map = new mapboxgl.Map({
   container: "map",
   style: carto.basemaps.darkmatter,
-  center: [-96, 41],
-  zoom: 5,
+  center: [-122.327739, 47.615199],
+  zoom: 10,
 });
-const s = carto.expressions;
 
-    carto.setDefaultAuth({
-        username: 'aegeorge2',
-        apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
-    });
+carto.setDefaultAuth({
+  username: "cartovl",
+  apiKey: "default_public",
+});
 
-const source = new carto.source.Dataset("cartoinput_na_v6");
+const source = new carto.source.Dataset("seattle_collisions");
 const viz = new carto.Viz(`
-    @duration: 30
-    strokeWidth: 0.2;
-    color: ramp($taxa,Bold),0.45);
-    width: (50*(($samples / 25) ^ 0.5716));
-    filter: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
+@duration: 30
+strokeWidth: 0
+color: ramp($addrtype, Bold)
+filter: animation($incdate, 30, fade(1, 1))
 `);
 
-// @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
-// @colorrmp: ramp($taxa,Bold);
 const layer = new carto.Layer("layer", source, viz);
 const animationControlsWidget = document.querySelector(
   "as-animation-controls-widget"
@@ -97,27 +93,12 @@ const bridge = new AsBridge.VLBridge({
   source: source,
 });
 
-bridge.animationControls(animationControlsWidget, "year");
-console.log('@colors')
-bridge.category(categoryWidget, s.ramp(s.prop("taxa"), 'colors'), {
+bridge.animationControls(animationControlsWidget, "time");
+bridge.category(categoryWidget, "addrtype", {
   readOnly: false,
 });
 
 bridge.build();
-
-// const $categoryWidget = document.querySelector('#cities-widget');
-// layer.on('updated', updateWidgets);
-//
-// console.log(bridge.category)
-// function updateWidgets() {
-// categoryWidget.categories = viz.variables.cities.value
-// //   .map(feature => ({
-// //     name: feature.name,
-// //     value: feature.pop_max,
-// //   }))
-// //   .sort((a, b) => b.value - a.value);
-// };
-
 </script>
 </body>
 </html>

@@ -13,7 +13,7 @@
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
     <!-- <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script> -->
-    <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+    <link href="https://carto.com/developers/carto-vl/v1.4.4/examples/maps/style.css" rel="stylesheet">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
 
@@ -187,7 +187,7 @@
     let taxaSource = new carto.source.Dataset(continentArr[0][1]);
 
     let commonStyles = `
-        @duration: ${initialDuration}
+        @duration: ${initialDuration};
         @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
         @animation: animation(linear($time), @duration, fade(30/21,30/15.5));
         color: opacity(ramp($taxa,@colors),0.45);
@@ -202,11 +202,15 @@
         @duration: 31.5
         @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
         @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
-        color: opacity(ramp($taxa,@colors),0.45);
+        @taxa: $taxa
+        @v_histogram: viewportHistogram($taxa)
+        @opacity: opacity(ramp(@taxa,@colors), 0.45)
+        color: @opacity;
         width: (50*(($samples / 25) ^ 0.5716));
-        filter: @animation
+        filter: @animation and @taxa in ['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm']
         strokeWidth: 0.2;
-        strokeColor: opacity(ramp($taxa,prism),0.2);
+        strokeColor: opacity(ramp(@taxa,prism),0.2);
+
     `);
     let euroViz = new carto.Viz(`
         ${commonStyles}
@@ -219,32 +223,12 @@
     let iceLayer = createIceLayer(0)
 
 
-    // const animationControlsWidget = document.querySelector("as-animation-controls-widget");
-    // const categoryWidget = document.querySelector("as-category-widget");
-
 //     // Add layers to map
 //     // taxaLayer.forEach(currentLayer => {
         taxaLayer.addTo(map);
         iceLayer.addTo(map);
     // });
     // createLegend(0)
-
-          // const bridge = new AsBridge.VLBridge({
-          //   carto: carto,
-          //   map: map,
-          //   layer: taxaLayer,
-          //   source: taxaSource,
-          // });
-          // bridge.animationControls(animationControlsWidget, 'year', {
-          //
-          //     variableName: 'animation'
-          // });
-          // bridge.category(categoryWidget, 'taxa', {
-          //   readOnly: false,
-          // });
-          //
-          // bridge.build();
-
 
     const $playPauseButton = document.getElementById('js-play-pause-button');
     const $durationRange = document.getElementById('js-duration-range');
@@ -385,42 +369,6 @@
             }
         }
 
-
-    //     var layers = document.getElementById("menu");
-    //     while (layers.childNodes.length > 2) {
-    //         layers.removeChild(layers.lastChild);
-    //     }
-    //     for (var i = 0; i < toggleableIds.length; i++) {
-    //         var id = toggleableIds[i];
-    //         var taxonColor = taxaColors[i];
-    //         var link = document.createElement('taxa');
-    //         link.style.backgroundColor = taxonColor;
-    //         link.href = '#';
-    //         link.className = 'active';
-    //         link.textContent = id;
-    //         link.onclick = function(e) {
-    //             var clickedLayer = this.textContent;
-    //             e.preventDefault();
-    //             e.stopPropagation();
-    //             var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-    //             var colorPosition = toggleableIds.indexOf(clickedLayer)
-    //             var newColor = taxaColors[colorPosition]
-    //             if (visibility == 'visible') {
-    //                 map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-    //                 this.style.backgroundColor = '#E9E9E9';
-    //                 this.className = '';
-    //             } else {
-    //                 this.className = 'active'
-    //                 this.style.backgroundColor = newColor;
-    //                 map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-    //             }
-    //         };
-    //         layers.appendChild(link);
-    //     }
-    // }
-
-
-
         // function updateMap(){
         //     let selectedContID = document.getElementById('continent-selector');
         //     let continentName = selectedContID.value
@@ -436,9 +384,6 @@
         //     setContinent()
         // }
 
-
-
-
         function generateLegend() {
             // Request data for legend from the layer viz
             let legend = taxaLayer.viz.color.getLegendData();
@@ -448,7 +393,6 @@
                 const color = rgbToHex(legend.value);
                 const key = legend.key.toLowerCase().replace(' ', '-');
                 const selected = taxaTypes.includes(legend.key);
-                console.log(selected)
 
                 // Use "js-checkbox" class to get all the checkbox elements from the widget
                 // Use "data-taxa-type" attribute to set the category for each checkbox
@@ -481,46 +425,35 @@
                 checkbox.addEventListener('change', toggleCategory);
             };
         }
+        const interactivity = new carto.Interactivity(taxaLayer);
+        const delay = 50;
+        let clickedFeatureId = null;
 
         function toggleCategory(event) {
             // 1. Get the clicked checkbox element from the event
             const checkboxElement = event.currentTarget;
             // 2. Get the category through the "data-taxa-type" attribute
             const category = checkboxElement.getAttribute('data-taxa-type');
+
             // 3. Toggle the chosen category from the global taxaTypes array
-            console.log(category)
+            const colorPosition = taxaTypes.indexOf(category)
+            const catColor = `${taxaColors[colorPosition]}`
+            const newColors = taxaColors
+            newColors.splice(colorPosition, 1)
+            console.log(newColors)
             taxaTypes = _toggle(taxaTypes, category);
             console.log(taxaTypes)
+            console.log(s.prop('taxa'))
+            console.log(taxaViz.variables['taxa'])
             // 4. Check / uncheck the checkbox element
             checkboxElement.checked = taxaTypes.includes(category);
             // 5. Update the filter
-            test = taxaViz.filter
-            test = taxaViz.variables.animation.getProgressPct();
-            console.log(test)
-            taxaViz.filter.blendTo(new carto.Viz(`
-                @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
-                color: opacity(ramp($taxa,@colors),0.45);
-                filter: @animation and $taxa in ${taxaTypes}
-                strokeWidth: 0.2;
-                strokeColor: opacity(ramp($taxa,prism),0.2);
-            `));
-            // taxaViz.filter.blendTo(s.in(s.prop('taxa'), taxaTypes));
+            console.log(last)
+            taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
 
-
-            taxaLayer.update
-
-            taxaViz.variables.animation.setProgressPct(test);
-            console.log(test)
-                        // if (visibility == 'visible') {
-                        //     map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-                        //     this.style.backgroundColor = '#E9E9E9';
-                        //     this.className = '';
-                        // } else {
-                        //     this.className = 'active'
-                        //     this.style.backgroundColor = newColor;
-                        //     map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-                        // }
-
+            //taxaViz.color.blendTo(s.opacity(s.ramp(s.in(s.prop('taxa'), taxaTypes),s.var('colors')),0));
+            taxaViz.variables.animation.setProgressPct(last);
+            iceViz.variables.animation.setProgressPct(last);
         }
 
         //** Helper Methods **//
@@ -535,40 +468,6 @@
             return arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
         }
 
-        // function createLegend() {
-        //     var layers = document.getElementById("menu");
-        //     while (layers.childNodes.length > 2) {
-        //         layers.removeChild(layers.lastChild);
-        //     }
-        //     for (var i = 0; i < allTaxaTypes[1].length; i++) {
-        //         var id = allTaxaTypes[1][i];
-        //         var taxonColor = taxaColors[i];
-        //         var link = document.createElement('taxa');
-        //         link.style.backgroundColor = taxonColor;
-        //         link.href = '#';
-        //         link.className = 'active';
-        //         link.textContent = id;
-        //         link.onclick = function(e) {
-        //             var clickedLayer = this.textContent;
-        //             console.log(clickedLayer)
-        //             e.preventDefault();
-        //             e.stopPropagation();
-        //             var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-        //             var colorPosition = toggleableIds.indexOf(clickedLayer)
-        //             var newColor = taxaColors[colorPosition]
-        //             if (visibility == 'visible') {
-        //                 map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-        //                 this.style.backgroundColor = '#E9E9E9';
-        //                 this.className = '';
-        //             } else {
-        //                 this.className = 'active'
-        //                 this.style.backgroundColor = newColor;
-        //                 map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-        //             }
-        //         };
-        //         layers.appendChild(link);
-        //     }
-        // }
         // function setupMap(n){
         //     var taxaSource = new carto.source.Dataset(continentArr[n][1]);
         //     taxaViz = createViz();
