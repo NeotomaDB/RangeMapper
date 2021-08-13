@@ -1,0 +1,238 @@
+---
+title: "Range_Mapper_R"
+author: "Adrian George and Sydney Widell, Williams Lab" 
+affiliation: "University of Wisconsin - Madison"
+date: "2/27/2019"
+#bibliography: ?
+#output:
+  #html_document:
+    #code_folding: {show?}
+    #fig_caption: {yes/no}
+    #keep_md: {yes/no}
+    #self_contained: {yes/no}
+    #theme: {readable?}
+    #toc: {yes/no}
+    #toc_float: {yes/no}
+#dev: {svg?}
+#highlight: {tango?}
+#keywords: {chronology, geochronology, paleoecology, age-models,
+  #Bacon, 210Pb, 14C, radiocarbon, biostratigraphy, Bayesian}
+#csl: styles/elsevier-harvard.csl
+
+---
+
+##Introduction
+. 
+
+Building this R pathway was helpful to us in our attempts to model global forest turnover over the last 21,000 years, using pollen records archived on Neotoma. Our models are a few of many that could be possible with code that links Neotoma's deep paleoecological data repository to Carto's intuitive and vibrant mapping technology.
+
+Our code integrates previous methods established by @williams2017neotoma and @goring2018bulk-baconizing for extracting and interpolating Neotoma data in R with a quick solution for moving that data to Carto, developed in @dracodoc2017rCartoAPI. In this guide, we will provide step-by-step instructions for running all parts of the code.(@anna, what am I not citing here?)
+
+#### RStudio ----I coppied this part straight from bulk baconizing. Is this standard? do I need to cite?
+
+Many people working with R may choose to use [RStudio](http://rstudio.com).  If you are using RStudio, you can customize elements of this document (for example, removing this header information) and then use the *knit* button to compile the code into an HTML document, while generating the neccessary output files (see the [README file](https://github.com/neotomadb) in the GitHub repository).
+
+
+## Connecting to Neotoma
+
+Is there a begining step that had to procede through terminal? I seem to remember doing this but can't find any doccumentation... I'll add it here if needed!
+
+## Setting up your library
+
+The Neotoma Package facilitates interactions between R and the Neotoma Database, and the dplyr Package allows you to filter the data you've extracted by factors like site and age.
+
+Later on, the rCartoAPI Package will push the data you've downloaded to Carto. That process references tools contained in the httr and devtools packages.  
+
+```{r library}
+library(neotoma)
+library(dplyr)
+library(httr)
+library(devtools)
+# library(rCartoAPI)
+```
+
+## Retrieving Neotoma data
+
+With this set-up complete, you're ready to extract your first dataset! In this example, we'll compile a few pollen records from Australia. 
+
+The taxa we'll be mapping are Nothofagus and Eucalyptus, but there are countless records available on Neotoma, and you can extract as many as you'd like by replicating the code below. However, it might be helpful to browse for any additional taxa on Neotoma, just to make sure that what you're looking for exists in its database.  Be aware that these values are case-sensitive. 
+
+Then, select the geographical bounds of your querry and express them as coordinates. ttps://boundingbox.klokantech.com/ is a useful way to generate your own bounding regions. Otherwise, these coordinates worked well for us across the sites we surveyed:
+
+ North American bounding box: loc = c(-130, 24, -34, 65),
+ European bounding box: loc = c(-11, 35, 47, 72)
+ Australian bounding box: loc = c(105, -51, 177, 10)
+ 
+It's also possible to select data from a geopolitical region. That code is recorded in lines 115-117. Pick whichever of these methods work best for you. 
+
+Third, set your boundary ages. We use a minimum of 21,000 years ago and set our maximum to 0. 
+
+Combined, these parameters are recorded in the metadata for the taxon in a specified location.
+
+
+```{r }
+# Set your taxa, location, and time period of interest
+location <- 
+ c(-130, 24, -34, 65) # North America
+  # c(-11, 35, 47, 72)   # Europe
+ # c(105, -51, 177, 10) # Oceania
+
+taxa <- c('Alnus', 'Ambrosia', 'Cyperaceae')#, #'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus') # North America
+    # c('Alnus', 'Fagus', 'Picea', 'Quercus') # Europe
+ #c('Nothofagus','Eucalyptus', 'Casuarina', 'Phyllocladus', 'Callitris') # Oceania
+
+age_young <- 0
+age_old <- 21000
+
+```
+
+
+
+The final step creates a list of all the taxon dataset numbers, removing duplicate datasets.
+
+## Appending and downloading your lists
+
+The last two lines download all your datasets as RDS files. You may want to change the name "data_downloads" to something more specific, especially if you plan on downloading multiple datasets. Set your own file path.
+
+```{r selecting and downloading datasets}
+taxa_datasets <- list()
+dataset_types <- c("pollen", "pollen surface sample")
+
+# Get dataset information for pollen core and pollen surface samples for all taxa
+for (i in 1:length(taxa)) {
+  for (j in 1:length(dataset_types)){
+    current_type     <- dataset_types[j]
+    current_datasets <- get_dataset(
+      datasettype = current_type,
+      taxonname   = paste0(taxa[i], "*"),
+      loc         = location,
+      ageyoung    = age_young,
+      ageold      = age_old
+    )
+    taxa_datasets <- append(taxa_datasets, current_datasets)
+  }
+}
+
+dataset.numbers <- unique(as.numeric(names(taxa_datasets))) # Remove repeat dataset numbers
+
+pollen_download <- get_download(dataset.numbers)
+
+# saveRDS(pollen_download, file = "PollenAus-21.RData")
+
+saveRDS(pollen_download, file = "PollenNA.RData")
+
+```
+
+
+
+## Compliling Data
+
+In this next section, you'll be working with data you've already downloaded from Neotoma. Now, you'll retrieve that data and prepare it for mapping. Note that data_downloads may be a generic name, if you've chosen to call your file something more specific.
+
+```{r compile}
+pollen_download <- readRDS("PollenNA.RData")
+pollen_download <- readRDS("PollenEurope-21.RData")
+pollen_download <- readRDS("PollenAus-21.RData")
+1415 + 1414 + 30 # NA + Europe + Australesia = 2859
+
+taxa_list <- neotoma::taxa(pollen_download)
+taxa_list <- as.data.frame(taxa_list)
+no.aqua <- taxa_list[(taxa_list$ecological.group == "TRSH" | taxa_list$ecological.group == "UPHE") & taxa_list$variable.element == 'pollen',]
+
+compiled_pollen <- compile_downloads(pollen_download)
+compiled_pollen.rc <- compiled_pollen[compiled_pollen$date.type != "Radiocarbon years BP",]
+compiled_pollen.clean <- cbind(compiled_pollen.rc[,1:10],compiled_pollen.rc[,colnames(compiled_pollen.rc) %in% no.aqua$taxon.name])
+length(unique(compiled_pollen.clean$dataset))
+# NA: 917, Eur; 275, Aus:12 = 1204
+917+275+12
+```
+
+## Linear Interpolation
+
+This chunk fetches total counts for each taxon observation at every site and linerally interpolates all the data in 500 year intervals. 
+
+
+```{r linear interpolation}
+tot.cnts <- rowSums(compiled_pollen.clean[,11:ncol(compiled_pollen.clean)], na.rm=TRUE)
+
+interp_dl <- data.frame(compiled_pollen.clean[,1:10],
+                        time = - (round(compiled_pollen.clean$age / 500, 0) * 500),
+                        nothofagus = compiled_pollen.clean[, grep("Nothofagus*", colnames(compiled_pollen.clean))] / tot.cnts,
+                        eucalyptus = compiled_pollen.clean[, grep("Eucalyptus*", colnames(compiled_pollen.clean))] / tot.cnts,
+                        casuarina = compiled_pollen.clean[, "Casuarina"] / tot.cnts,
+                        callitris = compiled_pollen.clean[,"Callitris"] / tot.cnts,
+                        phyllocladus = compiled_pollen.clean[, grep("Phyllocladus*", colnames(compiled_pollen.clean))] / tot.cnts) %>%
+  group_by(time, lat, long, site.name) %>%
+  summarize(Nothofagus = mean (nothofagus) * 100, 
+          Phyllocladus = mean (phyllocladus) * 100, 
+             Casuarina = mean (casuarina) * 100, 
+             Callitris = mean (callitris) * 100, 
+            Eucalyptus = mean (eucalyptus) * 100)
+
+common <- c('Southern Beech', 'Celery Pine', 'She-Oak', 'Cypress-Pine', 'Eucalyptus')
+
+plant.data <- data.frame()
+for (i in 1:length(common)) {
+  taxon          <- common[i]
+  samples        <- interp_dl[,i+4]
+  names(samples) <- "samples"
+  taxa           <- rep(taxon,nrow(samples))
+  current.taxon.data <- cbind(interp_dl[,1:4],samples,taxa)
+  plant.data <- rbind(plant.data,current.taxon.data)
+}
+
+colnames(plant.data)[colnames(plant.data) == '...6'] <- 'taxa'
+plant.data <- plant.data[order(plant.data$time,plant.data$site.name),]
+
+
+# Removes any observations from over 21,000 years ago
+timefltr_output <- dplyr::filter(plant.data, time >= -21000)
+final_output <- na.omit(timefltr_output)
+
+final.output.no0 <- final_output[final_output$samples != 0,]
+
+# #To make the legend
+# legendvalues <- rep(c(10, 50, 100), length.out = nrow(final_output[,1]))
+# final_output$legendvalues = legendvalues
+
+# Writes CSV file
+# Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
+
+write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus_V3.csv")
+write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_Aus_V3_no0.csv")
+
+
+```
+
+## Clean your data
+
+These next lines remove any observations from beyond the maxiumim age you recorded in your file.
+
+```{r filter}
+timefltr_output <- dplyr::filter(interp_dl, time >= -age_old)
+final_output <- na.omit(timefltr_output)
+```
+
+## Create CSV and upload it to Carto
+
+This chunk takes the data frame you generated above, converts it to a CSV and then imediatly posts it to Carto. All you have to do is provide a file path and carto user information where prompted. If you are not sure if you are able to access Carto, we've included an optional test conection, which you may uncomment and run as you'd like. 
+
+Double check your Carto data library to make sure your file has posted. Now you're ready to generate some rad visualizations!
+
+```{r to_Carto}
+write.csv(final_output, file = "~/Desktop/Neotoma.csv")
+inputFile <- "~/Desktop/Neotoma.csv"
+
+
+#This section posts the file you just created and saved locally to R
+
+#our carto info
+carto_acc = "username"
+carto_api = "api key"
+
+#optional:
+#test_connection()
+
+#Post the file!
+# local_import(inputFile)
+```

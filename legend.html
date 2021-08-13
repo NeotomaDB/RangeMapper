@@ -2,355 +2,325 @@
 <html>
 
 <head>
-    <title>Range Mapper | North America</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+    <title>Range Mapper</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
     <script src="https://libs.cartocdn.com/carto-vl/v1.4.4/carto-vl.min.js"></script>
+
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
-    <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script>
-    <link href="https://carto.com/developers/carto-vl/examples/maps/style.css" rel="stylesheet">
+    <!-- <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script> -->
+    <link href="https://carto.com/developers/carto-vl/v1.4.4/examples/maps/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
+
+    <!-- <link rel="stylesheet" href="https://libs.cartocdn.com/airship-style/v2.4.1/airship.css">
+    <script type="module" src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.esm.js"></script>
+    <script nomodule="" src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.js"></script>
+    <script src="https://libs.cartocdn.com/airship-bridge/v2.4.1/asbridge.js"></script> -->
+
+    <!-- <style>
+      .as-map-footer {
+        max-width: 812px;
+      }
+    </style> -->
 </head>
-
 <body>
-
-    <!-- Map div -->
+<!-- <body class="as-app-body"> -->
+    <!-- <div class="as-app">
+        <div class="as-content">
+            <main class="as-main">
+                <div class="as-map-area"> -->
     <div id="map"></div>
-
-<aside class=toolbox id="animation-toolbox">
-    <div class="box" id="animation-box">
-        <header>
-            <h1 id="animation-header"> Range Mapper</h1>
-            <!-- dropdown selector -->
-                <select id="continent-selector" onchange="setContinent()">
+                    <!-- <div class="as-map-panels">
+                       <div class="as-panel as-panel--top as-panel--left">
+                         <div class="as-panel__element"> -->
+                <!-- <div class="as-map-footer">
+                    <div class="as-box">
+                        <as-animation-controls-widget
+                        animated
+                        heading="Animation"
+                        description="Try seeking and pausing"
+                        >
+                    </as-animation-controls-widget>
+                </div>
+                <div class="as-box">
+                    <as-category-widget show-clear-button> </as-category-widget>
+                </div>
+            </div> -->
+    <aside class="toolbox" id="animation-toolbox">
+        <div class="box" id="animation-box">
+            <header>
+                <h1 id="animation-header"> Range Mapper </h1>
+            </header>
+            <hr/>
+            <label for="standard-select"></label>
+            <div class="select">
+                <select id="standard-select" onchange="setContinent(taxaLayer)">           <!-- dropdown selector -->
                     <!-- <option selected = "selected"></option> -->
                     <option value="northamerica">North America</option>
                     <option value="europe">Europe</option>
-                    <option value="australia">Australia</option>
+                    <option value="oceania">Oceania</option>
                 </select>
-        </header>
-        <section id="animation-section">
-            <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
-            </p>
-        </section>
-        <section id="animation-section">
-            <p class="animation-rangebar">
-                <button><img id="js-play-pause-button" src="images/pause.png"></button>
-                <input type="range" id="js-time-range" min="0" max="1" step="0.04">
-            </p>
-        </section>
-        <br/>
-        <section id="animation-section">
-            <span class="animation-rangebar">Duration (seconds):</span>
-                <input type="range" id="js-duration-range" min="10" max="42" step="2">
-                <span style="margin-left: 5px" class="open-sans" id="js-duration-span"><p id = durationid></p></span>
-        </section>
-    </div>
-</aside>
+                <span class="focus"></span>
+            </div>
+            <hr/>
+            <section id="animation-section">
+                <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
+                </p>
+            </section>
+            <section id="animation-section">
+                <p class="animation-rangebar">
+                    <button><img id="js-play-pause-button" src="images/pause.png"></button>
+                    <input type="range" id="js-progress-range" min="0" max="1" step="0.04">
+                </p>
+            </section>
+            <hr/>
+            <section id="animation-section">
+                <div class="animation-rangebar">Duration (seconds):
+                    <input type="range" id="js-duration-range" min="10" max="60" step="2">
+                    <span style="margin-left: 2px" class="open-sans" id="js-duration-span"></span>
+                </div>
+            </section>
+            <hr/>
+            <!-- Add legend data -->
+            <section>
+                <div id="controls">
+                    <ul id="content" class="taxa-content"></ul>
+                </div>
+            </section>
+        </div>
+    </aside>
 
-<div id="loader">
-    <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
-        <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
-            <circle class="CDB-LoaderIcon-path" cx="25" cy="25" r="20" fill="none"></circle>
-        </svg>
+    <!-- <div id="menu">
+        <header id="legend-head-text">Taxa</header>
+    </div> -->
+
+
+    <div id="loader">
+        <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
+            <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
+                <circle class="CDB-LoaderIcon-path" cx="25" cy="25" r="20" fill="none"></circle>
+            </svg>
+        </div>
     </div>
+
+    <!-- Legend -->
+    <section class="toolbox">
+        <div class="box" id="legend-box">
+            <header id="legend-head-text">
+                <div>Percent Abundance</div>
+            </header>
+            <!-- Add legend data -->
+            <!-- <section class="legend-section"> -->
+            <div id="circ-box">
+                <ul id="circ-content" class="legend-content"> </ul>
+            </div>
+            <div id="logo-div"> <img id="neotoma-logo" src="images/neotoma.jpeg" alt="neotoma">
+            </div>
+        </div>
+    </section>
+        <!-- </div>
+</div> -->
+<!-- </div>
+            </div>
+        </main>
+    </div> -->
 </div>
 
-<!-- Legend -->
-<section class="toolbox">
-    <div class="box" id="legend-box">
-        <header id="legend-head-text">
-            <div>Percent Abundance</div>
-        </header>
-        <!-- Add legend data -->
-        <!-- <section class="legend-section"> -->
-        <div id="controls" class="legend-controls">
-            <ul id="content" class="legend-content"> </ul>
-        </div>
-        <div id="logo-div"> <img id="neotoma-logo" src="images/neotoma.jpeg" alt="neotoma">
-        </div>
-    </div>
-</section>
 
 
+<!--
 <div id="menu">
     <header id="legend-head-text">Taxa</header>
-</div>
+</div> -->
 
 
 <script>
-
-    var continents = ['northamerica', 'europe', 'australia']
-    var contSource = [`cartoinput_na_3`, `cartoinputeuro`, `cartoinput_aus_2`];
-    var contIDs = [['Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus'],
-                ['Alnus', 'Fagus', 'Picea', 'Quercus'], ['Casuarina', 'Eucalyptus', 'Nothofagus', 'Phyllocladus']];
-    var contColumns = [['alnus', 'ambrosia', 'cyperaceae', 'fagus', 'picea', 'pinus', 'poaceae', 'quercus', 'tsuga', 'ulmus'],
-                ['alnus', 'fagus', 'picea', 'quercus'],['casuarina', 'eucalyptus', 'nothofagus', 'phyllocladus']];
-    var conticeSource = ['icesheets','icev8',]
+  const s = carto.expressions;
+    var continents = ['northamerica', 'europe', 'oceania']
+    // var contSource = [`cartoinput_na_3`, `cartoinputeuro`, `cartoinput_aus_2`];
+    var contSource = ["cartoinput_na_v6", `cartoinput_euro_v3`, `cartoinput_aus_v3`];
+    var allTaxaTypes = [['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm'], ['Alder', 'Beech', 'Spruce', 'Oak'], ['She-Oak', 'Eucalyptus', 'Southern Beech', 'Celery Pine', 'Cypress-Pine']];
+    var conticeSource = ['na_ice_1', 'euro_ice', '']
     var allExtents = [[-96, 41], [20, 57], [125, -30]]
     var currentExtent = allExtents[0]
     var continentArr = []
-
+    var allPollenSources = []
     var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#996699', '#C7003A', '#FF8D19', '#ADD55C', '#511849'];
-    var legendSizes = [20,50,100]
     var initialDuration = 31.5
     var allViz = []
     var allLayers = []
-    // var allToggleableIds = []
-    var taxaViz = []
-    var taxaLayers = []
+    var allToggleableIds = [] // maybe get rid of
 
-    // function updateExtent(){
-        var map = new mapboxgl.Map({
-            container: 'map',
-            style: carto.basemaps.positron,
-            center: currentExtent,
-            zoom: 3
-        });
-    // }
-    // updateExtent()
-    // const nav = new mapboxgl.NavigationControl({
-    //     showCompass: false
-    const nav = new mapboxgl.NavigationControl();
-    map.addControl(nav, 'bottom-left');
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: carto.basemaps.positron,
+        center: currentExtent,
+        zoom: 3
+    });
+
     // });
     carto.setDefaultAuth({
-        username: 'widell',
-        apiKey: '7de5ebf57ee0f31ed45302fb9c0b3a90723921ae'
+        username: 'aegeorge2',
+        apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
+
+        // username: 'aegeorge2',
+        // apiKey: 'heU_1wb2M466etB6mh-UjA'
     });
 
-    // https://aegeorge2.carto.com/api/v2/sql?q=SELECT+column_name+FROM+information_schema.columns+WHERE+table_name+=+%27cartoinput_eur_v2%27&api_key=2b8175051e465979cce3424b18b49846d1461e48+AND+
+    const nav = new mapboxgl.NavigationControl();
+    map.addControl(nav, 'bottom-left');
 
+    document.getElementById('js-duration-span').innerHTML = initialDuration;
 
-
-    for (var i = 0; i < continents.length; i++){
-        continentArr[i] = [continents[i], contSource[i], contIDs[i], contColumns[i], conticeSource[i]]
-    }
-    document.getElementById('durationid').innerHTML = initialDuration;
-
-    // continentArr.forEach(continent => {
-    for (var i = 0; i < continentArr.length; i++){
-        continent = continentArr[i];
-        var continentName = continent[0];
-        var pollenSource = new carto.source.Dataset(continent[1]);
-        var toggleableIds = continent[2];
-        var taxaColumns = continent[3];
-        var currentTaxaViz = [];
-        var currentTaxaLayers = [];
-        createViz();
-        createLayer();
-        // if (continentName == 'northamerica' || continentName == 'europe'){
-        if (continentName == 'northamerica'){
-            var iceSource = new carto.source.Dataset(continent[4]);
-            iceViz = createIceViz();
-            currentTaxaViz.push(iceViz);
-            const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
-            currentTaxaLayers.push(iceLayer);
-        }
-        // taxaViz.push(rootPaceViz);
-        // taxaLayers.push(rootPaceLayer);
-        allViz[i] = currentTaxaViz;
-        allLayers[i] = currentTaxaLayers;
-    };
-
-    function createViz(){
-        for (var i = 0; i < taxaColumns.length; ++i) {
-            taxaColumn = '$' + taxaColumns[i]
-            taxaColor  = taxaColors[i]
-            var newViz = new carto.Viz(`
-                @duration: ${initialDuration},
-                @animation: animation($time, @duration, fade(${initialDuration}/21,${initialDuration}/15.5)),
-                color: opacity(${taxaColor},0.4)
-                strokeColor: opacity(${taxaColor},0.2)
-                width: ${taxaColumn}
-                filter: @animation
-                strokeWidth: ${taxaColumn}/30 * @animation
-                order: asc(width())`
-            );
-            currentTaxaViz[i] = newViz;
-        }
-        return currentTaxaViz
+    for (let i = 0; i < continents.length; i++){
+        continentArr[i] = [continents[i], contSource[i], conticeSource[i], allTaxaTypes[i]]
     }
 
-    function createIceViz(){
-        var iceViz = new carto.Viz(`
-            @duration:${initialDuration}
-            @animation: animation($age,@duration, fade(hold,.15))
-            color: opacity(#99daf2,1)
-            strokeWidth: 0
-            filter: @animation
-            `);
-        return iceViz
-    }
+    // continentArr.forEach(createViz)
 
-    function createLayer(){
-        for (var i = 0; i < taxaColumns.length; ++i) {
-            currentViz = currentTaxaViz[i]
-            currentTaxon = toggleableIds[i]
-            var currentLayer = new carto.Layer(currentTaxon, pollenSource, currentViz);
-            currentTaxaLayers[i] = currentLayer
-        }
-        return currentTaxaLayers
-    }
+    let taxaTypes = continentArr[0][3]
+    let taxaSource = new carto.source.Dataset(continentArr[0][1]);
 
-
-    var paceSource = new carto.source.Dataset(contSource[0])
-
-    const paceViz = new carto.Viz(`
-        @duration: ${initialDuration},
-        @animation: animation($time, @duration, fade(${initialDuration}/21,${initialDuration}/15.5)),
-        width: $legendvalues
-        color: opacity(white, 0)
-        strokeWidth: 0
+    let commonStyles = `
+        @duration: ${initialDuration};
+        @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+        @animation: animation(linear($time), @duration, fade(30/21,30/15.5));
+        color: opacity(ramp($taxa,@colors),0.45);
+        width: (50*(($samples / 25) ^ 0.5716));
         filter: @animation
-        `);
+        strokeWidth: 0.2;
+        strokeColor: opacity(ramp($taxa,prism),0.2);
+    `
 
-    const paceLayer = new carto.Layer('legend', paceSource, paceViz);
-    paceLayer.addTo(map);
+    // setupMap(0)
+    const taxaViz = new carto.Viz(`
+        @duration: 31.5
+        @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+        @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
+        @taxa: $taxa
+        @v_histogram: viewportHistogram($taxa)
+        @opacity: opacity(ramp(@taxa,@colors), 0.45)
+        color: @opacity;
+        width: (50*(($samples / 25) ^ 0.5716));
+        filter: @animation and @taxa in ['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm']
+        strokeWidth: 0.2;
+        strokeColor: opacity(ramp(@taxa,prism),0.2);
 
-    var taxaViz = allViz[0]
-    var taxaLayers = allLayers[0]
-    var toggleableIds = continentArr[0][2]
+    `);
+    let euroViz = new carto.Viz(`
+        ${commonStyles}
+    `);
+    let oceaniaViz = new carto.Viz(`
+        ${commonStyles}
+    `);
 
-    // Add layers to map
-    taxaLayers.forEach(currentLayer => {
-        currentLayer.addTo(map);
-    });
-    createLegend()
+    const taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
+    let iceLayer = createIceLayer(0)
 
 
-    // let paceViz = taxaViz[taxaViz.length - 1]
-    // let paceLayer = taxaLayers[taxaLayers.length - 1]
+//     // Add layers to map
+//     // taxaLayer.forEach(currentLayer => {
+        taxaLayer.addTo(map);
+        iceLayer.addTo(map);
+    // });
+    // createLegend(0)
 
-    // const $playPauseButton = document.getElementById('js-play-pause-button');
     const $playPauseButton = document.getElementById('js-play-pause-button');
-    // const $pauseButton = document.getElementById('js-pause-button');
     const $durationRange = document.getElementById('js-duration-range');
-    const $timeRange = document.getElementById('js-time-range');
+    const $progressRange = document.getElementById('js-progress-range');
     const $spanDuration = document.getElementById('js-duration-span');
     const $currentTime = document.getElementById('js-current-time');
+
     const $continentSelection = document.getElementById('continent-selector')
 
+
+    // getEventListeners()
+    // //
+    // function getEventListeners() {
+
     // Save initial time range value
-    $timeRange.value = 0
-    let last = 0;
-
-
-    // taxaLayers[0].on('updated', () => {
-    //     // getEventListeners()
-    //     // console.log(paceViz.variables.animation.getProgressPct())
-    //     // taxaViz.forEach(currentViz => {
-    //     //     // Update animation progress
-    //     //     currentViz.variables.animation.setProgressPct(paceViz.variables.animation.getProgressPct());
-    //     //     console.log($timeRange.value)
-    //     // });
-    //     // paceViz.variables.animation.setProgressPct($timeRange.value);
-    //
-    //     // console.log(taxaViz[0].variables.animation.getProgressPct())
-    //     // // $timeRange.value = paceViz.variables.animation.getProgressPct();
-    //     // // pauseAnimation();
-    //     // console.log($timeRange.value)
-    //     changeTimeRange()
-    //     changeCurrentTime()
-    // });
+    let last = $progressRange.value;
 
 
 
-    getEventListeners()
-    //
-    function getEventListeners() {
     // Listen to interaction events
     $durationRange.addEventListener('change', () => {
-        var duration = parseInt($durationRange.value, 10);
-        taxaViz.forEach(currentViz => {
-            // Update animation duration
-            currentViz.variables.duration = $spanDuration.innerHTML = duration
-        });
-        // paceViz.variables.duration = $spanDuration.innerHTML = duration
-        taxaViz[0].variables.duration = $spanDuration.innerHTML = duration
-
+        const duration = parseInt($durationRange.value, 10);
+        // Update animation duration
+        taxaViz.variables.duration = $spanDuration.innerHTML = duration
+        iceViz.variables.duration = $spanDuration.innerHTML = duration
     });
 
     $playPauseButton.addEventListener('click', playPause);
 
     function playPause() {
-        paused = taxaViz[1].variables.animation._paused;
+        paused = taxaViz.variables.animation._paused;
         if (paused) {
             // Play the animation
-            paceViz.variables.animation.play();
-            taxaViz.forEach(currentViz => {
-                // Play the animation
-                currentViz.variables.animation.play();
-            });
-            console.log(paceViz.variables.animation.getProgressPct())
+            taxaViz.variables.animation.play();
             iceViz.variables.animation.play();
             document.getElementById("js-play-pause-button").src="images/pause.png";
         } else  {
             // Pause the animation
-            taxaViz.forEach(currentViz => {
-                // Pause animation
-                currentViz.variables.animation.pause();
-            });
-            paceViz.variables.animation.pause();
+            taxaViz.variables.animation.pause();
             iceViz.variables.animation.pause();
             document.getElementById("js-play-pause-button").src="images/play.png";
         }
     };
 
-    // $playButton.addEventListener('click', () => {
-    //     paceViz.variables.animation.play();
-    //     taxaViz.forEach(currentViz => {
-    //         // Play the animation
-    //         currentViz.variables.animation.play();
-    //     });
-    //     console.log(paceViz.variables.animation.getProgressPct())
-    //
-    // });
-    //
-    //
-    //
-    // $pauseButton.addEventListener('click', () => {
-    //     taxaViz.forEach(currentViz => {
-    //         // Pause animation
-    //         currentViz.variables.animation.pause();
-    //     });
-    //     paceViz.variables.animation.pause();
-    // });
-
-
-    $timeRange.addEventListener('change', () => {
-        // changeTimeRange()
-        paceViz.variables.animation.setProgressPct($timeRange.value);
-        taxaViz.forEach(currentViz => {
+        $progressRange.addEventListener('change', () => {
             // Update animation progress
-            currentViz.variables.animation.setProgressPct($timeRange.value);
+            taxaViz.variables.animation.setProgressPct($progressRange.value);
+            iceViz.variables.animation.setProgressPct($progressRange.value);
+            last = $progressRange.value;
         });
 
-        last = $timeRange.value
+        // Listen to layer events
+        taxaLayer.on('updated', () => {
+            if ($progressRange.value == last) {
+                $progressRange.value = taxaViz.variables.animation.getProgressPct();
+                last = $progressRange.value;
+            }
+            $currentTime.innerText = parseInt(Math.round(taxaViz.variables.animation.getProgressValue()/500)*500);
+        });
+// }
+
+        var legendSizes = [25,50,100]
+        // const widthLegend =
+        let widthLegendList = '';
+        legendSizes.forEach(currentSize => {
+            currentWidth = 50*Math.pow((currentSize/25),0.5716)
+            widthLegendList +=
+            `<li id="legendList"><div class="circle" id="circle${currentSize}" style="width:${currentWidth}px; height:${currentWidth}px;"></div> ${currentSize}</li>`;
+        });
+        // Place list items in the content section of the title/legend box
+        document.getElementById('circ-content').innerHTML = widthLegendList;
+
+
+        // When layer loads, trigger legend event
+        taxaLayer.on('loaded', () => {
+            generateLegend();
+            setupWidget();
+            hideLoader()
+        });
+
+        let initialized = true;
+
+        // When layer loads, trigger legend event
+        // playing with when the legend functions individually are used
+        taxaLayer.on('updated', () => {
+            if (!initialized) {
+                generateLegend();
+                // setupWidget();
+                initialized = true;
+            }
     });
-
-    taxaLayers[0].on('updated', () => {
-        // changeCurrentTime()
-        if ($timeRange.value == last) {
-            $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
-            // last = $timeRange.value;
-            // $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
-            last = $timeRange.value;
-        }
-        // $currentTime.innerText = parseInt(paceViz.variables.animation.getProgressValue());
-        $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
-
-    });
-
-
-    //
-    // // Listen to layer events
-    // paceLayer.on('updated', () => {
-    //     changeCurrentTime()
-    // });
-
+        // let initialized = false;
 
         // taxaLayer.on('updated', () => {
         //     if (!initialized) {
@@ -358,57 +328,100 @@
         //         initialized = true;
         //     }
         // });
+        // function createViz(){
+        //     var taxaViz = new carto.Viz(`
+        //         @duration: 30
+        //         @animation: animation(linear($time), @duration, fade(1,1))
+        //         color: opacity(ramp($taxa,prism),0.45)
+        //         width: 100*(($samples/50)^0.5716) * @animation
+        //         strokeWidth: 0.2
+        //         strokeColor: opacity(ramp($taxa,prism),0.2)
+        //     `);
+        //     return taxaViz
+        // };
 
-    // function changeTimeRange(){
-    //     console.log($timeRange.value)
-    //     // paceViz.variables.animation.setProgressPct($timeRange.value);
-    //     // taxaViz.forEach(currentViz => {
-    //     //     // Update animation progress
-    //     //     currentViz.variables.animation.setProgressPct($timeRange.value);
-    //     // });
-    //     // last = $timeRange.value
-    // }
-    //
-    // function changeCurrentTime(){
-    //     if ($timeRange.value == last) {
-    //         // $timeRange.value = paceViz.variables.animation.getProgressPct();
-    //         // last = $timeRange.value;
-    //         $timeRange.value = taxaViz[0].variables.animation.getProgressPct();
-    //         last = $timeRange.value;
-    //     }
-    //     // $currentTime.innerText = parseInt(paceViz.variables.animation.getProgressValue());
-    //     $currentTime.innerText = parseInt(taxaViz[0].variables.animation.getProgressValue());
-    //
-    // }
+        // function createLayer(n){
+        //     // var taxaViz = createViz()
+        //     var taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
+        //     return taxaLayer
+        // }
 
+        function createIceViz(){
+            var iceViz = new carto.Viz(`
+                @duration:${initialDuration}
+                @animation: animation($age,@duration, fade(hold,.15))
+                color: opacity(#99daf2,1)
+                strokeWidth: 0
+                filter: @animation
+                `);
+            return iceViz
+        }
 
-}
+        function createIceLayer(n){
+            continentName = continentArr[n][0]
+            if (continentName == 'northamerica' || continentName == 'europe'){
+                var iceSource = new carto.source.Dataset(continentArr[n][2]);
+                iceViz = createIceViz();
+                // newViz.push(iceViz);
+                const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
+                // newLayer.push(iceLayer);
+                return iceLayer
+            }
+        }
 
-<<<<<<< Updated upstream
-        taxaLayers[0].on('loaded', hideLoader);
+        // function updateMap(){
+        //     let selectedContID = document.getElementById('continent-selector');
+        //     let continentName = selectedContID.value
+        //     if (continentName == 'northamerica') {
+        //         n = 0
+        //     }
+        //     else if (continentName == 'europe') {
+        //         n = 1
+        //     }
+        //     else if (continentName == 'australia') {
+        //         n = 2
+        //     };
+        //     setContinent()
+        // }
 
-        // iceLayer.addTo(map);
-        // When layer loads, trigger legend event
-        // paceLayer.on('loaded', () => {
-        //     // Request data for legend from the layer viz
-        //     const widthLegend = paceLayer.viz.width.getLegendData({
-        //         samples: 3
-        //     });
-        //     let widthLegendList = '';
-        //     // Create list elements for legend
-        //     widthLegend.data.forEach((legend, index) => {
-        //         widthLegendList +=
-        //         `<li><div class="circle" id="circle${legend.value}" style="width:${legend.value}px; height:${legend.value}px;"></div> ${legend.key.toFixed(0)}</li>`;
-        //     });
-        //     // Place list items in the content section of the title/legend box
-        //     document.getElementById('content').innerHTML = widthLegendList;
-        // });
-=======
     taxaLayer.on('loaded', hideLoader);
 
         function generateLegend() {
             // Request data for legend from the layer viz
             let legend = taxaLayer.viz.color.getLegendData();
+            // Create list elements for legend
+            let legendList = legend.data.map((legend, index) => {
+                const color = rgbToHex(legend.value);
+                const key = legend.key.toLowerCase().replace(' ', '-');
+                const selected = taxaTypes.includes(legend.key);
+
+                // Use "js-checkbox" class to get all the checkbox elements from the widget
+                // Use "data-taxa-type" attribute to set the category for each checkbox
+                return `
+                    <li>
+                        <input
+                            id="js-checkbox-${key}"
+                            class="js-checkbox"
+                            type="checkbox"
+                            name="categories"
+                            data-taxa-type="${legend.key}"
+                            visible="true"
+                        checked>
+                        <span class="point-mark" style="background-color:${color};"></span>
+                        <label for="js-checkbox-${key}">
+                            ${legend.key}
+                        </label>
+                    </li>\n`;
+            }).join('');
+
+            document.getElementById('content').innerHTML = legendList;
+        }
+
+=======
+        function generateLegend() {
+            // Request data for legend from the layer viz
+            let legend = taxaLayer.viz.color.getLegendData();
+            // console.log(legend)
             // Create list elements for legend
             let legendList = legend.data.map((legend, index) => {
                 const color = rgbToHex(legend.value);
@@ -446,6 +459,9 @@
                 checkbox.addEventListener('change', toggleCategory);
             };
         }
+        const interactivity = new carto.Interactivity(taxaLayer);
+        const delay = 50;
+        let clickedFeatureId = null;
 
         function toggleCategory(event) {
             // 1. Get the clicked checkbox element from the event
@@ -458,60 +474,87 @@
             const catColor = `${taxaColors[colorPosition]}`
             const newColors = taxaColors
             newColors.splice(colorPosition, 1)
+            console.log(newColors)
             taxaTypes = _toggle(taxaTypes, category);
-
+            console.log(taxaTypes)
+            console.log(s.prop('taxa'))
+            console.log(taxaViz.variables['taxa'])
             // 4. Check / uncheck the checkbox element
             checkboxElement.checked = taxaTypes.includes(category);
             // 5. Update the filter
+            console.log(last)
             taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
-            // Update animation to last timestamp
+
+            //taxaViz.color.blendTo(s.opacity(s.ramp(s.in(s.prop('taxa'), taxaTypes),s.var('colors')),0));
             taxaViz.variables.animation.setProgressPct(last);
             iceViz.variables.animation.setProgressPct(last);
         }
->>>>>>> Stashed changes
 
-        let widthLegendList = '';
-        legendSizes.forEach(currentSize => {
-            widthLegendList +=
-            `<li><div class="circle" id="circle${currentSize}" style="width:${currentSize}px; height:${currentSize}px;"></div> ${currentSize.toFixed(0)}</li>`;
-        });
-        // Place list items in the content section of the title/legend box
-        document.getElementById('content').innerHTML = widthLegendList;
+        //** Helper Methods **//
 
-
-    function createLegend() {
-        var layers = document.getElementById("menu");
-        while (layers.childNodes.length > 2) {
-            layers.removeChild(layers.lastChild);
+        // A function to convert map colors to HEX values for legend
+        function rgbToHex(color) {
+            return "#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1);
         }
-        for (var i = 0; i < toggleableIds.length; i++) {
-            var id = toggleableIds[i];
-            var taxonColor = taxaColors[i];
-            var link = document.createElement('taxa');
-            link.style.backgroundColor = taxonColor;
-            link.href = '#';
-            link.className = 'active';
-            link.textContent = id;
-            link.onclick = function(e) {
-                var clickedLayer = this.textContent;
-                e.preventDefault();
-                e.stopPropagation();
-                var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-                var colorPosition = toggleableIds.indexOf(clickedLayer)
-                var newColor = taxaColors[colorPosition]
-                if (visibility == 'visible') {
-                    map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-                    this.style.backgroundColor = '#E9E9E9';
-                    this.className = '';
-                } else {
-                    this.className = 'active'
-                    this.style.backgroundColor = newColor;
-                    map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-                }
+
+        // A function to toggle an element in an array
+        function _toggle(arr, item) {
+            return arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
+        }
+
+        // function setupMap(n){
+        //     var taxaSource = new carto.source.Dataset(continentArr[n][1]);
+        //     taxaViz = createViz();
+        //     taxaLayer = createLayer(n);
+        //     iceLayer = createIceLayer(n);
+        //     // taxaLayer = allLayers[n];
+        //     // toggleableIds = continentArr[n][2];
+        //     // taxaNames = continentArr[n][5];
+        //     taxaLayer.addTo(map);
+        //     iceLayer.addTo(map);
+        //     // return taxaViz
+        //     return taxaLayer
+        //     // paceLayer.addTo(map);
+        //     // last = paceViz.variables.animation.getProgressPct()
+        //     // taxaViz.forEach(currentViz => {
+        //     //     // Update animation progress
+        //     //     currentViz.variables.animation.setProgressPct(paceViz.variables.animation.getProgressPct());
+        //     // });
+        //     // last = $progressRange.value
+        //
+        //     // createLegend()
+        //
+        // };
+
+        function checkLegendData(){
+            let selectedContID = document.getElementById('standard-select');
+            let continentName = selectedContID.value
+            if (continentName == 'northamerica') {
+                n = 0
+            }
+            else if (continentName == 'europe') {
+                n = 1
+            }
+            else if (continentName == 'oceania') {
+                n = 2
             };
-<<<<<<< Updated upstream
-            layers.appendChild(link);
-=======
+            taxaTypes = continentArr[n][3]
+            // if legend !=== taxaLayer.viz.color.getLegendData();
+            let legend = taxaLayer.viz.color.getLegendData();
+
+            let equal = (legend.data.length === taxaTypes.length);
+            console.log(taxaLayer.viz)
+            if (legend.data.length === taxaTypes.length){
+            //     initialized = false
+            // };
+            // if (!initialized) {
+                // generateLegend();
+                // setupWidget();
+                initialized = true;
+                // console.log(initialized)
+                stopCheckLegend();
+                // return initialized;
+            };
             taxaTypes = continentArr[n][3]
             // if legend !=== taxaLayer.viz.color.getLegendData();
             let legend = taxaLayer.viz.color.getLegendData();
@@ -527,59 +570,96 @@
                 stopCheckLegend();
                 // return initialized;
             };
+=======
             return;
         };
 
         function stopCheckLegend(){
             taxaLayer.off('updated', checkLegendData)
->>>>>>> Stashed changes
         }
-    }
 
+        function updateLegend(){
+            let initialized = false;
+            // When layer loads, trigger legend event
+            // console.log(initialized)
+            taxaLayer.on('updated', checkLegendData);
+            // console.log(initialized);
+            // if (initialized){
+            //     taxaLayer.off('updated', checkLegendData)
+            // }
+        };
 
         // selector.addEventListener("change", setContinent);
         // change sql query with dropdown value
-        function setContinent() {
-            var selectedContID = document.getElementById('continent-selector');
-            var selectedCont = selectedContID.value
-            // paceLayer.remove();
-            taxaLayers.forEach(currentLayer => {
-                currentLayer.remove();
-            });
-
-            if (selectedCont == 'northamerica') {
+        function setContinent(taxaLayer) {
+            let selectedContID = document.getElementById('standard-select');
+            let continentName = selectedContID.value
+            // taxaLayer.hide()
+            if (continentName == 'northamerica') {
                 n = 0
+                taxaLayer.show()
             }
-            else if (selectedCont == 'europe') {
+            else if (continentName == 'europe') {
                 n = 1
+                // if (typeof euroLayer === 'undefined') {
+                // let euroSource = new carto.source.Dataset(continentArr[n][1]);
+                // let euroLayer = new carto.Layer('eurolayer', euroSource, euroViz);
+                // }
             }
-            else if (selectedCont == 'australia') {
+            else if (continentName == 'oceania') {
                 n = 2
+                // let oceaniaSource = new carto.source.Dataset(continentArr[n][1]);
+                // let euroLayer = new carto.Layer('paclayer', oceaniaSource, oceaniaViz);
             };
-            taxaViz = allViz[n];
-            taxaLayers = allLayers[n];
-            toggleableIds = continentArr[n][2];
+            if (continentName === 'northamerica' || continentName === 'europe'){
+                var iceSource = new carto.source.Dataset(continentArr[n][2]);
+                iceLayer.update(iceSource, iceViz);
+                iceLayer.show()
+            } else {
+                iceLayer.hide()
+            };
+
+            let taxaSource = new carto.source.Dataset(continentArr[n][1]);
+
             currentExtent = allExtents[n];
             map.panTo(currentExtent);
-            taxaLayers.forEach(currentLayer => {
-                currentLayer.addTo(map);
-            });
-            // paceLayer.addTo(map);
-            // last = paceViz.variables.animation.getProgressPct()
-            // taxaViz.forEach(currentViz => {
-            //     // Update animation progress
-            //     currentViz.variables.animation.setProgressPct(paceViz.variables.animation.getProgressPct());
+            // let taxaViz = new carto.Viz(`
+            //         @duration: 30
+            //         @animation: animation(linear($time), @duration, fade(${initialDuration}/21,${initialDuration}/15.5))
+            //         color: opacity(ramp($taxa,prism),0.45)
+            //         width: 50*(($samples/25)^0.5716) * @animation
+            //         strokeWidth: 0.2
+            //         strokeColor: opacity(ramp($taxa,prism),0.2)
+            //     `);
+            // let taxaLayer = new carto.Layer("taxa", taxaSource, taxaViz);
+            // taxaLayer.addTo(map);
+
+            taxaLayer.update(taxaSource, taxaViz);
+
+            // getEventListeners()
+
+            // let initialized = false;
+            // return initialized;
+            // // When layer loads, trigger legend event
+            // taxaLayer.on('loaded', () => {
+            //     if (!initialized) {
+            //         generateLegend();
+            //         setupWidget();
+            //         initialized = true;
+            //     }
             // });
-            // last = $timeRange.value
-            getEventListeners()
-            createLegend()
+            // let legend = taxaLayer.viz.color.getLegendData();
 
+            taxaTypes = continentArr[n][3]
+            let initialized = false;
+            // checkLegendData()
+            updateLegend()
+            // return taxaTypes
+            // taxaLayer.on('updated', checkLegendData(taxaTypes))
+            // if (initialized){
+            //     taxaLayer.off('updated', checkLegendData(taxaTypes))
+            // }
         };
-
-        // for (var i = 1; i < taxaLayers.length; i++) {
-        //     taxonLayer = taxaLayers[i]
-        //     taxonLayer.hide();
-        // }
 
         function hideLoader() {
             document.getElementById('loader').style.opacity = '0';

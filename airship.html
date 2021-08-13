@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<title>Airship bridge</title>
+
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
+<script src="https://libs.cartocdn.com/carto-vl/v1.4/carto-vl.min.js"></script>
+
+<link
+href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css"
+rel="stylesheet"
+/>
+<script src="https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js"></script>
+
+<link rel="stylesheet" href="https://libs.cartocdn.com/airship-style/v2.4.1/airship.css" />
+<script
+type="module"
+src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.esm.js"
+></script>
+<script
+nomodule=""
+src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.js"
+></script>
+<script src="https://libs.cartocdn.com/airship-bridge/v2.4.1/asbridge.js"></script>
+
+<style>
+.as-map-footer {
+  max-width: 812px;
+}
+</style>
+</head>
+
+<body class="as-app-body">
+<div class="as-app">
+<div class="as-content">
+  <main class="as-main">
+    <div class="as-map-area">
+      <div id="map"></div>
+    </div>
+    <div class="as-map-footer">
+      <div class="as-box">
+        <as-animation-controls-widget
+          animated
+          heading="Animation"
+          description="Try seeking and pausing"
+        >
+        </as-animation-controls-widget>
+      </div>
+      <div class="as-box">
+        <as-category-widget show-clear-button> </as-category-widget>
+      </div>
+    </div>
+  </main>
+</div>
+</div>
+
+<script>
+const map = new mapboxgl.Map({
+  container: "map",
+  style: carto.basemaps.darkmatter,
+  center: [-96, 41],
+  zoom: 5,
+});
+const s = carto.expressions;
+
+    carto.setDefaultAuth({
+        username: 'aegeorge2',
+        apiKey: '2b8175051e465979cce3424b18b49846d1461e48'
+    });
+
+const source = new carto.source.Dataset("cartoinput_na_v6");
+const viz = new carto.Viz(`
+    @duration: 30
+    strokeWidth: 0.2;
+    color: ramp($taxa,Bold),0.45);
+    width: (50*(($samples / 25) ^ 0.5716));
+    filter: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
+`);
+
+// @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+// @colorrmp: ramp($taxa,Bold);
+const layer = new carto.Layer("layer", source, viz);
+const animationControlsWidget = document.querySelector(
+  "as-animation-controls-widget"
+);
+const categoryWidget = document.querySelector("as-category-widget");
+
+layer.addTo(map, "watername_ocean");
+
+const bridge = new AsBridge.VLBridge({
+  carto: carto,
+  map: map,
+  layer: layer,
+  source: source,
+});
+
+bridge.animationControls(animationControlsWidget, "year");
+console.log('@colors')
+bridge.category(categoryWidget, s.ramp(s.prop("taxa"), 'colors'), {
+  readOnly: false,
+});
+
+bridge.build();
+
+// const $categoryWidget = document.querySelector('#cities-widget');
+// layer.on('updated', updateWidgets);
+//
+// console.log(bridge.category)
+// function updateWidgets() {
+// categoryWidget.categories = viz.variables.cities.value
+// //   .map(feature => ({
+// //     name: feature.name,
+// //     value: feature.pop_max,
+// //   }))
+// //   .sort((a, b) => b.value - a.value);
+// };
+
+</script>
+</body>
+</html>

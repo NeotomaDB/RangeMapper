@@ -2,6 +2,7 @@ public/api-docs/index.html
 
 # Created by https://www.gitignore.io/api/node
 
+creds.json
 db_connect.json
 db_connect_remote.json
 creds.json

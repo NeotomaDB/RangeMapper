@@ -36,10 +36,13 @@ library(rCartoAPI)
 # Loads downloaded RData object
 # See downloadDatasets.R to download datasets
 
-tree_downloads <- readRDS("~/Desktop/DataForSyd/NorthAmericaSites.RData")
+tree_downloads <- readRDS("PollenNA.RData")
 
 # Creates one spreadsheet of all downloads
 comp_dl <- compile_downloads(tree_downloads)
+comp_dl <- comp_dl[comp_dl$date.type != "Radiocarbon years BP",]
+
+comp_dl <- pollen.comp.clean
 
 # Gets total counts for each observation at each site
 tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
@@ -48,18 +51,42 @@ tot_cnts <- rowSums(comp_dl[,11:ncol(comp_dl)], na.rm=TRUE)
 # Linearly interpolates each taxa in bins of 500 years
 #Fagus, Picea, Quercus,Tsuga
 
+# interp_dl <- data.frame(comp_dl[,1:10],
+#                         time = - (round(comp_dl$age / 500, 0) * 500),
+#                         alnus = rowSums(comp_dl[, grep("Alnus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         fagus = rowSums(comp_dl[, grep("Fagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         picea = rowSums(comp_dl[, grep("Picea*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         pinus = rowSums(comp_dl[, grep("Pinus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         quercus = rowSums(comp_dl[, grep("Quercus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         tsuga = rowSums(comp_dl[, grep("Tsuga*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         ulmus = rowSums(comp_dl[, grep("Ulmus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         ambrosia = rowSums(comp_dl[, grep("Ambrosia*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         cyperaceae = rowSums(comp_dl[, grep("Cyperaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
+#                         poaceae = rowSums(comp_dl[, grep("Poaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts)%>%
+#   group_by(time, lat, long, site.name) %>%
+#   summarize( Alnus = mean ( alnus) * 100, 
+#              Fagus = mean ( fagus) * 100, 
+#              Picea = mean ( picea) * 100,
+#              Pinus = mean ( pinus) * 100, 
+#              Quercus = mean (quercus) * 100, 
+#              Tsuga = mean (tsuga) * 100,
+#              Ulmus = mean ( ulmus) * 100,
+#              Ambrosia = mean ( ambrosia) * 100, 
+#              Cyperaceae = mean ( cyperaceae) * 100,
+#              Poaceae = mean ( poaceae) * 100)
+taxa <- c('Alnus', 'Ambrosia', 'Cyperaceae', 'Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus')
 interp_dl <- data.frame(comp_dl[,1:10],
-                        time = - (round(comp_dl$age / 500, 0) * 500),
-                        alnus = rowSums(comp_dl[, grep("Alnus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        fagus = rowSums(comp_dl[, grep("Fagus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        picea = rowSums(comp_dl[, grep("Picea*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        pinus = rowSums(comp_dl[, grep("Pinus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        quercus = rowSums(comp_dl[, grep("Quercus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        tsuga = rowSums(comp_dl[, grep("Tsuga*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        ulmus = rowSums(comp_dl[, grep("Ulmus*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        ambrosia = rowSums(comp_dl[, grep("Ambrosia*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        cyperaceae = rowSums(comp_dl[, grep("Cyperaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts,
-                        poaceae = rowSums(comp_dl[, grep("Poaceae*", colnames(comp_dl))], na.rm = TRUE) / tot_cnts)%>%
+                        time       = - (round(comp_dl$age / 500, 0) * 500),
+                        alnus      = comp_dl[, grep("Alnus*", colnames(comp_dl))] / tot_cnts,
+                        fagus      = comp_dl[, grep("Fagus*", colnames(comp_dl))] / tot_cnts,
+                        picea      = comp_dl[, grep("Picea*", colnames(comp_dl))] / tot_cnts,
+                        pinus      = comp_dl[, grep("Pinus*", colnames(comp_dl))] / tot_cnts,
+                        quercus    = comp_dl[, grep("Quercus*", colnames(comp_dl))] / tot_cnts,
+                        tsuga      = comp_dl[, grep("Tsuga*", colnames(comp_dl))] / tot_cnts,
+                        ulmus      = comp_dl[, grep("Ulmus*", colnames(comp_dl))] / tot_cnts,
+                        ambrosia   = comp_dl[, grep("Ambrosia", colnames(comp_dl))] / tot_cnts,
+                        cyperaceae = comp_dl[, grep("Cyperaceae*", colnames(comp_dl))] / tot_cnts,
+                        poaceae    = comp_dl[, grep("Poaceae*", colnames(comp_dl))] / tot_cnts) %>%
   group_by(time, lat, long, site.name) %>%
   summarize( Alnus = mean ( alnus) * 100, 
              Fagus = mean ( fagus) * 100, 
@@ -72,37 +99,57 @@ interp_dl <- data.frame(comp_dl[,1:10],
              Cyperaceae = mean ( cyperaceae) * 100,
              Poaceae = mean ( poaceae) * 100)
 
-# Add blank legendvalues column
-legendvalues <- rep(0,length.out = nrow(interp_dl))
-interp_dl$legendvalues <- rep(0,length.out = nrow(interp_dl))                 
-                    
-# Creates table for legend
-time_bins <- rep(seq(0, -21000, -500), each = 3)
-blank_pollen <- as.data.frame(matrix(0, ncol = ncol(interp_dl, nrow = length(time_bins))))
-c(rep(0, length.out = ncol(interp_dl)-4))
+common <- c('Alder', 'Beech', 'Spruce', 'Pine', 'Oak', 'Hemlock', 'Elm', 'Ragweed', 'Sedges', 'Grasses')
 
-legenddata <- data.frame(time_bins, 
-                         rep(0,length.out = length(time_bins)), 
-                         rep(0,length.out = length(time_bins)), 
-                         rep("legendsite",length.out = length(time_bins)), 
-                         cbind(), 
-                         rep(c(10, 50, 100),length.out = length(time_bins)))
-names(legenddata) <- c("time", "lat", "long", "site.name", names(5:ncol(interp_dl)), "legendvalues")
+plant.data <- data.frame()
+for (i in 1:length(common)) {
+  taxon = common[i]
+  samples = interp_dl[,i+4]
+  names(samples) <- "samples"
+  taxa = rep(taxon,nrow(samples))
+  current.taxon.data <- cbind(interp_dl[,1:4],samples,taxa)
+  plant.data <- rbind(plant.data,current.taxon.data)
+}
 
-interp_dl_legend <- rbind(interp_dl,legenddata)
+colnames(plant.data)[colnames(plant.data) == '...6'] <- 'taxa'
+plant.data <- plant.data[order(plant.data$site.name,plant.data$time),]
+
+# # Add blank legendvalues column
+# legendvalues <- rep(0,length.out = nrow(interp_dl))
+# interp_dl$legendvalues <- rep(0,length.out = nrow(interp_dl))   
+# 
+#                     
+# # Creates table for legend
+# time_bins <- rep(seq(0, -21000, -500), each = 3)
+# blank_pollen <- as.data.frame(matrix(0, ncol = ncol(interp_dl), nrow = length(time_bins)))
+# c(rep(0, length.out = ncol(interp_dl)-4))
+# 
+# legenddata <- data.frame(time_bins, 
+#                          rep(0,length.out = length(time_bins)), 
+#                          rep(0,length.out = length(time_bins)), 
+#                          rep("legendsite",length.out = length(time_bins)), 
+#                          cbind(), 
+#                          rep(c(10, 50, 100),length.out = length(time_bins)))
+# names(legenddata) <- c("time", "lat", "long", "site.name", names(5:ncol(interp_dl)), "legendvalues")
+# 
+# interp_dl_legend <- rbind(interp_dl,legenddata)
 
 # Removes any observations from over 21,000 years ago
-timefltr_output <- dplyr::filter(interp_dl, time >= -21000)
+timefltr_output <- dplyr::filter(plant.data, time >= -21000)
 final_output <- na.omit(timefltr_output)
 
-#To make the legend
-legendvalues <- rep(c(10, 50, 100), length.out = nrow(final_output[,1]))
-final_output$legendvalues = legendvalues
+final.output.no0 <- final_output[final_output$samples != 0,]
+
+# #To make the legend
+# legendvalues <- rep(c(10, 50, 100), length.out = nrow(final_output[,1]))
+# final_output$legendvalues = legendvalues
 
 # Writes CSV file
 # Specify location of file via a file path, i.e. file = "home/Code/CartoInputFile"
 
-write.csv(final_output, file = "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_NA.csv")
+write.csv(final_output, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_NA_V6.csv")
+write.csv(final.output.no0, file = "~/Github/CartoAnimations/other-files/CSVs/CartoInput_NA_V6_no0.csv")
+
 inputPollen <- "~/Desktop/Github/CartoAnimations/other-files/CSVs/CartoInput_NA.csv"
 inputIcesheets <- "~/Desktop/Github/CartoAnimations/other-files/old-carto-html/icesheets.geojson"
 
