@@ -417,7 +417,7 @@
             document.getElementById('content').innerHTML = legendList;
         }
 
-=======
+
         function generateLegend() {
             // Request data for legend from the layer viz
             let legend = taxaLayer.viz.color.getLegendData();
@@ -526,68 +526,68 @@
         //
         // };
 
-        function checkLegendData(){
-            let selectedContID = document.getElementById('standard-select');
-            let continentName = selectedContID.value
-            if (continentName == 'northamerica') {
-                n = 0
-            }
-            else if (continentName == 'europe') {
-                n = 1
-            }
-            else if (continentName == 'oceania') {
-                n = 2
-            };
-            taxaTypes = continentArr[n][3]
-            // if legend !=== taxaLayer.viz.color.getLegendData();
-            let legend = taxaLayer.viz.color.getLegendData();
-
-            let equal = (legend.data.length === taxaTypes.length);
-            console.log(taxaLayer.viz)
-            if (legend.data.length === taxaTypes.length){
-            //     initialized = false
-            // };
-            // if (!initialized) {
-                // generateLegend();
-                // setupWidget();
-                initialized = true;
-                // console.log(initialized)
-                stopCheckLegend();
-                // return initialized;
-            };
-            taxaTypes = continentArr[n][3]
-            // if legend !=== taxaLayer.viz.color.getLegendData();
-            let legend = taxaLayer.viz.color.getLegendData();
-
-            let equal = (legend.data.length === taxaTypes.length);
-            if (legend.data.length === taxaTypes.length){
-            //     initialized = false
-            // };
-            // if (!initialized) {
-                // generateLegend();
-                // setupWidget();
-                initialized = true;
-                stopCheckLegend();
-                // return initialized;
-            };
-=======
-            return;
-        };
-
-        function stopCheckLegend(){
-            taxaLayer.off('updated', checkLegendData)
-        }
-
-        function updateLegend(){
-            let initialized = false;
-            // When layer loads, trigger legend event
-            // console.log(initialized)
-            taxaLayer.on('updated', checkLegendData);
-            // console.log(initialized);
-            // if (initialized){
-            //     taxaLayer.off('updated', checkLegendData)
-            // }
-        };
+        // function checkLegendData(){
+        //     let selectedContID = document.getElementById('standard-select');
+        //     let continentName = selectedContID.value
+        //     if (continentName == 'northamerica') {
+        //         n = 0
+        //     }
+        //     else if (continentName == 'europe') {
+        //         n = 1
+        //     }
+        //     else if (continentName == 'oceania') {
+        //         n = 2
+        //     };
+        //     taxaTypes = continentArr[n][3]
+        //     // if legend !=== taxaLayer.viz.color.getLegendData();
+        //     let legend = taxaLayer.viz.color.getLegendData();
+        //
+        //     let equal = (legend.data.length === taxaTypes.length);
+        //     console.log(taxaLayer.viz)
+        //     if (legend.data.length === taxaTypes.length){
+        //     //     initialized = false
+        //     // };
+        //     // if (!initialized) {
+        //         // generateLegend();
+        //         // setupWidget();
+        //         initialized = true;
+        //         // console.log(initialized)
+        //         stopCheckLegend();
+        //         // return initialized;
+        //     };
+        //     taxaTypes = continentArr[n][3]
+        //     // if legend !=== taxaLayer.viz.color.getLegendData();
+        //     let legend = taxaLayer.viz.color.getLegendData();
+        //
+        //     let equal = (legend.data.length === taxaTypes.length);
+        //     if (legend.data.length === taxaTypes.length){
+        //     //     initialized = false
+        //     // };
+        //     // if (!initialized) {
+        //         // generateLegend();
+        //         // setupWidget();
+        //         initialized = true;
+        //         stopCheckLegend();
+        //         // return initialized;
+        //     };
+        //
+        //     return;
+        // };
+        //
+        // function stopCheckLegend(){
+        //     taxaLayer.off('updated', checkLegendData)
+        // }
+        //
+        // function updateLegend(){
+        //     let initialized = false;
+        //     // When layer loads, trigger legend event
+        //     // console.log(initialized)
+        //     taxaLayer.on('updated', checkLegendData);
+        //     // console.log(initialized);
+        //     // if (initialized){
+        //     //     taxaLayer.off('updated', checkLegendData)
+        //     // }
+        // };
 
         // selector.addEventListener("change", setContinent);
         // change sql query with dropdown value
