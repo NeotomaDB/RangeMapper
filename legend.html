@@ -474,15 +474,11 @@
             const catColor = `${taxaColors[colorPosition]}`
             const newColors = taxaColors
             newColors.splice(colorPosition, 1)
-            console.log(newColors)
             taxaTypes = _toggle(taxaTypes, category);
-            console.log(taxaTypes)
-            console.log(s.prop('taxa'))
-            console.log(taxaViz.variables['taxa'])
+
             // 4. Check / uncheck the checkbox element
             checkboxElement.checked = taxaTypes.includes(category);
             // 5. Update the filter
-            console.log(last)
             taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
 
             //taxaViz.color.blendTo(s.opacity(s.ramp(s.in(s.prop('taxa'), taxaTypes),s.var('colors')),0));
