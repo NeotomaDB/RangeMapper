@@ -352,6 +352,12 @@
     // });
 
 
+        // taxaLayer.on('updated', () => {
+        //     if (!initialized) {
+        //
+        //         initialized = true;
+        //     }
+        // });
 
     // function changeTimeRange(){
     //     console.log($timeRange.value)
@@ -378,6 +384,7 @@
 
 }
 
+<<<<<<< Updated upstream
         taxaLayers[0].on('loaded', hideLoader);
 
         // iceLayer.addTo(map);
@@ -396,6 +403,72 @@
         //     // Place list items in the content section of the title/legend box
         //     document.getElementById('content').innerHTML = widthLegendList;
         // });
+=======
+    taxaLayer.on('loaded', hideLoader);
+
+        function generateLegend() {
+            // Request data for legend from the layer viz
+            let legend = taxaLayer.viz.color.getLegendData();
+            // Create list elements for legend
+            let legendList = legend.data.map((legend, index) => {
+                const color = rgbToHex(legend.value);
+                const key = legend.key.toLowerCase().replace(' ', '-');
+                const selected = taxaTypes.includes(legend.key);
+
+                // Use "js-checkbox" class to get all the checkbox elements from the widget
+                // Use "data-taxa-type" attribute to set the category for each checkbox
+                return `
+                    <li>
+                        <input
+                            id="js-checkbox-${key}"
+                            class="js-checkbox"
+                            type="checkbox"
+                            name="categories"
+                            data-taxa-type="${legend.key}"
+                            visible="true"
+                        checked>
+                        <span class="point-mark" style="background-color:${color};"></span>
+                        <label for="js-checkbox-${key}">
+                            ${legend.key}
+                        </label>
+                    </li>\n`;
+            }).join('');
+
+            document.getElementById('content').innerHTML = legendList;
+        }
+
+        function setupWidget() {
+            // 1. Get all the category checkboxes
+            const checkboxes = document.getElementsByClassName('js-checkbox');
+            // 2. Add an event listener to each category checkbox
+            for (let i in checkboxes) {
+                const checkbox = checkboxes.item(i);
+                checkbox.addEventListener('change', toggleCategory);
+            };
+        }
+
+        function toggleCategory(event) {
+            // 1. Get the clicked checkbox element from the event
+            const checkboxElement = event.currentTarget;
+            // 2. Get the category through the "data-taxa-type" attribute
+            const category = checkboxElement.getAttribute('data-taxa-type');
+
+            // 3. Toggle the chosen category from the global taxaTypes array
+            const colorPosition = taxaTypes.indexOf(category)
+            const catColor = `${taxaColors[colorPosition]}`
+            const newColors = taxaColors
+            newColors.splice(colorPosition, 1)
+            taxaTypes = _toggle(taxaTypes, category);
+
+            // 4. Check / uncheck the checkbox element
+            checkboxElement.checked = taxaTypes.includes(category);
+            // 5. Update the filter
+            taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
+            // Update animation to last timestamp
+            taxaViz.variables.animation.setProgressPct(last);
+            iceViz.variables.animation.setProgressPct(last);
+        }
+>>>>>>> Stashed changes
 
         let widthLegendList = '';
         legendSizes.forEach(currentSize => {
@@ -436,7 +509,30 @@
                     map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
                 }
             };
+<<<<<<< Updated upstream
             layers.appendChild(link);
+=======
+            taxaTypes = continentArr[n][3]
+            // if legend !=== taxaLayer.viz.color.getLegendData();
+            let legend = taxaLayer.viz.color.getLegendData();
+
+            let equal = (legend.data.length === taxaTypes.length);
+            if (legend.data.length === taxaTypes.length){
+            //     initialized = false
+            // };
+            // if (!initialized) {
+                // generateLegend();
+                // setupWidget();
+                initialized = true;
+                stopCheckLegend();
+                // return initialized;
+            };
+            return;
+        };
+
+        function stopCheckLegend(){
+            taxaLayer.off('updated', checkLegendData)
+>>>>>>> Stashed changes
         }
     }
 
