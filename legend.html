@@ -185,12 +185,12 @@
 
     let taxaTypes = continentArr[0][3]
     let taxaSource = new carto.source.Dataset(continentArr[0][1]);
-
     let commonStyles = `
         @duration: ${initialDuration};
         @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+        @myOpacity: 0.45
         @animation: animation(linear($time), @duration, fade(30/21,30/15.5));
-        color: opacity(ramp($taxa,@colors),0.45);
+        color: opacity(ramp($taxa,@colors),@myOpacity);
         width: (50*(($samples / 25) ^ 0.5716));
         filter: @animation
         strokeWidth: 0.2;
@@ -200,11 +200,11 @@
     // setupMap(0)
     const taxaViz = new carto.Viz(`
         @duration: 31.5
-        @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+        @palette: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
         @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
         @taxa: $taxa
         @v_histogram: viewportHistogram($taxa)
-        @opacity: opacity(ramp(@taxa,@colors), 0.45)
+        @opacity: opacity(ramp(@taxa,@palette), 0.45)
         color: @opacity;
         width: (50*(($samples / 25) ^ 0.5716));
         filter: @animation and @taxa in ['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm']
@@ -306,7 +306,7 @@
         taxaLayer.on('loaded', () => {
             generateLegend();
             setupWidget();
-            hideLoader()
+            hideLoader();
         });
 
         let initialized = true;
@@ -386,36 +386,36 @@
 
     taxaLayer.on('loaded', hideLoader);
 
-        function generateLegend() {
-            // Request data for legend from the layer viz
-            let legend = taxaLayer.viz.color.getLegendData();
-            // Create list elements for legend
-            let legendList = legend.data.map((legend, index) => {
-                const color = rgbToHex(legend.value);
-                const key = legend.key.toLowerCase().replace(' ', '-');
-                const selected = taxaTypes.includes(legend.key);
-
-                // Use "js-checkbox" class to get all the checkbox elements from the widget
-                // Use "data-taxa-type" attribute to set the category for each checkbox
-                return `
-                    <li>
-                        <input
-                            id="js-checkbox-${key}"
-                            class="js-checkbox"
-                            type="checkbox"
-                            name="categories"
-                            data-taxa-type="${legend.key}"
-                            visible="true"
-                        checked>
-                        <span class="point-mark" style="background-color:${color};"></span>
-                        <label for="js-checkbox-${key}">
-                            ${legend.key}
-                        </label>
-                    </li>\n`;
-            }).join('');
-
-            document.getElementById('content').innerHTML = legendList;
-        }
+        // function generateLegend() {
+        //     // Request data for legend from the layer viz
+        //     let legend = taxaLayer.viz.color.getLegendData();
+        //     // Create list elements for legend
+        //     let legendList = legend.data.map((legend, index) => {
+        //         const color = rgbaToHex(legend.value);
+        //         const bcolor = rgbToHex(legend.value);
+        //         const key = legend.key.toLowerCase().replace(' ', '-');
+        //         const selected = taxaTypes.includes(legend.key);
+        //
+        //         // Use "js-checkbox" class to get all the checkbox elements from the widget
+        //         // Use "data-taxa-type" attribute to set the category for each checkbox
+        //         return `
+        //             <li>
+        //                 <input
+        //                     id="js-checkbox-${key}"
+        //                     class="js-checkbox"
+        //                     type="checkbox"
+        //                     name="categories"
+        //                     data-taxa-type="${legend.key}"
+        //                     visible="true"
+        //                 checked>
+        //                 <span class="point-mark" style="background-color:${color};"></span>
+        //                 <label for="js-checkbox-${key}">
+        //                     ${legend.key}
+        //                 </label>
+        //             </li>\n`;
+        //     }).join('');
+        //     document.getElementById('content').innerHTML = legendList;
+        // }
 
 
         function generateLegend() {
@@ -424,7 +424,8 @@
             // console.log(legend)
             // Create list elements for legend
             let legendList = legend.data.map((legend, index) => {
-                const color = rgbToHex(legend.value);
+                const color = rgbaToHex(legend.value);
+                const bordercol = rgbToHex(legend.value)
                 const key = legend.key.toLowerCase().replace(' ', '-');
                 const selected = taxaTypes.includes(legend.key);
 
@@ -440,7 +441,7 @@
                             data-taxa-type="${legend.key}"
                             visible="true"
                         checked>
-                        <span class="point-mark" style="background-color:${color};"></span>
+                        <span class="point-mark" style="background-color:${color}; border: 1px solid ${bordercol}"></span>
                         <label for="js-checkbox-${key}">
                             ${legend.key}
                         </label>
@@ -488,9 +489,16 @@
 
         //** Helper Methods **//
 
-        // A function to convert map colors to HEX values for legend
+        // A function to convert map colors to HEX values for legend border color
         function rgbToHex(color) {
-            return "#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1);
+            return hex = ("#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1));
+        }
+
+        // A function to convert map colors to HEXA values for legend
+        function rgbaToHex(color) {
+            hex = ("#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1));
+            a = Math.round(0.60 * 255).toString(16)
+            return hex + a;
         }
 
         // A function to toggle an element in an array
@@ -574,16 +582,18 @@
         //     taxaLayer.off('updated', checkLegendData)
         // }
         //
-        // function updateLegend(){
-        //     let initialized = false;
-        //     // When layer loads, trigger legend event
-        //     // console.log(initialized)
-        //     taxaLayer.on('updated', checkLegendData);
-        //     // console.log(initialized);
-        //     // if (initialized){
-        //     //     taxaLayer.off('updated', checkLegendData)
-        //     // }
-        // };
+        function updateLegend(){
+            generateLegend();
+            setupWidget();
+            // let initialized = false;
+            // When layer loads, trigger legend event
+            // console.log(initialized)
+            // taxaLayer.on('updated', checkLegendData);
+            // console.log(initialized);
+            // if (initialized){
+            //     taxaLayer.off('updated', checkLegendData)
+            // }
+        };
 
         // selector.addEventListener("change", setContinent);
         // change sql query with dropdown value
@@ -607,6 +617,7 @@
                 // let oceaniaSource = new carto.source.Dataset(continentArr[n][1]);
                 // let euroLayer = new carto.Layer('paclayer', oceaniaSource, oceaniaViz);
             };
+            taxaTypes = continentArr[n][3]
             if (continentName === 'northamerica' || continentName === 'europe'){
                 var iceSource = new carto.source.Dataset(continentArr[n][2]);
                 iceLayer.update(iceSource, iceViz);
@@ -616,9 +627,12 @@
             };
 
             let taxaSource = new carto.source.Dataset(continentArr[n][1]);
+            testtest = taxaLayer.update(taxaSource, taxaViz);
+            console.log(testtest)
 
             currentExtent = allExtents[n];
             map.panTo(currentExtent);
+            testtest.then(updateLegend)
             // let taxaViz = new carto.Viz(`
             //         @duration: 30
             //         @animation: animation(linear($time), @duration, fade(${initialDuration}/21,${initialDuration}/15.5))
@@ -630,8 +644,17 @@
             // let taxaLayer = new carto.Layer("taxa", taxaSource, taxaViz);
             // taxaLayer.addTo(map);
 
-            taxaLayer.update(taxaSource, taxaViz);
-
+            // var legEnd = document.getElementById("content");
+            // console.log(legEnd)
+            // var lis = legEnd.getElementsByTagName("li");
+            // console.log(lis[0])
+            // for(var i = 0, il = lis.length;i<il;i++) {
+            //     legEnd.removeChild(lis[i]);
+            // }
+            // while( legEnd.firstChild ){
+            //   legEnd.removeChild( legEnd.firstChild );
+            // }
+            console.log()
             // getEventListeners()
 
             // let initialized = false;
@@ -646,15 +669,16 @@
             // });
             // let legend = taxaLayer.viz.color.getLegendData();
 
-            taxaTypes = continentArr[n][3]
             let initialized = false;
             // checkLegendData()
-            updateLegend()
+            // updateLegend()
             // return taxaTypes
             // taxaLayer.on('updated', checkLegendData(taxaTypes))
             // if (initialized){
             //     taxaLayer.off('updated', checkLegendData(taxaTypes))
             // }
+            generateLegend();
+            setupWidget();
         };
 
         function hideLoader() {
