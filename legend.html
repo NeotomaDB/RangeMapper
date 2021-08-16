@@ -29,28 +29,7 @@
     </style> -->
 </head>
 <body>
-<!-- <body class="as-app-body"> -->
-    <!-- <div class="as-app">
-        <div class="as-content">
-            <main class="as-main">
-                <div class="as-map-area"> -->
     <div id="map"></div>
-                    <!-- <div class="as-map-panels">
-                       <div class="as-panel as-panel--top as-panel--left">
-                         <div class="as-panel__element"> -->
-                <!-- <div class="as-map-footer">
-                    <div class="as-box">
-                        <as-animation-controls-widget
-                        animated
-                        heading="Animation"
-                        description="Try seeking and pausing"
-                        >
-                    </as-animation-controls-widget>
-                </div>
-                <div class="as-box">
-                    <as-category-widget show-clear-button> </as-category-widget>
-                </div>
-            </div> -->
     <aside class="toolbox" id="animation-toolbox">
         <div class="box" id="animation-box">
             <header>
@@ -123,28 +102,15 @@
             </div>
         </div>
     </section>
-        <!-- </div>
-</div> -->
-<!-- </div>
-            </div>
-        </main>
-    </div> -->
 </div>
-
-
-
-<!--
-<div id="menu">
-    <header id="legend-head-text">Taxa</header>
-</div> -->
-
 
 <script>
   const s = carto.expressions;
     var continents = ['northamerica', 'europe', 'oceania']
     // var contSource = [`cartoinput_na_3`, `cartoinputeuro`, `cartoinput_aus_2`];
     var contSource = ["cartoinput_na_v6", `cartoinput_euro_v3`, `cartoinput_aus_v3`];
-    var allTaxaTypes = [['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm'], ['Alder', 'Beech', 'Spruce', 'Oak'], ['She-Oak', 'Eucalyptus', 'Southern Beech', 'Celery Pine', 'Cypress-Pine']];
+    var allTaxaTypes = [['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm'],
+                        ['Alder', 'Beech', 'Spruce', 'Oak'], ['She-Oak', 'Eucalyptus', 'Southern Beech', 'Celery Pine', 'Cypress-Pine']];
     var conticeSource = ['na_ice_1', 'euro_ice', '']
     var allExtents = [[-96, 41], [20, 57], [125, -30]]
     var currentExtent = allExtents[0]
@@ -207,7 +173,7 @@
         @opacity: opacity(ramp(@taxa,@palette), 0.45)
         color: @opacity;
         width: (50*(($samples / 25) ^ 0.5716));
-        filter: @animation and @taxa in ['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm']
+        filter: @animation and @taxa in ${taxaTypes}
         strokeWidth: 0.2;
         strokeColor: opacity(ramp(@taxa,prism),0.2);
 
@@ -386,38 +352,6 @@
 
     taxaLayer.on('loaded', hideLoader);
 
-        // function generateLegend() {
-        //     // Request data for legend from the layer viz
-        //     let legend = taxaLayer.viz.color.getLegendData();
-        //     // Create list elements for legend
-        //     let legendList = legend.data.map((legend, index) => {
-        //         const color = rgbaToHex(legend.value);
-        //         const bcolor = rgbToHex(legend.value);
-        //         const key = legend.key.toLowerCase().replace(' ', '-');
-        //         const selected = taxaTypes.includes(legend.key);
-        //
-        //         // Use "js-checkbox" class to get all the checkbox elements from the widget
-        //         // Use "data-taxa-type" attribute to set the category for each checkbox
-        //         return `
-        //             <li>
-        //                 <input
-        //                     id="js-checkbox-${key}"
-        //                     class="js-checkbox"
-        //                     type="checkbox"
-        //                     name="categories"
-        //                     data-taxa-type="${legend.key}"
-        //                     visible="true"
-        //                 checked>
-        //                 <span class="point-mark" style="background-color:${color};"></span>
-        //                 <label for="js-checkbox-${key}">
-        //                     ${legend.key}
-        //                 </label>
-        //             </li>\n`;
-        //     }).join('');
-        //     document.getElementById('content').innerHTML = legendList;
-        // }
-
-
         function generateLegend() {
             // Request data for legend from the layer viz
             let legend = taxaLayer.viz.color.getLegendData();
@@ -428,7 +362,7 @@
                 const bordercol = rgbToHex(legend.value)
                 const key = legend.key.toLowerCase().replace(' ', '-');
                 const selected = taxaTypes.includes(legend.key);
-
+                console.log(key)
                 // Use "js-checkbox" class to get all the checkbox elements from the widget
                 // Use "data-taxa-type" attribute to set the category for each checkbox
                 return `
@@ -460,9 +394,6 @@
                 checkbox.addEventListener('change', toggleCategory);
             };
         }
-        const interactivity = new carto.Interactivity(taxaLayer);
-        const delay = 50;
-        let clickedFeatureId = null;
 
         function toggleCategory(event) {
             // 1. Get the clicked checkbox element from the event
