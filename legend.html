@@ -158,12 +158,7 @@
         strokeColor: opacity(ramp(@taxa,prism),0.2);
 
     `);
-    let euroViz = new carto.Viz(`
-        ${commonStyles}
-    `);
-    let oceaniaViz = new carto.Viz(`
-        ${commonStyles}
-    `);
+
 
     const taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
     let iceLayer = createIceLayer(0)
