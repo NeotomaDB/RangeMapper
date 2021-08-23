@@ -12,21 +12,10 @@
 
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.0.0/mapbox-gl.css" rel="stylesheet" />
-    <!-- <script src="https://libs.cartocdn.com/carto-vl/v1.0.0/carto-vl.min.js"></script> -->
+
     <link href="https://carto.com/developers/carto-vl/v1.4.4/examples/maps/style.css" rel="stylesheet">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/style.css">
-
-    <!-- <link rel="stylesheet" href="https://libs.cartocdn.com/airship-style/v2.4.1/airship.css">
-    <script type="module" src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.esm.js"></script>
-    <script nomodule="" src="https://libs.cartocdn.com/airship-components/v2.4.1/airship/airship.js"></script>
-    <script src="https://libs.cartocdn.com/airship-bridge/v2.4.1/asbridge.js"></script> -->
-
-    <!-- <style>
-      .as-map-footer {
-        max-width: 812px;
-      }
-    </style> -->
 </head>
 <body>
     <div id="map"></div>
@@ -105,22 +94,28 @@
 </div>
 
 <script>
-  const s = carto.expressions;
-    var continents = ['northamerica', 'europe', 'oceania']
+    const s = carto.expressions;
+    var continents = ['northamerica', 'europe', 'oceania'];
     // var contSource = [`cartoinput_na_3`, `cartoinputeuro`, `cartoinput_aus_2`];
     var contSource = ["cartoinput_na_v6", `cartoinput_euro_v3`, `cartoinput_aus_v3`];
     var allTaxaTypes = [['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm'],
-                        ['Alder', 'Beech', 'Spruce', 'Oak'], ['She-Oak', 'Eucalyptus', 'Southern Beech', 'Celery Pine', 'Cypress-Pine']];
-    var conticeSource = ['na_ice_1', 'euro_ice', '']
-    var allExtents = [[-96, 41], [20, 57], [125, -30]]
-    var currentExtent = allExtents[0]
-    var continentArr = []
-    var allPollenSources = []
-    var taxaColors = ['#990033', '#FF5733', '#FFC300', '#336699', '#339999', '#996699', '#C7003A', '#FF8D19', '#ADD55C', '#511849'];
+                        ['Alder', 'Beech', 'Spruce', 'Oak'], ['SheOak', 'Eucalyptus', 'SouthernBeech', 'CeleryPine', 'CypressPine']];
+    var conticeSource = ['na_ice_1', 'euro_ice', ''];
+    var allExtents = [[-96, 41], [20, 57], [125, -30]];
+    var currentExtent = allExtents[0];
+    var continentArr = [];
+    var allPollenSources = [];
+    var taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#996699', '#ff9b19', '#C7003A', '#ADD55C', '#511849'];
+    //[#339999, #fad620, #000075, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+    //var taxaColors = ['#9e0142','#d53e4f','#f46d43','#fdae61','#fee08b','#e6f598','#abdda4','#66c2a5','#3288bd','#5e4fa2']
+    // [#9e0142,#d53e4f,#f46d43,#fdae61,#fee08b,#e6f598,#abdda4,#66c2a5,#3288bd,#5e4fa2]
+    // var taxaColors = ['#e6194B', '#3cb44b', '#f58231', '#f032e6', '#469990', '#dcbeff', '#fffac8', '#800000', '#aaffc3', '#000075']
+    // [#e6194B, #3cb44b, #f58231, #f032e6, #469990, #dcbeff, #fffac8, #800000, #aaffc3, #000075]
     var initialDuration = 31.5
     var allViz = []
     var allLayers = []
     var allToggleableIds = [] // maybe get rid of
+    const allSciNames = [[]]
 
     var map = new mapboxgl.Map({
         container: 'map',
@@ -147,53 +142,30 @@
         continentArr[i] = [continents[i], contSource[i], conticeSource[i], allTaxaTypes[i]]
     }
 
-    // continentArr.forEach(createViz)
-
     let taxaTypes = continentArr[0][3]
     let taxaSource = new carto.source.Dataset(continentArr[0][1]);
-    // let commonStyles = `
-    //     @duration: ${initialDuration};
-    //     @colors: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
-    //     @myOpacity: 0.45
-    //     @animation: animation(linear($time), @duration, fade(30/21,30/15.5));
-    //     color: opacity(ramp($taxa,@colors),@myOpacity);
-    //     width: (50*(($samples / 25) ^ 0.5716));
-    //     filter: @animation
-    //     strokeWidth: 0.2;
-    //     strokeColor: opacity(ramp($taxa,prism),0.2);
-    // `
 
-    // setupMap(0)
     const taxaViz = new carto.Viz(`
         @duration: 31.5
-        @palette: [#339999, #fad620, #990033, #ff5233, #336699, #996699, #ff9b19, #C7003A, #ADD55C, #511849];
+        @palette: [#339999, #fad620, #ff5233, #000075, #336699, #996699, #ff9b19, #C7003A, #511849, #ADD55C];
         @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
         @taxa: $taxa
         @v_histogram: viewportHistogram($taxa)
         @opacity: opacity(ramp(@taxa,@palette), 0.45)
         color: @opacity;
         width: (50*(($samples / 25) ^ 0.5716));
-        filter: @animation and @taxa in ['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Oak', 'Hemlock', 'Elm', 'She-Oak', 'Eucalyptus', 'Southern Beech', 'Celery Pine', 'Cypress-Pine']
+        filter: @animation and @taxa in ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
         strokeWidth: 0.2;
         strokeColor: opacity(ramp(@taxa,prism),0.2);
 
     `);
-    // let euroViz = new carto.Viz(`
-    //     ${commonStyles}
-    // `);
-    // let oceaniaViz = new carto.Viz(`
-    //     ${commonStyles}
-    // `);
 
     const taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
     let iceLayer = createIceLayer(0)
 
-
 //     // Add layers to map
-//     // taxaLayer.forEach(currentLayer => {
         taxaLayer.addTo(map);
         iceLayer.addTo(map);
-    // });
     // createLegend(0)
 
     const $playPauseButton = document.getElementById('js-play-pause-button');
@@ -205,14 +177,8 @@
     const $continentSelection = document.getElementById('continent-selector')
 
 
-    // getEventListeners()
-    // //
-    // function getEventListeners() {
-
     // Save initial time range value
     let last = $progressRange.value;
-
-
 
     // Listen to interaction events
     $durationRange.addEventListener('change', () => {
@@ -267,6 +233,24 @@
         // Place list items in the content section of the title/legend box
         document.getElementById('circ-content').innerHTML = widthLegendList;
 
+        const legendKeys = {
+            alder: 'Alder (<i>Alnus</i>)',
+            beech: 'Beech (<i>Fagus</i>)',
+            elm: 'Elm (<i>Ulmus</i>)',
+            grasses: 'Grasses (<i>Poaceae</i>)',
+            hemlock: 'Hemlock (<i>Tsuga</i>)',
+            oak: 'Oak (<i>Quercus</i>)',
+            ragweed: 'Ragweed (<i>Ambrosia</i>)',
+            sedges: 'Sedges (<i>Cyperaceae</i>)',
+            spruce: 'Spruce (<i>Picea</i>)',
+            pine: 'Pine (<i>Pinus</i>)',
+            sheoak: 'She-Oak (<i>Casuarina</i>)',
+            eucalyptus: 'Eucalyptus (<i>Eucalyptus</i>)',
+            celerypine: 'Celery Pine (<i>Phyllocladus</i>)',
+            cypresspine: 'Cypress-Pine (<i>Callitris</i>)',
+            southernbeech: 'Southern Beech (<i>Nothofagus</i>)'
+        }
+
 
         // When layer loads, trigger legend event
         taxaLayer.on('loaded', () => {
@@ -309,8 +293,8 @@
                 const color = rgbaToHex(legend.value);
                 const bordercol = rgbToHex(legend.value)
                 const key = legend.key.toLowerCase().replace(' ', '-');
+                const label = key + " ()"
                 const selected = taxaTypes.includes(legend.key);
-                console.log(key)
                 // Use "js-checkbox" class to get all the checkbox elements from the widget
                 // Use "data-taxa-type" attribute to set the category for each checkbox
                 return `
@@ -325,7 +309,7 @@
                         checked>
                         <span class="point-mark" style="background-color:${color}; border: 1px solid ${bordercol}"></span>
                         <label for="js-checkbox-${key}">
-                            ${legend.key}
+                            ${legendKeys[key]}
                         </label>
                     </li>\n`;
             }).join('');
@@ -337,7 +321,7 @@
             // 1. Get all the category checkboxes
             const checkboxes = document.getElementsByClassName('js-checkbox');
             // 2. Add an event listener to each category checkbox
-            console.log(checkboxes)
+
             for (let i in checkboxes) {
                 const checkbox = checkboxes.item(i);
                 checkbox.addEventListener('change', toggleCategory);
@@ -360,8 +344,14 @@
             // 4. Check / uncheck the checkbox element
             checkboxElement.checked = taxaTypes.includes(category);
             // 5. Update the filter
-            taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
-
+            if (taxaTypes.length === 0) {
+                taxaLayer.hide()
+            } else {
+                if (taxaLayer.visible === false) {
+                    taxaLayer.show()
+                }
+                taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
+            }
             //taxaViz.color.blendTo(s.opacity(s.ramp(s.in(s.prop('taxa'), taxaTypes),s.var('colors')),0));
             taxaViz.variables.animation.setProgressPct(last);
             iceViz.variables.animation.setProgressPct(last);
