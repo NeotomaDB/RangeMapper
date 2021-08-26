@@ -134,8 +134,9 @@ select:focus + .focus {
     margin-bottom:5px
 }
 
-#taxa-content {
+.taxa-content {
     font-weight: 500;
+    color:var(--main-text-color);
 }
 
 /* li {
@@ -197,7 +198,7 @@ margin-top: 5px"
       }
 
       #legend-head-text {
-          color:var(--main-text-color);
+
           font-style: "heavy";
           font-weight: 700;
           text-align: center;
@@ -272,7 +273,6 @@ margin-top: 5px"
 
 /* taxa selection menu styling */
 
-
 #menu {
     left: 15px;
     width:100px;
@@ -293,307 +293,79 @@ margin-top: 5px"
     display: block;
 }
 
-#menu taxa {
-    display: block;
-    padding: 10px;
-    /* text-decoration: none; */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-    box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
-  }
-  #menu taxa:last-child {
-    border: none;
-  }
-
   #menu taxa.active {
     color: #f9f0e3;
   }
-/*
-  #menu taxa:nth-of-type(1).active {
-      background: #900C3F;
-  } */
 
-  #menu taxa.active:hover {
-    filter:brightness(125%);
+  /* The sidebar menu */
+ #infoSideBar {
+   height: 100%; /* 100% Full-height */
+   width: 0; /* 0 width - change this with JavaScript */
+   position: fixed; /* Stay in place */
+   z-index: 1; /* Stay on top */
+   top: 0;
+   right: 0;
+   padding-top: 10px;
+   background-color: var(--main-bg-color); /* gray*/
+   overflow-x: hidden; /* Disable horizontal scroll */
+   transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+ }
+
+ /* The sidebar links */
+ #infoSideBar .closebtn {
+   padding: 8px 8px 8px 20px;
+   text-decoration: none;
+   font-size: 20px;
+   color: #818181;
+   display: block;
+   transition: 0.3s;
+ }
+
+ /* When you mouse over the navigation links, change their color */
+ #infoSideBar .closebtn:hover {
+   color: #f1f1f1;
+ }
+
+ /* Position and style the close button (top right corner) */
+ #infoSideBar .closebtn {
+   position: absolute;
+   top: 0;
+   right: 25px;
+   font-size: 36px;
+   margin-left: 50px;
+ }
+
+ /* The button used to open the sidebar */
+
+ .openbtn {
+     position: absolute;
+     top: 15px;
+     right: 15px;
+     margin-left: 50px;
+     border: none;
+     height: 25px;
+     width: 25px;
+     font-size: 37px;
+     color: var(--main-text-color);
+     font: sans-serif;
+     border-radius: 50%;
+     display: flex;
+ 	 align-items: center;
+ 	 justify-content: center;
   }
 
-
-
-
- /* a:hover  { color: #f15123; } */
-
-  /* #menu alnus {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0px;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu alnus:last-child {
-    border: none;
-  }
-  #menu alnus:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu alnus.active {
-    background-color: #900C3F;
-    color: #f9f0e3;
+  .openbtn:hover {
+    background-color: #444;
   }
 
-  #menu ambrosia {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
+ /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+ #main {
     color: var(--main-text-color);
-    display: block;
-    margin: 0px;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu ambrosia:last-child {
-    border: none;
-    background-color: #7fa384;
-  }
-  #menu ambrosia:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu ambrosia.active {
-    background-color: #FF5733;
-    color: #f9f0e3;
-  }
-  #menu ambrosia.active:hover {
-    background: #f7947e;
-  }
-  #menu cyperaceae {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu cyperaceae:last-child {
-    border: none;
-  }
-  #menu cyperaceae:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu cyperaceae.active {
-    background-color: #FFC300;
-    color: #f9f0e3;
-  }
-  #menu cyperaceae.active:hover {
-    background: #fada73;
-  }
-  #menu fagus {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu fagus:last-child {
-    border: none;
-    }
-    #menu fagus:hover {
-      background-color: var(--main-bg-color);
-      color: #ddab66;
-    }
-  #menu fagus.active {
-  background-color: #2A7B9B;
-  color: #f9f0e3;
-  }
-  #menu fagus.active:hover {
-  background: #5a8799;
-  }
-  #menu picea {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu picea:last-child {
-    border: none;
-  }
-  #menu picea:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu picea.active {
-    background-color: #57C785;
-    color: #f9f0e3;
-  }
-  #menu picea.active:hover {
-    background: #a4c7a3;
-  }
-  #menu pinus {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu pinus:last-child {
-    border: none;
-  }
-  #menu Pinus:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu pinus.active {
-    background-color: #C7003A;
-    color: #f9f0e3;
-  }
-  #menu pinus.active:hover {
-    background: #bf496b;
-  }
-  #menu poaceae {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu poaceae:last-child {
-    border: none;
-  }
-  #menu poaceae:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu poaceae.active {
-    background-color: #FF8D19;
-    color: #f9f0e3;
-  }
-  #menu poaceae.active:hover {
-    background: #ffc58a;
-  }
-  #menu quercus {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu quercus:last-child {
-    border: none;
-  }
-  #menu quercus:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu quercus.active {
-    background-color: #ADD55C;
-    color: #f9f0e3;
-  }
-  #menu quercus.active:hover {
-    background: #c2cfa9;
-  }
-  #menu tsuga {
-    font-family: sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu tsuga:last-child {
-    border: none;
-  }
-  #menu tsuga:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu tsuga.active {
-    background-color: #511849;
-    color: #f9f0e3;
-  }
-  #menu tsuga.active:hover {
-    background: #4d3649;
-  }
-  #menu ulmus {
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    display: block;
-    margin: 0;
-    padding: 0;
-    padding: 10px;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-    text-align: center;
-  }
-  #menu ulmus:last-child {
-    border: none;
-  }
-  #menu ulmus:hover {
-    background-color: var(--main-bg-color);
-    color: #ddab66;
-  }
-  #menu ulmus.active {
-    background-color: #00BBAD;
-    color: #f9f0e3;
-  }
-  #menu ulmus.active:hover {
-    background: #6fbdb7;
-  } */
+   transition: margin-right .5s; /* If you want a transition effect */
+ }
+
+ /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+ @media screen and (max-height: 450px) {
+   #infoSideBar {padding-top: 15px;}
+   #infoSideBar a {font-size: 18px;}
+ }

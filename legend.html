@@ -18,56 +18,84 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="map"></div>
-    <aside class="toolbox" id="animation-toolbox">
-        <div class="box" id="animation-box">
-            <header>
-                <h1 id="animation-header"> Range Mapper </h1>
-            </header>
-            <hr/>
-            <label for="standard-select"></label>
-            <div class="select">
-                <select id="standard-select" onchange="updateMap(taxaLayer)">           <!-- dropdown selector -->
-                    <!-- <option selected = "selected"></option> -->
-                    <option value="northamerica">North America</option>
-                    <option value="europe">Europe</option>
-                    <option value="oceania">Oceania</option>
-                </select>
-                <span class="focus"></span>
+    <div id="infoSideBar" class="box">
+          <a class="closebtn" onclick="closeNav()">&times;</a>
+          <div>
+              <header>
+                  <h1>Acknowledgements</h1>
+              </header>
+              <p>Range Mapper was created by Adrian George, Sydney Widell, Rob Roth, and Jack Williams.
+                  This work would not have been possible without funding support from NSF, the University of Wisconsin–Madison Graduate School, and the Minnie Riess Detling Trust.</p>
+                  <p>To view our code and make your own maps using paleoecology data from the Neotoma Paleoecology Database, visit our <a href="https://github.com/NeotomaDB/RangeMapper">GitHub repository</a>. If you use Range Mapper in a paper, please cite:</p>
+                  <p>George et al., An adaptable process for making and using interactive and animated web maps of Late-Quaternary open paleoecological data, <i>Open Quaternary</i> (2021).</p>
+             </div>
+    </div>
+    <div id="main">
+        <div id="map"></div>
+        <aside class="toolbox" id="animation-toolbox">
+            <div class="box" id="animation-box">
+                <div id="btnbox">
+                    <button class="openbtn" onclick="openNav()">ⓘ</button>
+                </div>
+                <header>
+                    <h1 id="animation-header"> Range Mapper</h1>
+
+                </header>
+                <hr/>
+                <label for="standard-select"></label>
+                <div class="select">
+                    <select id="standard-select" onchange="updateMap(taxaLayer)">           <!-- dropdown selector -->
+                        <!-- <option selected = "selected"></option> -->
+                        <option value="northamerica">North America</option>
+                        <option value="europe">Europe</option>
+                        <option value="oceania">Oceania</option>
+                    </select>
+                    <span class="focus"></span>
+                </div>
+                <hr/>
+                <section id="animation-section">
+                    <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
+                    </p>
+                </section>
+                <section id="animation-section">
+                    <p class="animation-rangebar">
+                        <button><img id="js-play-pause-button" src="img/pause.png"></button>
+                        <input type="range" id="js-progress-range" min="0" max="1" step="0.04">
+                    </p>
+                </section>
+                <hr/>
+                <section id="animation-section">
+                    <div class="animation-rangebar">Duration (seconds):
+                        <input type="range" id="js-duration-range" min="10" max="60" step="2">
+                        <span style="margin-left: 2px" class="open-sans" id="js-duration-span"></span>
+                    </div>
+                </section>
+                <hr/>
+                <!-- Add legend data -->
+                <section>
+                    <div id="controls">
+                        <ul id="content" class="taxa-content"></ul>
+                    </div>
+                </section>
             </div>
-            <hr/>
-            <section id="animation-section">
-                <p class="animation-rangebar" id="legend-head-text">Years Before Present: <span id="js-current-time" id="open-legend-head-text"></span>
-                </p>
-            </section>
-            <section id="animation-section">
-                <p class="animation-rangebar">
-                    <button><img id="js-play-pause-button" src="images/pause.png"></button>
-                    <input type="range" id="js-progress-range" min="0" max="1" step="0.04">
-                </p>
-            </section>
-            <hr/>
-            <section id="animation-section">
-                <div class="animation-rangebar">Duration (seconds):
-                    <input type="range" id="js-duration-range" min="10" max="60" step="2">
-                    <span style="margin-left: 2px" class="open-sans" id="js-duration-span"></span>
+        </aside>
+        <!-- Legend -->
+        <section class="toolbox">
+            <div class="box" id="legend-box">
+                <header id="legend-head-text">
+                    <div>Percent Abundance</div>
+                </header>
+                <!-- Add legend data -->
+                <!-- <section class="legend-section"> -->
+                <div id="circ-box">
+                    <ul id="circ-content" class="legend-content"> </ul>
                 </div>
-            </section>
-            <hr/>
-            <!-- Add legend data -->
-            <section>
-                <div id="controls">
-                    <ul id="content" class="taxa-content"></ul>
+                <div id="logo-div">
+                    <img id="neotoma-logo" src="img/neotoma.jpeg" alt="neotoma">
                 </div>
-            </section>
-        </div>
-    </aside>
-
-    <!-- <div id="menu">
-        <header id="legend-head-text">Taxa</header>
-    </div> -->
-
-
+            </div>
+        </section>
+    </div>
     <div id="loader">
         <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
             <svg class="CDB-LoaderIcon-spinner" viewBox="0 0 50 50">
@@ -76,22 +104,6 @@
         </div>
     </div>
 
-    <!-- Legend -->
-    <section class="toolbox">
-        <div class="box" id="legend-box">
-            <header id="legend-head-text">
-                <div>Percent Abundance</div>
-            </header>
-            <!-- Add legend data -->
-            <!-- <section class="legend-section"> -->
-            <div id="circ-box">
-                <ul id="circ-content" class="legend-content"> </ul>
-            </div>
-            <div id="logo-div"> <img id="neotoma-logo" src="images/neotoma.jpeg" alt="neotoma">
-            </div>
-        </div>
-    </section>
-</div>
 
 <script>
     const s = carto.expressions;
@@ -192,16 +204,17 @@
 
     function playPause() {
         paused = taxaViz.variables.animation._paused;
-        if (paused) {
-            // Play the animation
-            taxaViz.variables.animation.play();
-            iceViz.variables.animation.play();
-            document.getElementById("js-play-pause-button").src="images/pause.png";
-        } else  {
+        console.log(paused)
+        if (paused === false) {
             // Pause the animation
             taxaViz.variables.animation.pause();
             iceViz.variables.animation.pause();
-            document.getElementById("js-play-pause-button").src="images/play.png";
+            document.getElementById("js-play-pause-button").src="img/play.png";
+        } else  {
+            // Play the animation
+            taxaViz.variables.animation.play();
+            iceViz.variables.animation.play();
+            document.getElementById("js-play-pause-button").src="img/pause.png";
         }
     };
 
@@ -419,6 +432,17 @@
             return n
         };
 
+        /* Set the width of the sidebar to 250px (show it) */
+        function openNav() {
+          document.getElementById("infoSideBar").style.width = "300px";
+            document.getElementById("main").style.marginRight = "250px";
+        }
+
+        /* Set the width of the sidebar to 0 (hide it) */
+        function closeNav() {
+          document.getElementById("infoSideBar").style.width = "0";
+            document.getElementById("main").style.marginRight = "0";
+        }
 
         function hideLoader() {
             document.getElementById('loader').style.opacity = '0';
