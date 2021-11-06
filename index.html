@@ -38,7 +38,7 @@
         <aside class="toolbox" id="animation-toolbox">
             <div class="box" id="animation-box">
                 <div id="btnbox">
-                    <button class="openbtn" onclick="openNav()">ⓘ</button>
+                    <button class="openbtn" onclick="openCloseNav()">ⓘ</button>
                 </div>
                 <header>
                     <h1 id="animation-header"> Range Mapper</h1>
@@ -269,7 +269,6 @@
 
         // When layer loads, trigger legend event
         taxaLayer.on('loaded', () => {
-            // updateLegend();
             updateLegend();
             hideLoader();
         });
@@ -329,18 +328,17 @@
         };
 
         function updateLegend(){
-            console.log("called")
             generateLegend();
-            // setupWidget();
+            setupWidget();
         };
 
         function generateLegend() {
             //taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
             // Request data for legend from the layer viz
             taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+            taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
             let legend = taxaLayer.viz.color.getLegendData();
             // Create list elements for legend
-            console.log(legend.data)
             let legendList = legend.data.map((legend, index) => {
                 const color = rgbaToHex(legend.value);
                 const bordercol = rgbToHex(legend.value)
@@ -366,9 +364,8 @@
                     </li>\n`;
             }).join('');
             document.getElementById('content').innerHTML = legendList;
-        // }
-        //
-        // function setupWidget() {
+        }
+        function setupWidget() {
             // 1. Get all the category checkboxes
             const checkboxes = document.getElementsByClassName('js-checkbox');
             // 2. Add an event listener to each category checkbox
@@ -392,6 +389,7 @@
             taxaTypes = _toggle(taxaTypes, category);
             // 4. Check / uncheck the checkbox element
             checkboxElement.checked = taxaTypes.includes(category);
+            console.log(taxaTypes.includes(category))
             // 5. Update the filter
             if (taxaTypes.length === 0) {
                 taxaLayer.hide()
@@ -431,17 +429,6 @@
             return arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
         };
 
-        function checkAll(formname, checktoggle) {
-          var checkboxes = new Array();
-          checkboxes = document.getElementsByClassName('js-checkbox');
-
-          for (var i=0; i<checkboxes.length; i++)  {
-            if (checkboxes[i].type == 'checkbox')   {
-              checkboxes[i].checked = checktoggle;
-            }
-          }
-      };
-
 
         function setContinent(){
             let selectedContID = document.getElementById('standard-select');
@@ -458,10 +445,17 @@
             return n
         };
 
+
+        function openCloseNav(){
+            let selectedButton = document.getElementById("infoSideBar");
+            let sidebarWidth = selectedButton.style.width
+
+        }
         /* Set the width of the sidebar to 250px (show it) */
         function openNav() {
-          document.getElementById("infoSideBar").style.width = "300px";
-            document.getElementById("main").style.marginRight = "250px";
+          if (document.getElementById("infoSideBar").style.width = "0px")
+          {document.getElementById("infoSideBar").style.width = "300px";
+            document.getElementById("main").style.marginRight = "250px"}
         }
 
         /* Set the width of the sidebar to 0 (hide it) */
