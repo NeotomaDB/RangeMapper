@@ -1,37 +1,30 @@
 /* Learn about this solution to creating custom select styles:
  @link https://moderncss.dev/custom-select-styles-with-pure-css/ */
-*,
+/* *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
-select {
+} */
+/* select {
   // A reset of styles, including removing the default dropdown arrow
   appearance: none;
   -webkit-appearance: none;
--moz-appearance: none;
+-moz-appearance: none; */
 /* text-indent: 1px;
-text-overflow: ''; */
+text-overflow: '';
   // Additional resets for further consistency
   background-color: transparent;
   border: none;
   padding: 0 1em 0 0;
   margin: 0;
   width: 100%;
-  font-family: inherit;
+  /* font-family: inherit;
   font-size: inherit;
-  cursor: inherit;
+  /* cursor: inherit;
   line-height: inherit;
-}
+} */
 
-select::-ms-expand {
-  display: none;
-}
 
-select {
-  // ...existing styles
-  outline: none;
-}
 
 :root {
     --main-bg-color: #D9E9E9E9;
@@ -42,42 +35,43 @@ select {
     --select-arrow: var(--select-border);
 }
 
-/*
-#continent-selector{
-    position: absolute;
-    right: 1%;
-    align-items: right
-} */
-.select {
-  width: 100%;
-  /* min-width: 15ch;
-  max-width: 30ch; */
-  border: 1px solid var(--select-border);
-  border-radius: 0.25em;
-  padding: 0.25em 0.5em;
-  font-size: 1.25rem;
-  line-height: 1.1;
-
-  // Stack above custom arrow
-  z-index: 1;
-
-  background-color: #fff;
-  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
-  display: grid;
-  grid-template-areas: "select";
-  grid-area: select;
-  align-items: center;
-  position: relative;
+select.mySelectArrow{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: var(--main-text-color);
+    color: #fff;
+    font-weight: 500;
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 18px;
+}
+select.mySelectArrow option {
+    color: var(--main-bg-color);
+    padding: 0 10px;
 }
 
-.select::after {
-  content: "";
-  width: 0.8em;
-  height: 0.5em;
-  background-color: var(--select-arrow);
-  clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-  /* grid-area: select; */
-  justify-self: end;
+/* select::-ms-expand {
+  display: none;
+} */
+
+.select:after {
+    content: '\25BC';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    font-size: 25px;
+    /* border: 1px solid #565656;
+    background: #0e7b53; */
+    color: #fff;
+    padding: 11px 15px;
+    pointer-events: none;
+}
+.select {
+  /* // ...existing styles */
+  position: relative;
+  width: 100%;
 }
 
 select,
@@ -139,53 +133,6 @@ select:focus + .focus {
     color:var(--main-text-color);
 }
 
-/* li {
-    display: flex;
-    align-items: center;
-    padding: 1px;
-    font: 800
-} */
-
-/* .point-mark {
-    margin-right: 4px;
-} */
-/* style="color:var(--main-text-color); font-family: roboto, sans-serif;
-font-style: normal;
-font-weight: 300;
-font-size: 15px;
-margin-top: 5px"
-
-
-      style="color:var(--main-text-color);
-      font-family: roboto, sans-serif;
-      font-style: normal;
-      font-weight: 300;
-      font-size: 15px;
-      margin-top: 5px
-      margin-bottom: 5px;" */
-
-
-      /* legend styling */
-
-      /* #wraper-dropdown-selector {
-          background-color: #d2eaef;
-          opacity: 0.8;
-          position: absolute;
-          top: 10px;
-          left: 30%;
-          width: auto;
-          height: auto;
-          padding: 10px;
-          display: block;
-          z-index: 9000;
-
-      } */
-
-      /* #js-dropdown-selector input {
-          width: 200px;
-      } */
-
-
       #legend-box {
           position: fixed;
           right: 15px;
@@ -198,7 +145,6 @@ margin-top: 5px"
       }
 
       #legend-head-text {
-
           font-style: "heavy";
           font-weight: 700;
           text-align: center;
@@ -207,16 +153,6 @@ margin-top: 5px"
       .legend .category {
         font: 800;
       }
-
-      /* .legend-section {
-          display: flex;
-          flex-direction: column-reverse;
-          /* justify-content: space-between;
-          align-items: left;
-          align-content: flex-end;
-          width: 100%;
-          height: 100%;
-      } */
 
       #circ-box {
           width: 100%;
@@ -316,14 +252,14 @@ margin-top: 5px"
    padding: 8px 8px 8px 20px;
    text-decoration: none;
    font-size: 20px;
-   color: #818181;
+   color: var(--main-text-color);
    display: block;
    transition: 0.3s;
  }
 
  /* When you mouse over the navigation links, change their color */
  #infoSideBar .closebtn:hover {
-   color: #f1f1f1;
+   color: #C3D1D1;
  }
 
  /* Position and style the close button (top right corner) */
@@ -335,6 +271,23 @@ margin-top: 5px"
    margin-left: 50px;
  }
 
+ #infoSideBar header h1 {
+   display: inline-block;
+   color: #2E3C43;
+   line-height: 28px;
+   font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+   font-size: 20px;
+   font-weight: 600;
+   margin: 0;
+   width: calc(100% - 24px);
+ }
+
+ #infoSideBar p {
+   display: inline-block;
+   color: #2E3C43;
+   font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+   font-size: 14px;
+ }
  /* The button used to open the sidebar */
 
  .openbtn {
@@ -355,7 +308,7 @@ margin-top: 5px"
   }
 
   .openbtn:hover {
-    background-color: #444;
+    background-color: #97A3A3;
   }
 
  /* Style page content - use this if you want to push the page content to the right when you open the side navigation */

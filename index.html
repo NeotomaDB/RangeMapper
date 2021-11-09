@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="infoSideBar" class="box">
+    <div id="infoSideBar">
           <a class="closebtn" onclick="closeNav()">&times;</a>
           <div>
               <header>
@@ -38,22 +38,21 @@
         <aside class="toolbox" id="animation-toolbox">
             <div class="box" id="animation-box">
                 <div id="btnbox">
-                    <button class="openbtn" onclick="openCloseNav()">ⓘ</button>
+                    <button class="openbtn" onclick="openNav()">ⓘ</button>
                 </div>
                 <header>
                     <h1 id="animation-header"> Range Mapper</h1>
-
                 </header>
                 <hr/>
-                <label for="standard-select"></label>
+                <!-- <label for="standard-select"></label> -->
                 <div class="select">
-                    <select id="standard-select" onchange="updateMap(taxaLayer)">           <!-- dropdown selector -->
+                    <select  class="mySelectArrow" id="standard-select" autocomplete="off" onchange="updateMap(taxaLayer)">           <!-- dropdown selector -->
                         <!-- <option selected = "selected"></option> -->
                         <option value="northamerica">North America</option>
                         <option value="europe">Europe</option>
                         <option value="oceania">Indo-Pacific</option>
                     </select>
-                    <span class="focus"></span>
+                    <!-- <span class="focus"></span> -->
                 </div>
                 <hr/>
                 <section id="animation-section">
@@ -69,7 +68,7 @@
                 <hr/>
                 <section id="animation-section">
                     <div class="animation-rangebar">Duration (seconds):
-                        <input type="range" id="js-duration-range" min="10" max="60" step="2">
+                        <input type="range" id="js-duration-range" min="16" max="60" step="2">
                         <span style="margin-left: 2px" class="open-sans" id="js-duration-span"></span>
                     </div>
                 </section>
@@ -297,8 +296,6 @@
             }
         }
 
-
-
         // change sql query with dropdown value
         function updateMap(taxaLayer) {
             n = setContinent()
@@ -314,29 +311,31 @@
             };
 
             let taxaSource = new carto.source.Dataset(continentArr[n][1]);
+            taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+            taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
             const layerPromise = taxaLayer.update(taxaSource, taxaViz);
-            // let legend = taxaLayer.viz.color.getLegendData()
-            // console.log(legend.key)
             currentExtent = allExtents[n];
             map.panTo(currentExtent);
-            console.log(layerPromise)
-            const promiseB = layerPromise.then(console.log("Promise fulfilled"))
+            const promiseB = layerPromise.then(console.log("fired"));
             const promiseC = promiseB.then(checkLegend);
             promiseC.then(updateLegend)
 
 
         };
 
+        // function updateLegendData(){
+        //     taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+        //     taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
+        //     let legend = taxaLayer.viz.color.getLegendData();
+        // }
+
         function updateLegend(){
             generateLegend();
-            setupWidget();
+            // setupWidget();
         };
 
         function generateLegend() {
-            //taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
             // Request data for legend from the layer viz
-            taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
-            taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
             let legend = taxaLayer.viz.color.getLegendData();
             // Create list elements for legend
             let legendList = legend.data.map((legend, index) => {
@@ -364,8 +363,8 @@
                     </li>\n`;
             }).join('');
             document.getElementById('content').innerHTML = legendList;
-        }
-        function setupWidget() {
+        // }
+        // function setupWidget() {
             // 1. Get all the category checkboxes
             const checkboxes = document.getElementsByClassName('js-checkbox');
             // 2. Add an event listener to each category checkbox
@@ -380,7 +379,6 @@
             const checkboxElement = event.currentTarget;
             // 2. Get the category through the "data-taxa-type" attribute
             const category = checkboxElement.getAttribute('data-taxa-type');
-
             // 3. Toggle the chosen category from the global taxaTypes array
             const colorPosition = taxaTypes.indexOf(category)
             const catColor = `${taxaColors[colorPosition]}`
@@ -389,7 +387,6 @@
             taxaTypes = _toggle(taxaTypes, category);
             // 4. Check / uncheck the checkbox element
             checkboxElement.checked = taxaTypes.includes(category);
-            console.log(taxaTypes.includes(category))
             // 5. Update the filter
             if (taxaTypes.length === 0) {
                 taxaLayer.hide()
@@ -399,10 +396,8 @@
                 }
                 taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
             }
-            //taxaViz.color.blendTo(s.opacity(s.ramp(s.in(s.prop('taxa'), taxaTypes),s.var('colors')),0));
             taxaViz.variables.animation.setProgressPct(last);
             iceViz.variables.animation.setProgressPct(last);
-            console.log(checkLegend())
         }
 
         function checkLegend(){
@@ -429,6 +424,17 @@
             return arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
         };
 
+        function checkAll(formname, checktoggle) {
+          var checkboxes = new Array();
+          checkboxes = document.getElementsByClassName('js-checkbox');
+
+          for (var i=0; i<checkboxes.length; i++)  {
+            if (checkboxes[i].type == 'checkbox')   {
+              checkboxes[i].checked = checktoggle;
+            }
+          }
+      };
+
 
         function setContinent(){
             let selectedContID = document.getElementById('standard-select');
@@ -449,18 +455,19 @@
         function openCloseNav(){
             let selectedButton = document.getElementById("infoSideBar");
             let sidebarWidth = selectedButton.style.width
-
         }
         /* Set the width of the sidebar to 250px (show it) */
         function openNav() {
           if (document.getElementById("infoSideBar").style.width = "0px")
           {document.getElementById("infoSideBar").style.width = "300px";
+          document.getElementById("infoSideBar").style.padding = "32px";
             document.getElementById("main").style.marginRight = "250px"}
         }
 
         /* Set the width of the sidebar to 0 (hide it) */
         function closeNav() {
           document.getElementById("infoSideBar").style.width = "0";
+          document.getElementById("infoSideBar").style.padding = "0px";
             document.getElementById("main").style.marginRight = "0";
         }
 
