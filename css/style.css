@@ -142,6 +142,7 @@ select:focus + .focus {
           font-family: sans-serif;
           background: var(--main-bg-color);
           opacity: 80%;
+          transition: margin-right .5s;
       }
 
       #legend-head-text {
@@ -203,35 +204,12 @@ select:focus + .focus {
           height: 55px;
           right: 25px;
           bottom: 35px;
+          transition: margin-right .5s;
       }
 
 
 
-/* taxa selection menu styling */
 
-#menu {
-    left: 15px;
-    width:100px;
-    top: 250px;
-    position: fixed;
-    background: var(--main-bg-color);
-    z-index: 1;
-    border-radius: 3px;
-    width: 120px;
-    /* border: 1px solid rgba(0, 0, 0, 0.4); */
-    font-family: supria-sans, sans-serif;
-    font-style: heavy;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--main-text-color);
-    box-shadow: 0 0px 16px rgba(0, 0, 0, 0.24);
-    padding-top: 1%;
-    display: block;
-}
-
-  #menu taxa.active {
-    color: #f9f0e3;
-  }
 
   /* The sidebar menu */
  #infoSideBar {

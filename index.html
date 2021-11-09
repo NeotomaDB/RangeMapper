@@ -82,7 +82,7 @@
             </div>
         </aside>
         <!-- Legend -->
-        <section class="toolbox">
+        <div>
             <div class="box" id="legend-box">
                 <header id="legend-head-text">
                     <div>Percent Abundance</div>
@@ -96,7 +96,7 @@
                     <img id="neotoma-logo" src="img/neotoma.jpeg" alt="neotoma">
                 </div>
             </div>
-        </section>
+        </div>
     </div>
     <div id="loader">
         <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
@@ -452,23 +452,29 @@
         };
 
 
-        function openCloseNav(){
-            let selectedButton = document.getElementById("infoSideBar");
-            let sidebarWidth = selectedButton.style.width
-        }
+        // function openCloseNav(){
+        //     let selectedButton = document.getElementById("infoSideBar");
+        //     let sidebarWidth = selectedButton.style.width
+        // }
         /* Set the width of the sidebar to 250px (show it) */
         function openNav() {
-          if (document.getElementById("infoSideBar").style.width = "0px")
-          {document.getElementById("infoSideBar").style.width = "300px";
-          document.getElementById("infoSideBar").style.padding = "32px";
-            document.getElementById("main").style.marginRight = "250px"}
+          if (document.getElementById("infoSideBar").style.width = "0px"){
+              document.getElementById("infoSideBar").style.width = "300px";
+              document.getElementById("infoSideBar").style.padding = "32px";
+              document.getElementById("main").style.marginRight = "250px";
+              document.getElementById("legend-box").style.marginRight = "300px";
+              document.getElementById("neotoma-logo").style.marginRight = "300px";
+          }
+
         }
 
         /* Set the width of the sidebar to 0 (hide it) */
         function closeNav() {
           document.getElementById("infoSideBar").style.width = "0";
-          document.getElementById("infoSideBar").style.padding = "0px";
+          document.getElementById("infoSideBar").style.padding = "0";
             document.getElementById("main").style.marginRight = "0";
+            document.getElementById("legend-box").style.marginRight = "0"
+            document.getElementById("neotoma-logo").style.marginRight = "0";
         }
 
         function hideLoader() {
