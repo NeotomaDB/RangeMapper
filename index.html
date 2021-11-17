@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
     <title>Range Mapper</title>
 
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.11/lodash.min.js"></script>
@@ -19,18 +18,27 @@
 </head>
 <body>
     <div id="infoSideBar">
-          <a class="closebtn" onclick="closeNav()">&times;</a>
+
           <div>
               <header>
                   <h1>Acknowledgements</h1>
+                  <a class="closebtn" onclick="openCloseNav()">&times;</a>
               </header>
-              <p>Range Mapper is based on fossil pollen recovered from lake and bog sediments going back to the last Ice Age. All data are from the Neotoma Paleoecology Database.
+              <p>Range Mapper
 
-                  This interactive map was created by Adrian George, Sydney Widell, Rob Roth, and Jack Williams at the University of Wisconsin-Madison Geography Department and Cartography Lab.
+                  Range Mapper was created by Adrian George, Sydney Widell, Rob Roth, and Jack Williams at the University of Wisconsin-Madison Geography Department and Cartography Lab. The dynamic visualizations are based on
+                  fossil pollen recovered from lake and bog sediments going back to the last Ice Age. Data were obtained from the <a href="http://www.neotomadb.org">Neotoma Paleoecology Database</a>
+                   and its constituent databases: the North American Pollen Database, the European Pollen Database and Alpine Pollen Database, and the Indo-Pacific Pollen Database. The work of data contributors, data stewards,
+                   and the Neotoma community is gratefully acknowledged. Ice sheet data is from Dalton et al (2020) and Hughes et al (2016).
 
                   This work would not have been possible without funding support from NSF (Grant EAR-1550707), the University of Wisconsin–Madison Graduate School, and the Minnie Riess Detling Trust.</p>
-                  <p><b>Code Source:</b>To view our code and make your own maps using data from the Neotoma Paleoecology Database, visit our <a href="https://github.com/NeotomaDB/RangeMapper">GitHub repository</a>. </p>
-                  <p><b>Citation: If you use Range Mapper in a paper, please cite: George et al., (2021) An adaptable process for making and using interactive and animated web maps of Late-Quaternary open paleoecological data, <i>Open Quaternary</i>.</p>
+                  <p><b>Code Source:</b> To view our code and make your own maps using data from the Neotoma Paleoecology Database, visit our <a href="https://github.com/NeotomaDB/RangeMapper">GitHub repository</a>. </p>
+                  <p><b>Citation: If you use Range Mapper in a paper, please contact Adrian George for citation information, because the Range Mapper paper is currently in review.
+
+                  Dalton, A.S., Margold, M., Stokes, C.R., Tarasov, L., Dyke, A.S., Adams, R.S., Allard, S., Arends, H.E., Atkinson, N., Attig, J.W., et al. (2020). An updated radiocarbon-based ice margin chronology for
+                  the last deglaciation of the North American Ice Sheet Complex. Quaternary Science Reviews 234, 106223.</p>
+
+                  Hughes, A.L.C., Gyllencreutz, R., Lohne, Ø.S., Mangerud, J., and Svendsen, J.I. (2016). The last Eurasian ice sheets – a chronological database and time-slice reconstruction, DATED-1. Boreas 45, 1–45.
              </div>
     </div>
     <div id="main">
@@ -38,7 +46,7 @@
         <aside class="toolbox" id="animation-toolbox">
             <div class="box" id="animation-box">
                 <div id="btnbox">
-                    <button class="openbtn" onclick="openNav()">ⓘ</button>
+                    <button class="openbtn" onclick="openCloseNav()">ⓘ</button>
                 </div>
                 <header>
                     <h1 id="animation-header"> Range Mapper</h1>
@@ -451,31 +459,24 @@
             return n
         };
 
-
-        // function openCloseNav(){
-        //     let selectedButton = document.getElementById("infoSideBar");
-        //     let sidebarWidth = selectedButton.style.width
-        // }
-        /* Set the width of the sidebar to 250px (show it) */
-        function openNav() {
-          if (document.getElementById("infoSideBar").style.width = "0px"){
-              document.getElementById("infoSideBar").style.width = "300px";
-              document.getElementById("infoSideBar").style.padding = "32px";
-              document.getElementById("main").style.marginRight = "250px";
-              document.getElementById("legend-box").style.marginRight = "300px";
-              document.getElementById("neotoma-logo").style.marginRight = "300px";
-          }
-
-        }
-
-        /* Set the width of the sidebar to 0 (hide it) */
-        function closeNav() {
-          document.getElementById("infoSideBar").style.width = "0";
-          document.getElementById("infoSideBar").style.padding = "0";
-            document.getElementById("main").style.marginRight = "0";
-            document.getElementById("legend-box").style.marginRight = "0"
-            document.getElementById("neotoma-logo").style.marginRight = "0";
-        }
+        // Opens and closes sidebar
+        function openCloseNav() {
+            let selectedButton = document.getElementById("infoSideBar");
+            let sidebarWidth = selectedButton.style.width
+            if (sidebarWidth === '0px' || !sidebarWidth) {
+                document.getElementById("infoSideBar").style.width = "350px";
+                document.getElementById("infoSideBar").style.padding = "32px";
+                document.getElementById("main").style.marginRight = "300px";
+                document.getElementById("legend-box").style.marginRight = "350px";
+                document.getElementById("neotoma-logo").style.marginRight = "350px";
+            } else  {
+                document.getElementById("infoSideBar").style.width = "0";
+                document.getElementById("infoSideBar").style.padding = "0";
+                document.getElementById("main").style.marginRight = "0";
+                document.getElementById("legend-box").style.marginRight = "0"
+                document.getElementById("neotoma-logo").style.marginRight = "0";
+            }
+        };
 
         function hideLoader() {
             document.getElementById('loader').style.opacity = '0';

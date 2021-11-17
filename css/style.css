@@ -1,31 +1,3 @@
-/* Learn about this solution to creating custom select styles:
- @link https://moderncss.dev/custom-select-styles-with-pure-css/ */
-/* *,
-*::before,
-*::after {
-  box-sizing: border-box;
-} */
-/* select {
-  // A reset of styles, including removing the default dropdown arrow
-  appearance: none;
-  -webkit-appearance: none;
--moz-appearance: none; */
-/* text-indent: 1px;
-text-overflow: '';
-  // Additional resets for further consistency
-  background-color: transparent;
-  border: none;
-  padding: 0 1em 0 0;
-  margin: 0;
-  width: 100%;
-  /* font-family: inherit;
-  font-size: inherit;
-  /* cursor: inherit;
-  line-height: inherit;
-} */
-
-
-
 :root {
     --main-bg-color: #D9E9E9E9;
     --main-text-color: #494E6B;
@@ -51,10 +23,6 @@ select.mySelectArrow option {
     padding: 0 10px;
 }
 
-/* select::-ms-expand {
-  display: none;
-} */
-
 .select:after {
     content: '\25BC';
     position: absolute;
@@ -62,8 +30,6 @@ select.mySelectArrow option {
     right: 0;
     bottom: 0;
     font-size: 25px;
-    /* border: 1px solid #565656;
-    background: #0e7b53; */
     color: #fff;
     padding: 11px 15px;
     pointer-events: none;
@@ -100,7 +66,6 @@ select:focus + .focus {
 }
 
 /* progress bar styling */
-
 #animation-toolbox {
     left: 15px;
     position: fixed;
@@ -133,170 +98,162 @@ select:focus + .focus {
     color:var(--main-text-color);
 }
 
-      #legend-box {
-          position: fixed;
-          right: 15px;
-          bottom: 1px;
-          height: 175px;
-          width: 200px;
-          font-family: sans-serif;
-          background: var(--main-bg-color);
-          opacity: 80%;
-          transition: margin-right .5s;
-      }
+#legend-box {
+  position: fixed;
+  right: 15px;
+  bottom: 1px;
+  height: 175px;
+  width: 200px;
+  font-family: sans-serif;
+  background: var(--main-bg-color);
+  opacity: 80%;
+  transition: margin-right .5s;
+}
 
-      #legend-head-text {
-          font-style: "heavy";
-          font-weight: 700;
-          text-align: center;
-      }
+#legend-head-text {
+  font-style: "heavy";
+  font-weight: 700;
+  text-align: center;
+}
 
-      .legend .category {
-        font: 800;
-      }
+.legend .category {
+font: 800;
+}
 
-      #circ-box {
-          width: 100%;
-      }
+#circ-box {
+  width: 100%;
+}
 
-      #circ-content {
-          list-style-type:none;
-          align-items: right;
-          font-weight: 300;
-          /* justify-content: center; */
-          display: flex;
-          flex-direction: column-reverse;
-          text-align: right;
-          padding-right: 10%
-      }
+#circ-content {
+  list-style-type:none;
+  align-items: right;
+  font-weight: 300;
+  /* justify-content: center; */
+  display: flex;
+  flex-direction: column-reverse;
+  text-align: right;
+  padding-right: 10%
+}
 
-      .circle {
-          border-radius: 75%;
-          position: absolute;
-          border: 1px var(--main-text-color) solid;
-          bottom: 10%;
-          color: var(--main-text-color);
-          background-color: 0.4
-      }
+.circle {
+  border-radius: 75%;
+  position: absolute;
+  border: 1px var(--main-text-color) solid;
+  bottom: 10%;
+  color: var(--main-text-color);
+  background-color: 0.4
+}
 
-      #circle100{
-          left: 18px;
-      }
+#circle100{
+  left: 18px;
+}
 
-      #circle50{
-          left: 36px;
-      }
+#circle50{
+  left: 36px;
+}
 
-      #circle25{
-          left: 50px;
-      }
+#circle25{
+  left: 50px;
+}
 
-      #logo-div {
-          display: flex;
-          margin-top:-1%;
-          padding: 1px;
-      }
+#logo-div {
+  display: flex;
+  margin-top:-1%;
+  padding: 1px;
+}
 
-      #neotoma-logo {
-          position: fixed;
-          width: 5%;
-          width: 65px;
-          height: 55px;
-          right: 25px;
-          bottom: 35px;
-          transition: margin-right .5s;
-      }
+#neotoma-logo {
+  position: fixed;
+  width: 5%;
+  width: 65px;
+  height: 55px;
+  right: 25px;
+  bottom: 35px;
+  transition: margin-right .5s;
+}
 
+/* The sidebar menu */
+#infoSideBar {
+height: 100%; /* 100% Full-height */
+width: 0; /* 0 width - change this with JavaScript */
+position: fixed; /* Stay in place */
+z-index: 1; /* Stay on top */
+top: 0;
+right: 0;
+padding-top: 10px;
+background-color: var(--main-bg-color); /* gray*/
+overflow-x: hidden; /* Disable horizontal scroll */
+transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+}
 
+/* Position and style the close button (top right corner) */
+#infoSideBar .closebtn {
+padding: 15px 8px 8px 20px;
+text-decoration: none;
+font-size: 20px;
+color: var(--main-text-color);
+display: block;
+transition: 0.3s;
+position: absolute;
+top: 0;
+right: 25px;
+font-size: 36px;
+margin-left: 50px;
+}
 
+/* When you mouse over the navigation links, change their color */
+#infoSideBar .closebtn:hover {
+color: #C3D1D1;
+}
 
+#infoSideBar header h1 {
+display: inline-block;
+color: #2E3C43;
+line-height: 20px;
+font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+font-size: 18px;
+font-weight: 600;
+margin: 0;
+width: calc(100% - 24px);
+}
 
-  /* The sidebar menu */
- #infoSideBar {
-   height: 100%; /* 100% Full-height */
-   width: 0; /* 0 width - change this with JavaScript */
-   position: fixed; /* Stay in place */
-   z-index: 1; /* Stay on top */
-   top: 0;
-   right: 0;
-   padding-top: 10px;
-   background-color: var(--main-bg-color); /* gray*/
-   overflow-x: hidden; /* Disable horizontal scroll */
-   transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
- }
+#infoSideBar p {
+display: inline-block;
+color: #2E3C43;
+font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+font-size: 14px;
+}
+/* The button used to open the sidebar */
 
- /* The sidebar links */
- #infoSideBar .closebtn {
-   padding: 8px 8px 8px 20px;
-   text-decoration: none;
-   font-size: 20px;
-   color: var(--main-text-color);
-   display: block;
-   transition: 0.3s;
- }
+.openbtn {
+position: absolute;
+top: 15px;
+right: 15px;
+margin-left: 50px;
+border: none;
+height: 25px;
+width: 25px;
+font-size: 37px;
+color: var(--main-text-color);
+font: sans-serif;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+}
 
- /* When you mouse over the navigation links, change their color */
- #infoSideBar .closebtn:hover {
-   color: #C3D1D1;
- }
+.openbtn:hover {
+background-color: #97A3A3;
+}
 
- /* Position and style the close button (top right corner) */
- #infoSideBar .closebtn {
-   position: absolute;
-   top: 0;
-   right: 25px;
-   font-size: 36px;
-   margin-left: 50px;
- }
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+color: var(--main-text-color);
+transition: margin-right .5s; /* If you want a transition effect */
+}
 
- #infoSideBar header h1 {
-   display: inline-block;
-   color: #2E3C43;
-   line-height: 28px;
-   font-family: 'Montserrat', Arial, Helvetica, sans-serif;
-   font-size: 20px;
-   font-weight: 600;
-   margin: 0;
-   width: calc(100% - 24px);
- }
-
- #infoSideBar p {
-   display: inline-block;
-   color: #2E3C43;
-   font-family: 'Montserrat', Arial, Helvetica, sans-serif;
-   font-size: 14px;
- }
- /* The button used to open the sidebar */
-
- .openbtn {
-     position: absolute;
-     top: 15px;
-     right: 15px;
-     margin-left: 50px;
-     border: none;
-     height: 25px;
-     width: 25px;
-     font-size: 37px;
-     color: var(--main-text-color);
-     font: sans-serif;
-     border-radius: 50%;
-     display: flex;
- 	 align-items: center;
- 	 justify-content: center;
-  }
-
-  .openbtn:hover {
-    background-color: #97A3A3;
-  }
-
- /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
- #main {
-    color: var(--main-text-color);
-   transition: margin-right .5s; /* If you want a transition effect */
- }
-
- /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
- @media screen and (max-height: 450px) {
-   #infoSideBar {padding-top: 15px;}
-   #infoSideBar a {font-size: 18px;}
- }
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+#infoSideBar {padding-top: 15px;}
+#infoSideBar a {font-size: 18px;}
+}
