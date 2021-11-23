@@ -1,6 +1,6 @@
 ---
 title: "Range_Mapper_R"
-author: "Adrian George, Sydney Widell, Robert Roth, and Jack Williams" 
+author: "Adrian George, Sydney Widell, Robert Roth, and Jack Williams"
 affiliation: "University of Wisconsin - Madison"
 date: "11/17/2021"
 #bibliography: ?
@@ -25,9 +25,9 @@ date: "11/17/2021"
 
 Building this R pathway was helpful to us in our attempts to model global forest turnover over the last 21,000 years, using pollen records archived on Neotoma. Our models are a few of many that could be possible with code that links Neotoma's deep paleoecological data repository to Carto's intuitive and vibrant mapping technology.
 
-Our code integrates previous methods established by @williams2017neotoma and @goring2018bulk-baconizing for extracting and interpolating Neotoma data in R with a quick solution for moving that data to Carto, developed in @dracodoc2017rCartoAPI. In this guide, we will provide step-by-step instructions for running all parts of the code.(@anna, what am I not citing here?)
+Our code integrates previous methods established by @williams2017neotoma and @goring2018bulk-baconizing for extracting and interpolating Neotoma data in R. In this guide, we will provide step-by-step instructions for running all parts of the code.
 
-#### RStudio ----I coppied this part straight from bulk baconizing. Is this standard? do I need to cite?
+#### RStudio
 
 Many people working with R may choose to use [RStudio](http://rstudio.com).  If you are using RStudio, you can customize elements of this document (for example, removing this header information) and then use the *knit* button to compile the code into an HTML document, while generating the neccessary output files (see the [README file](https://github.com/neotomadb) in the GitHub repository).
 
@@ -35,32 +35,27 @@ Many people working with R may choose to use [RStudio](http://rstudio.com).  If 
 
 The `neotoma` package facilitates interactions between R and the Neotoma Paleoecology Database, and the `dplyr` package allows you to filter the data you've extracted by factors like site and age.
 
-Later on, the rCartoAPI Package will push the data you've downloaded to Carto. That process references tools contained in the httr and devtools packages.  
-
 ```{r library}
 library(neotoma)
 library(dplyr)
-library(httr)
-library(devtools)
- library(rCartoAPI)
 ```
 
 
 ## Retrieving Neotoma data
 
-With this set-up complete, you're ready to extract your first dataset! In this example, we'll compile some pollen records from the Indo-Pacific. 
+With this set-up complete, you're ready to extract your first dataset! In this example, we'll compile some pollen records from the Indo-Pacific.
 
-The taxa we'll be mapping are *Nothofagus* and *Eucalyptus*, but there are countless taxa available on Neotoma, and you can extract as many as you'd like by replicating the code below. You can browse for taxa on [Neotoma Explorer](https://apps.neotomadb.org/explorer/) or using `neotoma::get_taxa()`. Be aware that these values are case-sensitive. 
+The taxa we'll be mapping are *Nothofagus* and *Eucalyptus*, but there are countless taxa available on Neotoma, and you can extract as many as you'd like by replicating the code below. You can browse for taxa on [Neotoma Explorer](https://apps.neotomadb.org/explorer/) or using `neotoma::get_taxa()`. Be aware that these values are case-sensitive.
 
 Then, select the geographical bounds of your querry and express them as coordinates. ttps://boundingbox.klokantech.com/ is a useful way to generate your own bounding regions. Otherwise, these coordinates worked well for us across the sites we surveyed:
 
  North American bounding box: `location <- c(-130, 24, -34, 65)`
  European bounding box: `location <- c(-11, 35, 47, 72)`
  Australian bounding box: `location <- c(105, -51, 177, 10)`
- 
-It's also possible to select data from a geopolitical region. That code is recorded in lines 115-117. Pick whichever of these methods work best for you. 
 
-Third, set your boundary ages. We use a minimum of 21,000 years ago and set our maximum to 0. 
+It's also possible to select data from a geopolitical region. That code is recorded in lines 115-117. Pick whichever of these methods work best for you.
+
+Third, set your boundary ages. We use a minimum of 21,000 years ago and set our maximum to 0.
 
 These parameters are recorded in the metadata for each record.
 
@@ -74,7 +69,7 @@ location <- c(105, -51, 177, 10) # Indo-Pacific
 taxa <- c('Nothofagus','Eucalyptus')
 # Range Mapper taxa
   # North America: c('Fagus', 'Picea', 'Pinus', 'Poaceae', 'Quercus', 'Tsuga', 'Ulmus')
-  # Europe: c('Alnus', 'Fagus', 'Picea', 'Quercus') 
+  # Europe: c('Alnus', 'Fagus', 'Picea', 'Quercus')
   #Australia: c('Nothofagus','Eucalyptus', 'Casuarina', 'Phyllocladus', 'Callitris') # Oceania
 
 age_young <- 0
@@ -85,7 +80,7 @@ age_old <- 21000
 
 ## Appending and downloading your lists
 
-This section downloads information for each record that matches the parameters, and then the record numbers are used to download all your records as a list. Set your own file path in the last line of code. 
+This section downloads information for each record that matches the parameters, and then the record numbers are used to download all your records as a list. Set your own file path in the last line of code.
 
 ```{r selecting and downloading datasets}
 taxa_datasets <- list()
@@ -122,12 +117,12 @@ In this next section, you'll be working with the records you've downloaded from 
 pollen_download <- readRDS("PollenRecords.RData")
 
 # Selects non-aquatic pollen taxa in dataset
-taxa_list <- neotoma::taxa(pollen_download) 
+taxa_list <- neotoma::taxa(pollen_download)
 taxa_list <- as.data.frame(taxa_list)
 no.aqua <- taxa_list[(taxa_list$ecological.group == "TRSH" | taxa_list$ecological.group == "UPHE") & taxa_list$variable.element == 'pollen',]
 
 # Selects sites w/calibrated radiocarbon chronologies and pollen of interest
-compiled_pollen <- compile_downloads(pollen_download) 
+compiled_pollen <- compile_downloads(pollen_download)
 compiled_pollen.rc <- compiled_pollen[compiled_pollen$date.type != "Radiocarbon years BP",]
 compiled_pollen.clean <- cbind(compiled_pollen.rc[,1:10],compiled_pollen.rc[,colnames(compiled_pollen.rc) %in% no.aqua$taxon.name])
 
@@ -145,7 +140,7 @@ interp_dl <- data.frame(compiled_pollen.clean[,1:10],
                         nothofagus = compiled_pollen.clean[, grep("Nothofagus*", colnames(compiled_pollen.clean))] / tot.cnts,
                         eucalyptus = compiled_pollen.clean[, grep("Eucalyptus*", colnames(compiled_pollen.clean))] / tot.cnts) %>%
   group_by(time, lat, long, site.name) %>%
-  summarize(Nothofagus = mean (nothofagus) * 100, 
+  summarize(Nothofagus = mean (nothofagus) * 100,
             Eucalyptus = mean (eucalyptus) * 100)
 
 common <- c('Southern Beech', 'Eucalyptus')
@@ -168,7 +163,7 @@ timefltr_output <- dplyr::filter(plant.data, time >= -21000)
 final_output <- na.omit(timefltr_output)
 
 # Writes CSV file
-write.csv(final_output, file = "~CartoInput_Aus.csv")
+write.csv(final_output, file = "~CartoInput_Aus.csv") # Set your own file path here.
 ```
 
 Next, you will need to log into your CARTO account and upload the data. If you are a student or educator, you can create a free CARTO account by following the [instructions here](https://carto.com/help/getting-started/student-accounts/). Now you're ready to create some rad visualizations!
