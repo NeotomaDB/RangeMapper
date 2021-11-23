@@ -8,12 +8,12 @@ output: html_document
 
 ## Introduction
 
-Welcome to Range Mapper, a repository that allows researchers, web developers, students and other users to extract taxa-specific, spatio-temporal data from the Neotoma Paleoecology Database Collective [@williams2017neotoma]. This code also establishes a channel between Neotoma and Carto, an online mapping platform where Neotoma data can be visualized and transformed through [Carto's user interface](https://carto.com/attribution/). (NOTE FOR ADRIAN-- how/what do we site here? Is this what's happening?).  branch structure @Anna? 
+Welcome to Range Mapper, a repository that allows researchers, web developers, students and other users to extract taxa-specific, spatio-temporal data from the Neotoma Paleoecology Database Collective [@williams2017neotoma]. This code also establishes a channel between Neotoma and [CARTO](https://carto.com), an online mapping platform where Neotoma data can be visualized and transformed using the [CARTO VL](https://carto.com/developers/carto-vl/) Javascript library.
 
 
 ### Providing Feedback and Contribution
 
-We welcome user contributions to this project. All contributors are expected to follow the code of conduct. Contributors should fork this project and make a pull request indicating the nature of the changes and the intended utility. Further information for this workflow can be found on the GitHub Pull Request Tutorial webpage (stole from neotoma API, if not true delete). If, in any place instructions are not clear or more details are required please feel free to contact us by either [raising a GitHub Issue for this repository](Insert Link), or by emailing (?) directly at (?). 
+We welcome user contributions to this project. All contributors are expected to follow the code of conduct. Contributors should fork this project and make a pull request indicating the nature of the changes and the intended utility. Further information for this workflow can be found on the GitHub Pull Request Tutorial webpage (stole from neotoma API, if not true delete). If, in any place instructions are not clear or more details are required please feel free to contact us by either [raising a GitHub Issue for this repository](https://github.com/NeotomaDB/RangeMapper/issues/new), or emailing Adrian George at aegeorge2@wisc.edu. 
 
 ### Development
 Adrian George 
