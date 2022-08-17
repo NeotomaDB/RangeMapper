@@ -23,7 +23,8 @@ Many people working with R may choose to use [RStudio](http://rstudio.com).  If 
 The `neotoma` package facilitates interactions between R and the Neotoma Paleoecology Database, and the `dplyr` package allows you to filter the data you've extracted by factors like site and age.
 
 ```{r library}
-library(neotoma)
+# add install? 
+library(neotoma2)
 library(dplyr)
 ```
 
@@ -75,6 +76,8 @@ This section downloads information for each record that matches the parameters, 
 if (!'PollenRecords.RData' %in% list.files(paste0(file_path))) {
   taxa_datasets <- list()
   dataset_types <- c("pollen", "pollen surface sample")
+  
+  sites <- get_sites(loc = location)
   
   # Get dataset information for pollen core and pollen surface samples for all taxa
   for (i in 1:length(taxa)) {
