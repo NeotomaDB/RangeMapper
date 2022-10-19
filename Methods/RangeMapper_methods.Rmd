@@ -8,19 +8,15 @@ date: "12/28/2021"
 
 ##Introduction
 
-This walkthrough will guide you through downloading records from the [Neotoma Paleoecology Database](https://www.neotomadb.org), so you can make your own online maps of plants, fossils, testate amoeba, and more. To extend this approach to other taxa, regions, and times, fork the [Range Mapper Github repository](https://github.com/NeotomaDB/RangeMapper) and modify the code, as directed below.
+This file documents our process of downloading and processing pollen records from the [Neotoma Paleoecology Database](https://www.neotomadb.org).To extend this approach to other taxa, regions, and times, fork the [Range Mapper Github repository](https://github.com/NeotomaDB/RangeMapper) and modify the code, as directed below.
 
-Want to see what the final product could look like? Visit [Range Mapper](http://open.neotomadb.org/RangeMapper/index.html), the original set of visualizations mapping plant taxon range shifts from the Last Glacial Maximum to present in North America, Europe, and Australasia. The current interactive maps are only a few of many that could be possible with code that links Neotoma"s deep paleoecological data repository to CARTO"s CartoVL JavaScript library.
+Check out [Range Mapper](http://open.neotomadb.org/RangeMapper/index.html), the visualizations mapping plant taxon range shifts from the Last Glacial Maximum to present in North America, Europe, and Australasia. The current interactive maps are only a few of many that could be possible with code that links Neotoma"s deep paleoecological data repository to CARTO"s CartoVL JavaScript library.
 
 Our code integrates previous methods established by @williams2017neotoma and @goring2018bulk-baconizing for extracting and interpolating Neotoma data in R. In this guide, we will provide step-by-step instructions for running all parts of the code.
 
-#### RStudio
-
-Many people working with R use [RStudio](http://rstudio.com).  If you are using RStudio, you can customize elements of this document (for example, removing this header information) and then use the *knit* button to compile the code into an HTML document, while generating the necessary output files (see the [README file](https://github.com/neotomadb) in the GitHub repository).
-
 ## Setting up your library
 
-The `neotoma` package facilitates interactions between R and the Neotoma Paleoecology Database, and the `dplyr` package allows you to filter the data you"ve extracted by factors like site and age.
+The `neotoma2` package facilitates interactions between R and the Neotoma Paleoecology Database, and the `dplyr` package allows you to filter the data you"ve extracted by factors like site and age.
 
 ```{r library}
 # need to install neotoma2? Uncomment the next two lines
@@ -123,8 +119,8 @@ file_path <- "~/github/RangeMapper/Data/"
 
 # Set your taxa, location bounding box, and time period of interest
 # Pick continent
-# continent <- "NorthAmerica"
-continent <- "Europe"
+continent <- "NorthAmerica"
+# continent <- "Europe"
 # continent <- "Oceania"
 
 location <- setLocation()
@@ -191,10 +187,8 @@ if (!paste0(continent,"PollenRecords.RDS") %in% list.files(paste0(file_path))) {
     saveRDS(all_downloads, file = paste0(file_path,continent,"PollenRecords.RDS"))
 } else {
   all_downloads <-
-    readRDS(paste0(file_path, continent, "PollenRecords.RDS")) # Imports existing data file
+    readRDS(paste0(file_path, continent, "2PollenRecords.RDS")) # Imports existing data file
 }
-
-
 ```
 
 
@@ -204,23 +198,22 @@ In this next section, you"ll be working with the records you"ve downloaded from 
 
 ```{r compile}
 
-# Removed site 2492 (datasets 2576 & 51739) b/c the datasets had no default chronology
-# all_downloads <- all_downloads[-847]
-# all_downloads[[847]]$collunits <- all_downloads[[847]]$collunits[2]
-
+# Removed site 2492 (datasets 2576 & 51739) b/c the datasets had no default chronology 
+# Removed site 13923 (dataset 21422) b/c "The dataset %d has multiple default chronologies. Chronology %d has been used.",  : invalid format '%d'; use format %s for character objects BUT it seemed to have 1 default chron?
+removed_downloads <- all_downloads[c(846,1045)]
+all_downloads <- all_downloads[-1045]
+# all_downloads[[846]]$collunits <- all_downloads[[846]]$collunits[2]
 
 # Creates a compiled table of all samples; one row for each taxa per sample per record
 all_samp <- neotoma2::samples(all_downloads) 
 
-saveRDS(all_samp, file = paste0(file_path,continent,"PollenSamples.RDS"))
+# all_samp <- readRDS(paste0(file_path,continent,"PollenSamples.RDS"))
 
 # Selects samples w/calibrated radiocarbon chronologies & non-aquatic pollen counts between -250 and 21250 BP
 samp_filtered <- all_samp %>% 
-  filter(ecologicalgroup %in% c("UPHE", "TRSH")) %>%
-  filter(elementtype == "pollen") %>%
-  filter(units == "NISP") %>%
-  filter(agetype != "Radiocarbon years BP" & agetype != "NA") %>%
-  filter(age <= 21250 & age >= -250)
+  dplyr::filter(ecologicalgroup %in% c("UPHE", "TRSH") & elementtype == "pollen" & units == "NISP") %>%
+  dplyr::filter(agetype != "Radiocarbon years BP" & agetype != "NA") %>%
+  dplyr::filter(age <= 21250 & age >= -250)
   
 # Harmonizes taxa names
 samp_harmonized <- samp_filtered
@@ -237,9 +230,7 @@ length(unique(samp_filtered$sampleid))
 length(unique(samp_harmonized$siteid[samp_harmonized$variablename %in% taxa]))
 length(unique(samp_harmonized$datasetid[samp_harmonized$variablename %in% taxa]))
 length(unique(samp_harmonized$sampleid[samp_harmonized$variablename %in% taxa]))
-nrow(samp_harmonized %>% filter(variablename %in% taxa))
-
-samp_harmonized %>% filter(variablename %in% taxa)
+nrow(samp_harmonized %>% dplyr::filter(variablename %in% taxa))
 
 # Group by & sum by harmonized name 
 # get pollen
@@ -249,7 +240,7 @@ samp_harmonized %>% filter(variablename %in% taxa)
     mutate(pollensum = sum(value, na.rm = TRUE)) %>%
     group_by(variablename) %>% 
     mutate(prop = value / pollensum) %>% 
-    filter(variablename %in% taxa) %>%
+    dplyr::filter(variablename %in% taxa) %>%
     group_by(age, lat, long, sitename, datasetid, sampleid, variablename) %>%
     summarize(prop = sum(prop)) 
 
@@ -259,15 +250,16 @@ samp_binned <-
     mutate(time = - (round(age / 500, 0) * 500)) %>%
     group_by(time, lat, long, datasetid, variablename) %>%
     summarize(samples = mean(prop)*100) %>%
-        arrange(datasetid, time)
+        arrange(time, lat)
  
- # sanity check
-# mean(test$prop[test$variablename == "Nothofagus"])  
+# Changes Latin names to common names & reduces dataset to info needed for mapping 
 final <- samp_binned %>%
   mutate(taxa = factor(x = variablename, taxa, common_name)) %>%
-  select(time, lat, long, datasetid, samples, taxa, variablename) 
+  group_by(time, lat, long, samples, taxa) %>%
+  select(time, lat, long, samples, taxa) 
 
-
+# Writes CSV file
+write.csv(final, file = paste0(file_path, continent,"Pollen.csv")) 
 ```
 
 ## Linear Interpolation & Final CSV
@@ -279,27 +271,7 @@ The following code fetches total counts for each taxon observation at every site
 # If you want to make a new version, add "_V2" to the file name, so R will rerun the following code chunk.
 if (!"PollenFile.csv" %in% list.files(paste0(file_path))) { 
 
-  # Interpolates the pollen to 500 year intervals, creating a line for each observation of each taxon
 
-  
-  # Set common names (or names you want on the map legend) for your taxa here
-  common <- c("Southern Beech", "Eucalyptus")
-  
-  # Reduces dataset to info needed for mapping  
-  plant.data <- data.frame()
-  for (i in 1:length(common)) {
-    taxon          <- common[i]
-    samples        <- interp_dl[,i+4]
-    names(samples) <- "samples"
-    taxa           <- rep(taxon,nrow(samples))
-    current.taxon.data <- cbind(interp_dl[,1:4],samples,taxa)
-    plant.data <- rbind(plant.data,current.taxon.data)
-  }
-  colnames(plant.data)[colnames(plant.data) == "...6"] <- "taxa"
-  plant.data <- plant.data[order(plant.data$time,plant.data$site.name),]
-
-  # Writes CSV file
-  write.csv(final, file = paste0(file_path,"EuroPollen.csv")) # To make a new version, add "_V2" to file name, so you don"t overwrite the original.
 }
 ```
 Next, you will need to log into your CARTO account and upload the data. If you are a student or educator, you can create a free CARTO account by following the [instructions here](https://docs.carto.com/faqs/categories/carto-for-education/). Now you"re ready to create some rad visualizations!
