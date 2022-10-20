@@ -119,9 +119,9 @@ file_path <- "~/github/RangeMapper/Data/"
 
 # Set your taxa, location bounding box, and time period of interest
 # Pick continent
-continent <- "NorthAmerica"
+# continent <- "NorthAmerica"
 # continent <- "Europe"
-# continent <- "Oceania"
+continent <- "Oceania"
 
 location <- setLocation()
 taxa <- setTaxa()
@@ -187,7 +187,7 @@ if (!paste0(continent,"PollenRecords.RDS") %in% list.files(paste0(file_path))) {
     saveRDS(all_downloads, file = paste0(file_path,continent,"PollenRecords.RDS"))
 } else {
   all_downloads <-
-    readRDS(paste0(file_path, continent, "2PollenRecords.RDS")) # Imports existing data file
+    readRDS(paste0(file_path, continent, "PollenRecords.RDS")) # Imports existing data file
 }
 ```
 
@@ -200,14 +200,17 @@ In this next section, you"ll be working with the records you"ve downloaded from 
 
 # Removed site 2492 (datasets 2576 & 51739) b/c the datasets had no default chronology 
 # Removed site 13923 (dataset 21422) b/c "The dataset %d has multiple default chronologies. Chronology %d has been used.",  : invalid format '%d'; use format %s for character objects BUT it seemed to have 1 default chron?
-removed_downloads <- all_downloads[c(846,1045)]
-all_downloads <- all_downloads[-1045]
+# Removed site 27896
+# removed_downloads <- all_downloads[c(846,1045)]
+# all_downloads <- all_downloads[-846]
+# all_downloads <- all_downloads[-1045]
+# c(51727,51729,51741,51743, 51745, 51747)
 # all_downloads[[846]]$collunits <- all_downloads[[846]]$collunits[2]
 
 # Creates a compiled table of all samples; one row for each taxa per sample per record
 all_samp <- neotoma2::samples(all_downloads) 
 
-# all_samp <- readRDS(paste0(file_path,continent,"PollenSamples.RDS"))
+all_samp <- readRDS(paste0(file_path,continent,"PollenSamples.RDS"))
 
 # Selects samples w/calibrated radiocarbon chronologies & non-aquatic pollen counts between -250 and 21250 BP
 samp_filtered <- all_samp %>% 
@@ -224,6 +227,9 @@ for (i in 1:length(taxa)) {
                                 taxa[i]))
 }
 
+samp_harmonized[samp_harmonized$datasetid == 49240 & samp_harmonized$sampleid == 477972,]
+
+length(unique(all_samp$datasetid))
 length(unique(samp_filtered$siteid))
 length(unique(samp_filtered$datasetid))
 length(unique(samp_filtered$sampleid))
@@ -252,11 +258,15 @@ samp_binned <-
     summarize(samples = mean(prop)*100) %>%
         arrange(time, lat)
  
+samp_prop[is.na(samp_prop$prop),]
+
 # Changes Latin names to common names & reduces dataset to info needed for mapping 
 final <- samp_binned %>%
   mutate(taxa = factor(x = variablename, taxa, common_name)) %>%
   group_by(time, lat, long, samples, taxa) %>%
   select(time, lat, long, samples, taxa) 
+  
+final[is.na(final$samples),] <- 0
 
 # Writes CSV file
 write.csv(final, file = paste0(file_path, continent,"Pollen.csv")) 

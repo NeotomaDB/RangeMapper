@@ -119,16 +119,12 @@ if (!'PollenRecords.RData' %in% list.files(paste0(file_path))) {
   all_downloads <- readRDS(paste0(file_path,"PollenRecords.RData")) # Imports existing data file
 }
 
-all_samp <- neotoma2::samples(all_downloads) #doesn't work
-all_taxa <- neotoma2::taxa(all_downloads)
-
-
 pollen_sites <- get_sites(loc = location$geoJSON, all_data = TRUE)
 neotoma2::plotLeaflet(filter_datasets) %>% 
   leaflet::addPolygons(map = ., 
                        data = location$sf, 
                        color = "green")
-View(neotoma2::summary(anz_sites))
+View(neotoma2::summary(pollen_sites))
 
 pollen_datasets <- neotoma2::get_datasets(pollen_sites, datasettype = "pollen", all_data = TRUE)
 all_downloads <- get_downloads(pollen_sites, all_data = TRUE) 
@@ -144,11 +140,9 @@ In this next section, you'll be working with the records you've downloaded from 
 
 # Selects samples w/calibrated radiocarbon chronologies & non-aquatic pollen counts between -250 and 21250 BP
 samp_filtered <- all_samp %>% 
-  dplyr::filter(ecologicalgroup %in% c("UPHE", "TRSH")) %>%
-  filter(elementtype == "pollen") %>%
-  filter(units == "NISP") %>%
-  filter(agetype != "Radiocarbon years BP" & agetype != "NA") %>%
-  filter(age <= 21250 & age >= -250)
+  dplyr::filter(ecologicalgroup %in% c("UPHE", "TRSH") & elementtype == "pollen" & units == "NISP") %>%
+  dplyr::filter(agetype != "Radiocarbon years BP" & agetype != "NA") %>%
+  dplyr::filter(age <= 21250 & age >= -250)
   
 # Harmonizes taxa names
 samp_harmonized <- samp_filtered

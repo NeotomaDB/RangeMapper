@@ -168,7 +168,7 @@
     let taxaSource = new carto.source.Dataset(continentArr[0][1]);
 
     const taxaViz = new carto.Viz(`
-        @duration: 31.5
+        @duration: ${initialDuration}
         @palette: [#339999, #fad620, #ff5233, #000075, #336699, #996699, #ff9b19, #C7003A, #511849, #ADD55C];
         @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
         @taxa: $taxa
@@ -284,7 +284,7 @@
         function createIceViz(){
             var iceViz = new carto.Viz(`
                 @duration:${initialDuration}
-                @animation: animation($age,@duration, fade(hold,.15))
+                @animation: animation(linear($age),@duration, fade(hold,.15))
                 color: opacity(#99daf2,1)
                 strokeWidth: 0
                 filter: @animation
