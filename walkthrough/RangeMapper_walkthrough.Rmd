@@ -59,11 +59,12 @@ file_path <- '' # [USER INPUT]
 location <- list(geoJSON = '{"type": "Polygon",
         "coordinates": [[
             [105, -51],
-            [105, 10],
-            [177, 10],
+            [105, 0],
+            [177, 0],
             [177, -51],
             [105, -51]]]}',
-        bbox = c(105, -51, 177, 10))
+        bbox = c(105, -51, 177, 0))
+location$sf <- geojsonsf::geojson_sf(location$geoJSON)
 
 # Set taxa names to search in Neotoma
 taxa <- c('Nothofagus','Eucalyptus') # [USER INPUT]
@@ -116,11 +117,10 @@ if (!'PollenRecords.RData' %in% list.files(paste0(file_path))) {
       all_downloads <- c(all_downloads, get_downloads(filter_datasets[i]))
   }
 } else {
-  all_downloads <- readRDS(paste0(file_path,"PollenRecords.RData")) # Imports existing data file
+  all_downloads <- readRDS(paste0(file_path,"PollenRecords.RDS")) # Imports existing data file
 }
 
-pollen_sites <- get_sites(loc = location$geoJSON, all_data = TRUE)
-neotoma2::plotLeaflet(filter_datasets) %>% 
+neotoma2::plotLeaflet(all_downloads) %>% 
   leaflet::addPolygons(map = ., 
                        data = location$sf, 
                        color = "green")

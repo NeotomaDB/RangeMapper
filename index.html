@@ -123,7 +123,7 @@
     var taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
     // var allTaxaTypes = [['Alder', 'Ragweed', 'Sedges', 'Beech', 'Spruce', 'Pine', 'Grasses', 'Elm', 'Oak', 'Hemlock'],
     //                     ['Alder', 'Beech', 'Spruce', 'Oak'], ['SheOak', 'Eucalyptus', 'SouthernBeech', 'CeleryPine', 'CypressPine']];
-    var conticeSource = ['na_ice_1', 'euro_ice', ''];
+    var conticeSource = ['na_ice_1', 'euro_ice_merge', ''];
     var allExtents = [[-105, 46], [20, 57], [145, -35]];
     var currentExtent = allExtents[0];
     var continentArr = [];
@@ -170,7 +170,7 @@
     const taxaViz = new carto.Viz(`
         @duration: ${initialDuration}
         @palette: [#339999, #fad620, #ff5233, #000075, #336699, #996699, #ff9b19, #C7003A, #511849, #ADD55C];
-        @animation: animation(linear($time), @duration, fade(@duration/21,@duration/15.5));
+        @animation: animation(linear($time), @duration, fade(@duration/40,@duration/30));
         @taxa: $taxa
         @v_histogram: viewportHistogram($taxa)
         @opacity: opacity(ramp(@taxa,@palette), 0.45)
@@ -284,7 +284,7 @@
         function createIceViz(){
             var iceViz = new carto.Viz(`
                 @duration:${initialDuration}
-                @animation: animation(linear($age),@duration, fade(hold,.15))
+                @animation: animation(linear($age),@duration, fade(hold,.25))
                 color: opacity(#99daf2,1)
                 strokeWidth: 0
                 filter: @animation

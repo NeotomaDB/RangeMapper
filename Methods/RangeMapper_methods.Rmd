@@ -20,8 +20,8 @@ The `neotoma2` package facilitates interactions between R and the Neotoma Paleoe
 
 ```{r library}
 # need to install neotoma2? Uncomment the next two lines
-# library(devtools)
-# devtools::install_github("NeotomaDB/neotoma2")
+library(devtools)
+devtools::install_github("NeotomaDB/neotoma2", force = TRUE)
 
 # Load packages
 library(dplyr)
@@ -58,17 +58,17 @@ setLocation <- function(){
             '{"type": "Polygon",
                 "coordinates": [[
                   [105, -51],
-                  [105, 10],
-                  [179, 10],
+                  [105, 0],
+                  [179, 0],
                   [179, -51],
                   [105, -51]]]}'
   )
-  all_bbox <- list(c(-169, 24, -52, 75), c(-11, 35, 47, 72), c(105, -51, 179, 10))
+  all_bbox <- list(c(-169, 24, -52, 75), c(-11, 35, 47, 72), c(105, -51, 179, 0))
   
   # Set coordinates 
   location <- list(geoJSON = all_geoJSON[[i]],
           bbox = all_bbox[[i]])
-  location$sf <- geojsonsf::geojson_sf(location$geoJSON)[[1]]
+  location$sf <- geojsonsf::geojson_sf(location$geoJSON)[[i]]
   
   return(location)
 }
@@ -111,6 +111,30 @@ It"s also possible to select data from a geopolitical region. Instructions are i
 Third, set your boundary ages. We set the minimum to 21ka BP and maximum to 0.
 
 These parameters are recorded in the metadata for each record.
+```{r}
+# North America bounding box
+location <- list(geoJSON = '{"type": "Polygon", 
+            "coordinates": [[
+                [-169, 24],
+                [-169, 75],
+                [-52, 75],
+                [-52, 24],
+                [-169, 24]]]}',
+        bbox = c(-169, 24, -52, 75))
+location$sf <- geojsonsf::geojson_sf(location$geoJSON)
+
+# Approximately US box for debugging
+location <- list(geoJSON = '{"type": "Polygon",
+        "coordinates": [[
+            [-119, 24],
+                [-119, 45],
+                [-52, 45],
+                [-52, 24],
+                [-119, 24]]]}',
+        bbox = c(-119, 24, -52, 45))
+location$sf <- geojsonsf::geojson_sf(location$geoJSON)
+
+```
 
 
 ```{r }
@@ -119,9 +143,9 @@ file_path <- "~/github/RangeMapper/Data/"
 
 # Set your taxa, location bounding box, and time period of interest
 # Pick continent
-# continent <- "NorthAmerica"
+continent <- "NorthAmerica"
 # continent <- "Europe"
-continent <- "Oceania"
+# continent <- "Oceania"
 
 location <- setLocation()
 taxa <- setTaxa()
@@ -142,6 +166,7 @@ This section downloads information for each record that matches the parameters, 
 # Runs code only if the pollen data file isn"t in your file directory
 if (!paste0(continent,"PollenRecords.RDS") %in% list.files(paste0(file_path))) {
   # PART 1: Get dataset information for all pollen datasets in location of interest
+datasets <- get_datasets(datasettype = "pollen", loc = location$geoJSON, all_data=TRUE)
   # Set up loop
   run = TRUE
   offset <- 0
@@ -165,11 +190,11 @@ if (!paste0(continent,"PollenRecords.RDS") %in% list.files(paste0(file_path))) {
   print(paste0(continent,": ", length(all_datasets)))
   
   # filters datasets without age models
-  filter_datasets <- all_datasets %>% 
+  filter_datasets <- test %>% 
     neotoma2::filter(!is.na(age_range_young))
   
   # Map your datasets
-  neotoma2::plotLeaflet(all_downloads) %>% 
+  neotoma2::plotLeaflet(filter_datasets) %>% 
     leaflet::addPolygons(map = ., 
                         data = location$sf, 
                         color = "green")
@@ -210,7 +235,7 @@ In this next section, you"ll be working with the records you"ve downloaded from 
 # Creates a compiled table of all samples; one row for each taxa per sample per record
 all_samp <- neotoma2::samples(all_downloads) 
 
-all_samp <- readRDS(paste0(file_path,continent,"PollenSamples.RDS"))
+#all_samp <- readRDS(paste0(file_path,continent,"PollenSamples.RDS"))
 
 # Selects samples w/calibrated radiocarbon chronologies & non-aquatic pollen counts between -250 and 21250 BP
 samp_filtered <- all_samp %>% 
@@ -227,7 +252,7 @@ for (i in 1:length(taxa)) {
                                 taxa[i]))
 }
 
-samp_harmonized[samp_harmonized$datasetid == 49240 & samp_harmonized$sampleid == 477972,]
+#samp_harmonized[samp_harmonized$datasetid == 52590 & samp_harmonized$sampleid == 525745,]
 
 length(unique(all_samp$datasetid))
 length(unique(samp_filtered$siteid))
@@ -266,7 +291,7 @@ final <- samp_binned %>%
   group_by(time, lat, long, samples, taxa) %>%
   select(time, lat, long, samples, taxa) 
   
-final[is.na(final$samples),] <- 0
+final$samples[is.na(final$samples)] <- 0
 
 # Writes CSV file
 write.csv(final, file = paste0(file_path, continent,"Pollen.csv")) 

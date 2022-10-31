@@ -40,11 +40,6 @@ select.mySelectArrow option {
   width: 100%;
 }
 
-select,
-&:after {
-  grid-area: select;
-}
-
 select:focus + .focus {
   position: absolute;
   top: -1px;
@@ -111,13 +106,8 @@ select:focus + .focus {
 }
 
 #legend-head-text {
-  font-style: "heavy";
   font-weight: 700;
   text-align: center;
-}
-
-.legend .category {
-font: 800;
 }
 
 #circ-box {
@@ -126,7 +116,7 @@ font: 800;
 
 #circ-content {
   list-style-type:none;
-  align-items: right;
+  /* align-items: right; */
   font-weight: 300;
   /* justify-content: center; */
   display: flex;
@@ -141,7 +131,6 @@ font: 800;
   border: 1px var(--main-text-color) solid;
   bottom: 10%;
   color: var(--main-text-color);
-  background-color: 0.4
 }
 
 #circle100{
@@ -235,7 +224,6 @@ height: 25px;
 width: 25px;
 font-size: 37px;
 color: var(--main-text-color);
-font: sans-serif;
 border-radius: 50%;
 display: flex;
 align-items: center;
