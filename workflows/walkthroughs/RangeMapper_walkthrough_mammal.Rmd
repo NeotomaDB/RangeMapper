@@ -1,0 +1,166 @@
+---
+title: "Range Mapper R Walkthrough"
+author: "Adrian George, Sydney Widell, Robert Roth, and Jack Williams"
+affiliation: "University of Wisconsin-Madison"
+date: "11/08/2022"
+---
+
+## Introduction
+
+This document will guide you through downloading records from the [Neotoma Paleoecology Database](https://www.neotomadb.org), so you can make your own online maps of plants, fossils, testate amoeba, and more. To extend this approach to other taxa, regions, and times, fork the [Range Mapper Github repository](https://github.com/NeotomaDB/RangeMapper) and modify the code, as directed below. The complete code for recreating Range Mapper can be found in the repository in  
+
+Want to see what the final product could look like? Visit [Range Mapper](http://open.neotomadb.org/RangeMapper/index.html), the original set of visualizations mapping plant taxon range shifts from the Last Glacial Maximum to present in North America, Europe, and Oceania. The current interactive maps are only a few of many that could be possible with code that links Neotoma's deep paleoecological data repository to CARTO's CartoVL JavaScript library.
+
+Our code integrates previous methods established by @williams2017neotoma and @goring2018bulk-baconizing for extracting and interpolating Neotoma data in R. In this guide, we will provide step-by-step instructions for running all parts of the code.
+
+#### RStudio
+
+Many people working with R may choose to use [RStudio](http://rstudio.com).  If you are using RStudio, you can customize elements of this document (for example, removing this header information) and then use the *knit* button to compile the code into an HTML document, while generating the necessary output files (see the [README file](https://github.com/neotomadb) in the GitHub repository).
+
+## Setting up your library
+
+The `neotoma2` package facilitates interactions between R and the Neotoma Paleoecology Database, and the `dplyr` package allows you to filter the data you've extracted by factors like site and age.
+
+```{r library}
+# First, install the neotoma2 R package. Comment out the next two lines if you have it.
+# library(devtools)
+# devtools::install_github('NeotomaDB/neotoma2')
+
+# Load packages
+library(dplyr)
+library(neotoma2)
+```
+
+## Retrieving Neotoma data
+With the set-up complete, you're ready to download your first dataset! In this example, we'll compile mammoth and mastodon records from the Upper Midwest, but there are countless taxa available from Neotoma. You can browse for taxa on [Neotoma Explorer](https://apps.neotomadb.org/explorer/). Be aware that these taxa names are case-sensitive.
+
+Then, select the geographical bounds of your query and express them as coordinates. The [Bounding Box website](https://boundingbox.klokantech.com/) is useful for generating your own bounding regions. Otherwise, these coordinates worked well for us for North America, Europe, and Oceania:
+
+ North American bounding box: `location <- c(-130, 24, -34, 65)`
+ European bounding box: `location <- c(-11, 35, 47, 72)`
+ Oceania bounding box: `location <- c(105, -51, 177, 0)`
+
+It's also possible to select data from a geopolitical region. Instructions are in the Range Mapper methods R file in the Github repository. Use the method that works best for you.
+
+Third, set your boundary ages. We set the oldest age to 50ka BP and youngest age to 10ka BP. These parameters are recorded in the metadata for each record.
+
+Finally, set your own file path in the last line of code. 
+```{r message=FALSE}
+# Set your taxa, location, and time period of interest
+# Look at the Range_Mapper_methods.Rmd file for sample parameters for North America and Europe
+
+# Set your location using a bounding box. # [USER INPUT]
+# You can also use names of countries. See RangeMapper_methods.Rmd in the Methods folder for an example.
+location <- list(geoJSON = '{"type": "Polygon",
+            "coordinates": [[
+                [-97.4, 41.7],
+                [-97.4, 49.4],
+                [-82.4, 49.4],
+                [-82.4, 41.7],
+                [-97.4, 41.7]]]}',
+        bbox = c(-97.4, 41.7, -82.4, 49.4))
+location$sf <- geojsonsf::geojson_sf(location$geoJSON)
+
+# Set taxa names to search in Neotoma
+taxa <- c('Mammuthus', 'Mammut americanum') # [USER INPUT]
+
+# Set common names (or names you want on the map legend) for your taxa here
+common_name <- c('Woolly mammoth', 'American mastodon') # [USER INPUT]
+
+# Set the time period [USER INPUT]
+age_young <- 10000
+age_old <- 50000
+
+# set the location on your computer where you want to save your files
+file_path <- "" # [USER INPUT]
+```
+
+## Appending and downloading your lists
+This section downloads information for each record that matches the parameters, and then the record numbers are used to download all your records as a list.
+```{r selecting and downloading datasets}
+
+# Runs code only if the mammoth data file isn't in your file directory
+if (!'MammalRecords.RDS' %in% list.files(paste0(file_path))) {
+  # Get dataset information for all mammoth datasets in location of interest
+  offset <- 0
+
+  # Use this line of code for the bounding box location method
+  datasets <- get_datasets(datasettype = "vertebrate fauna", loc = location$geoJSON, offset=offset, limit = 5000)
+
+  # filters datasets without age models
+  filter_datasets <- datasets %>% 
+    neotoma2::filter(!is.na(age_range_young))
+  
+  # Creates empty "sites" object for downloads
+  downloads <- new('sites')
+
+  # downloads all datasets
+  for (i in 1:length(filter_datasets)) {
+      downloads <- c(downloads, get_downloads(filter_datasets[i]))
+  }
+  
+   # Save the download R file to your computer
+    saveRDS(downloads, file = paste0(file_path,"MammalRecords.RDS"))
+} else {
+  downloads <- readRDS(paste0(file_path,"MammalRecords.RDS")) # Imports existing data file
+}
+
+# Here's a quick map of your sites 
+neotoma2::plotLeaflet(downloads) %>% 
+  leaflet::addPolygons(map = ., 
+                       data = location$sf, 
+                       color = "green")
+
+# Here are the first six rows of your downloaded records
+print(head(neotoma2::summary(downloads)))
+```
+
+## Data Preparation
+In this next section, you'll be prepare the records you've downloaded from Neotoma for mapping. You will make a data frame of all samples from the records, select samples with calibrated radiocarbon chronologies within your time period of interest, and do a simple taxa name harmonization for your taxa of interest. 
+```{r data prep, message=TRUE, warning=FALSE}
+# If you want to make a new version, add "_V2" to the file name, so R will rerun the following code chunk.
+if (!'MammalHarmonized.RDS' %in% list.files(paste0(file_path))) { 
+  # Creates a compiled table of all samples; one row for each taxa per sample per record
+  all_samp <- neotoma2::samples(downloads) 
+  
+  # Selects samples w/calibrated radiocarbon chronologies in your age range
+  samp_filtered <- all_samp %>% 
+    dplyr::filter(ecologicalgroup == 'PROB') %>%
+    dplyr::filter(agetype != "Radiocarbon years BP" & agetype != "NA") %>%
+    dplyr::filter(age <= age_old + 250 & age >= age_young - 250)
+    
+  # Harmonizes taxa names for your taxa of interest
+  samp_harmonized <- samp_filtered
+  for (i in 1:length(taxa)) {
+    samp_harmonized <- samp_harmonized %>%
+    mutate(variablename = replace(variablename, 
+                                  stringr::str_detect(variablename, paste0(taxa[i], "*")), 
+                                  taxa[i]))
+  }
+  
+  # Save harmonized samples R file to your computer
+  saveRDS(samp_harmonized, file = paste0(file_path,"MammalHarmonized.RDS"))
+} else {
+  samp_harmonized <- readRDS(paste0(file_path,"MammalHarmonized.RDS")) # Imports existing sample file
+} 
+```
+## Final CSV
+In this section, you will create the final csv.
+```{r proportions and interpolation}
+# If you want to make a new version, add "_V2" to the file name, so R will rerun the following code chunk.
+if (!'CartoInput.csv' %in% list.files(paste0(file_path))) { 
+  # Change Latin names to common names & reduce dataset to info needed for mapping 
+  final <- samp_harmonized %>%
+    mutate(taxa = factor(x = variablename, taxa, common_name)) %>%
+    group_by(age, lat, long, element, taxa) %>%
+    select(age, lat, long, element, taxa) 
+    
+  # Now, the sample table looks like this
+  print(head(final))
+  
+  # Writes CSV file
+  write.csv(final, file = paste0(file_path, "Mammal.csv")) 
+}
+```
+
+Next, you will need to log into your CARTO account and upload the data. If you are a student or educator, you can create a free CARTO account by following the [instructions here](https://docs.carto.com/faqs/categories/carto-for-education/). Now you're ready to create some rad visualizations!

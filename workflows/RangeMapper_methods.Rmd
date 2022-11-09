@@ -1,0 +1,264 @@
+---
+title: "Range Mapper R Walkthrough"
+author: "Adrian George, Sydney Widell, Robert Roth, and Jack Williams"
+affiliation: "University of Wisconsin-Madison"
+date: "12/28/2021"
+
+---
+
+##Introduction
+
+This file documents our process of downloading and processing pollen records from the [Neotoma Paleoecology Database](https://www.neotomadb.org) for [Range Mapper](http://open.neotomadb.org/RangeMapper/index.html), a set of interactive, animated web maps, visualizing plant taxon range shifts from the Last Glacial Maximum to present in North America, Europe, and Oceania. The current interactive maps are only a few of many that are possible with code that links Neotoma's deep paleoecological data repository to CARTO's CartoVL JavaScript library. To extend this approach to other taxa, regions, and times, fork the [Range Mapper Github repository](https://github.com/NeotomaDB/RangeMapper) and modify the [walkthrough code](https://github.com/NeotomaDB/RangeMapper/walkthrough/RangeMapper_walkthrough.html) as directed.
+
+Our code integrates previous methods established by @williams2017neotoma and @goring2018bulk-baconizing for extracting and interpolating Neotoma data in R.
+
+## Setting up library and functions
+
+The `neotoma2` package facilitates interactions between R and the Neotoma Paleoecology Database, and the `dplyr` package allows you to filter the data you"ve extracted by factors like site and age. The functions simplified the process of setting up download parameters for each continent.
+```{r library}
+# need to install neotoma2? Uncomment the next two lines
+# library(devtools)
+# devtools::install_github("NeotomaDB/neotoma2", force = TRUE)
+
+# Load packages
+library(dplyr)
+library(neotoma2)
+
+# Set up functions
+# Sets number based on continent
+setContinent <- function(x){
+  if (x == "NorthAmerica"){
+    i = 1
+  } else if (x == "Europe"){
+    i = 2
+  } else if (x == "Oceania"){
+    i = 3
+  }
+  return(i)
+}
+
+# Function that sets countries
+setCountries <- function(){
+  i <- setContinent(continent)
+  all_countries <- list(c("United States, Canada"), c("Turkey, Germany, United Kingdom, France, Italy, Spain, Poland, Ukraine, Romania, Netherlands, Belgium, Sweden, Czech Republic, Greece, Azerbaijan, Portugal, Hungary, Belarus, Austria, Switzerland, Serbia, Bulgaria, Denmark, Slovakia, Finland, Norway, Ireland, Croatia, Georgia, Moldova, Bosnia and Herzegovina, Albania, Armenia, Lithuania, Slovenia, Latvia, Estonia, Cyprus, Luxembourg, Montenegro, Malta, Iceland, Andorra, Faroe Islands, Liechtenstein, Monaco, San Marino, Vatican City"), c("American Samoa, Australia, Cook Islands, Federated States of Micronesia, Fiji, Guam, Indonesia, Kiribati, Marshall Islands, Nauru, New Caledonia, New Zealand, Niue, Norfolk Island, Northern Mariana Islands, Palau, Papua New Guinea, Pitcairn Islands, Samoa, Solomon Islands, Timor-Leste, Tokelau, Tonga, Tuvalu, Vanuatu, Wallis and Futuna")) 
+  countries <- all_countries[[i]]
+  return(countries)
+}
+
+# Function that sets bounding boxes
+setLocation <- function(){
+  i <- setContinent(continent)
+  all_geoJSON <- list('{"type": "Polygon", 
+            "coordinates": [[
+                [-169, 24],
+                [-169, 75],
+                [-52, 75],
+                [-52, 24],
+                [-169, 24]]]}',
+          '{"type": "Polygon",
+            "coordinates": [[
+                [-11, 35],
+                [-11, 72],
+                [35, 72],
+                [35, 35],
+                [-11, 35]]]}',
+            '{"type": "Polygon",
+                "coordinates": [[
+                  [105, -51],
+                  [105, 0],
+                  [179, 0],
+                  [179, -51],
+                  [105, -51]]]}'
+  )
+  all_bbox <- list(c(-169, 24, -52, 75), c(-23, 35, 47, 72), c(105, -51, 179, 0))
+  
+  # Set coordinates 
+  location <- list(geoJSON = all_geoJSON[[i]],
+          bbox = all_bbox[[i]])
+  location$sf <- geojsonsf::geojson_sf(location$geoJSON)
+  
+  return(location)
+}
+
+# Function to set Range Mapper taxa
+setTaxa <- function(x){
+  i <- setContinent(continent)
+  all_taxa <- list(
+    c("Alnus", "Ambrosia", "Cyperaceae", "Fagus", "Picea", "Pinus", "Poaceae", "Quercus", "Tsuga", "Ulmus"), 
+    c("Alnus", "Fagus", "Picea", "Quercus"), 
+    c("Casuarina", "Eucalyptus", "Phyllocladus", "Callitris", "Nothofagus"))
+    # Set taxa
+  taxa <- all_taxa[[i]]
+  return(taxa)
+}
+
+# Function to set common names (and names you want on the map legend) for your taxa
+setCommonNames <- function(x){
+  i <- setContinent(continent)
+  all_taxa <- list(
+    c("Alder", "Ragweed", "Sedges", "Beech", "Spruce", "Pine", "Grasses", "Oak", "Hemlock", "Elm"), 
+    c("Alder", "Beech", "Spruce", "Oak"), 
+    c("SheOak", "Eucalyptus", "CeleryPine", "CypressPine", "SouthernBeech"))
+    # Set taxa
+  taxa <- all_taxa[[i]]
+  return(taxa)
+}
+```
+
+## Setting up geographic, taxon, and age parameters
+For the Range Mapper download, we selected data using a country list (see code below). You can also select data using the coordinates of a geographical bounding box. See the walkthrough for bounding box instructions.
+We set our boundary ages as 21ka BP to 0ka BP, and the taxa to those listed above.
+```{r }
+# set the location where you want to save your files
+file_path <- "~/github/RangeMapper/Data/"
+
+# Set your taxa, location bounding box, and time period of interest
+# Pick continent
+continent <- "NorthAmerica"
+# continent <- "Europe"
+# continent <- "Oceania"
+location <- setLocation()
+countries <- setCountries()
+taxa <- setTaxa()
+common_name <- setCommonNames()
+
+# Set age boundaries
+age_young <- 0
+age_old <- 21000
+```
+
+
+## Appending and downloading your lists
+
+This section downloads information for each record that matches the parameters, and then the record numbers are used to download all our records as a list. We also filter based on our latitude and longitude bounding box and visualize our sites to see if it matches expectations.
+```{r selecting and downloading datasets}
+# Runs code only if the pollen data file isn't in your file directory
+if (!paste0(continent,"PollenRecords.RDS") %in% list.files(file_path)) {
+  # PART 1: Get dataset information for all pollen datasets in location of interest
+  # Download sites using country names
+  sites <- get_sites(datasettype = "pollen", gpid = countries, limit = 5000) #%>% get_datasets()
+  
+  # Alt code for downloading dataset info with bounding box
+  # datasets <- get_datasets(datasettype = "pollen", loc = location$geoJSON, all_data=TRUE)
+  # How many sites downloaded?
+  print(paste0(continent,": ", length(sites)))
+  
+  # filters datasets without age models
+  if (!exists("filter_sites")) { 
+    long_min <- location$bbox[1]
+    long_max <- location$bbox[3]
+    lat_min  <- location$bbox[2]
+    lat_max  <- location$bbox[4]
+    filter_sites <- sites %>% 
+      neotoma2::filter(long > long_min & long < long_max & 
+                       lat  > lat_min  &lat  < lat_max)
+  }
+  
+  # Map your datasets
+  neotoma2::plotLeaflet(filter_sites) %>% 
+    leaflet::addPolygons(map = ., 
+                        data = location$sf, 
+                        color = "green")
+  
+  # PART 2: Download pollen records for each dataset
+  # Creates empty "sites" object for downloads
+  downloads <- new("sites")
+
+  # download all datasets
+  for (i in 1:length(filter_sites)) {
+      downloads <- c(downloads, get_downloads(filter_sites[i]))
+  }
+  
+  # Save pollen download R file to your computer
+    saveRDS(downloads, file = paste0(file_path,continent,"PollenRecords.RDS"))
+} else {
+  downloads <-
+    readRDS(paste0(file_path, continent, "PollenRecords.RDS")) # Imports existing data file
+}
+```
+
+## Compliling Data
+In this next section, you"ll be working with the records you"ve downloaded from Neotoma. You"ll retrieve that data and prepare it for mapping. You will remove aquatic taxa and non-pollen taxa. Then, you"ll select records that have calibrated radiocarbon chronologies. Then, you'll do a simple taxa name harmonization for your taxa of interest. 
+```{r compile}
+# Runs code only if the harmonized pollen sample file isn't in your file directory
+if (!paste0(continent,'PollenHarmonized.RDS') %in% list.files(file_path)) { 
+  # Removes sites w/o good age models
+  filter_downloads <- downloads %>% 
+    neotoma2::filter(!is.na(age_range_young))
+  
+  # For North America, removes sites 2492 and 13923, because they were throwing errors
+  if (continent == "NorthAmerica"){
+    removed_downloads <- filter_downloads[c(612,1225)]
+    filter_downloads <- filter_downloads[-c(612,1225)]
+  }
+  
+  # Creates a compiled table of all samples; one row for each taxa per sample per record
+  all_samp <- neotoma2::samples(filter_downloads) 
+
+  # Selects samples w/calibrated radiocarbon chronologies & non-aquatic pollen counts between -250 and 21250 BP
+  samp_filtered <- all_samp %>% 
+    dplyr::filter(ecologicalgroup %in% c("UPHE", "TRSH") & elementtype == "pollen" & units == "NISP") %>%
+    dplyr::filter(agetype != "Radiocarbon years BP" & agetype != "NA") %>%
+    dplyr::filter(age <= 21250 & age >= -250)
+    
+  # Harmonizes taxa names for taxa of interest
+  samp_harmonized <- samp_filtered
+  for (i in 1:length(taxa)) {
+    samp_harmonized <- samp_harmonized %>%
+    mutate(variablename = replace(variablename, 
+                                  stringr::str_detect(variablename, paste0(taxa[i], "*")), 
+                                  taxa[i]))
+  }
+  
+  # Gets statistics on number of sites, datasets, and samples downloaded
+  paste0("Downloaded ",length(unique(all_samp$siteid))," sites w/",length(unique(all_samp$datasetid))," datasets & ",length(unique(all_samp$sampleid))," samples")
+  paste0("After filtering, there were ", length(unique(samp_filtered$siteid)), " sites w/ ",length(unique(samp_filtered$datasetid)), " datasets & ",length(unique(samp_filtered$sampleid))," samples")
+  paste0("After harmonization, there were ", length(unique(samp_harmonized$siteid[samp_harmonized$variablename %in% taxa])), " sites w/",length(unique(samp_harmonized$datasetid[samp_harmonized$variablename %in% taxa]))
+  , " datasets & ",length(unique(samp_harmonized$sampleid[samp_harmonized$variablename %in% taxa]))," samples of interest & ",nrow(samp_harmonized %>% dplyr::filter(variablename %in% taxa))," observations of interest")
+
+  # Saves harmonized samples R file to your computer
+  saveRDS(samp_harmonized, file = paste0(file_path,continent,"PollenHarmonized.RDS"))
+} else {
+  # Imports existing sample file
+  samp_harmonized <- readRDS(paste0(file_path,continent,"PollenHarmonized.RDS")) 
+} 
+```
+
+## Pollen Proportions, Temporal Interpolation, and Final CSV
+This code fetches total counts for each taxon sample at every site, calculate pollen taxa percentages for taxa of interest, and linerally interpolates the samples for each site in 500 year buckets.
+
+```{r include = TRUE}
+# Runs following code chunk if there isn't the pollen csv in your folder 
+if (!paste0(continent,"Pollen.csv") %in% list.files(file_path)) { 
+  # Group by & sum by harmonized name 
+  samp_prop <- 
+    samp_harmonized %>%
+    group_by(sampleid) %>%
+    mutate(pollensum = sum(value, na.rm = TRUE)) %>%
+    group_by(variablename) %>% 
+    mutate(prop = value / pollensum) %>% 
+    dplyr::filter(variablename %in% taxa) %>%
+    group_by(age, lat, long, sitename, datasetid, sampleid, variablename) %>%
+    summarize(prop = sum(prop)) 
+ 
+  # Change NA pollen values to 0
+  samp_prop$prop[is.na(samp_prop$prop)] <- 0
+    
+  # Temporally bin samples in 500-yr buckets    
+  samp_binned <-
+     samp_prop %>%
+      mutate(time = - (round(age / 500, 0) * 500)) %>%
+      group_by(time, lat, long, datasetid, variablename) %>%
+      summarize(samples = mean(prop)*100) %>%
+      arrange(time, lat)
+  
+  # Change Latin names to common names & reduce dataset to info needed for mapping 
+  final <- samp_binned %>%
+    mutate(taxa = factor(x = variablename, taxa, common_name)) %>%
+    group_by(time, lat, long, samples, taxa) %>%
+    select(time, lat, long, samples, taxa) 
+    
+  # Write CSV file
+  write.csv(final, file = paste0(file_path, continent,"Pollen.csv")) 
+}
+```
