@@ -111,380 +111,372 @@
             </svg>
         </div>
     </div>
+    <script>
+        const s = carto.expressions;
+        var continents = ['northamerica', 'europe', 'oceania'];
+        var contSource = ['northamericapollen', `europepollen`, `oceaniapollen`];
+        var conticeSource = ['na_ice', 'europe_ice', ''];
+        var taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech'];
+        var taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#996699', '#ff9b19', '#C7003A', '#ADD55C', '#511849'];
+        var allExtents = [[-115, 50], [20, 57], [145, -27]];
+        var continentArr = [];
+        var currentExtent = allExtents[0];
+        var initialDuration = 31.5;
 
+        // Dictionary for taxa legend
+        const legendKeys = {
+            alder: 'Alder (<i>Alnus</i>)',
+            beech: 'Beech (<i>Fagus</i>)',
+            elm: 'Elm (<i>Ulmus</i>)',
+            grasses: 'Grasses (Poaceae)',
+            hemlock: 'Hemlock (<i>Tsuga</i>)',
+            oak: 'Oak (<i>Quercus</i>)',
+            ragweed: 'Ragweed (<i>Ambrosia</i>)',
+            sedges: 'Sedges (Cyperaceae)',
+            spruce: 'Spruce (<i>Picea</i>)',
+            pine: 'Pine (<i>Pinus</i>)',
+            sheoak: 'She-Oak (<i>Casuarina</i>)',
+            eucalyptus: 'Eucalyptus (<i>Eucalyptus</i>)',
+            celerypine: 'Celery Pine (<i>Phyllocladus</i>)',
+            cypresspine: 'Cypress-Pine (<i>Callitris</i>)',
+            southernbeech: 'Southern Beech (<i>Nothofagus</i>)'
+        }
 
-<script>
-    const s = carto.expressions;
-    var continents = ['northamerica', 'europe', 'oceania'];
-    var contSource = ['northamericapollen', `europepollen`, `oceaniapollen`];
-    var taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech'];
-    var conticeSource = ['na_ice', 'europe_ice', ''];
-    var allExtents = [[-115, 50], [20, 57], [145, -27]];
-    var currentExtent = allExtents[0];
-    var continentArr = [];
-    var allPollenSources = [];
-    var taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#996699', '#ff9b19', '#C7003A', '#ADD55C', '#511849'];
-    var initialDuration = 31.5
-    var allViz = []
-    var allLayers = []
-    var allToggleableIds = [] // maybe get rid of
-    const allSciNames = [[]]
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: carto.basemaps.positron,
+            center: currentExtent,
+            zoom: 3
+        });
 
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: carto.basemaps.positron,
-        center: currentExtent,
-        zoom: 3
-    });
+        carto.setDefaultAuth({
+            username: 'aegeorge2',
+            apiKey: 'nXTHpm3Qbb6MZX5ieYvVFA'
+        });
 
-    carto.setDefaultAuth({
-        username: 'aegeorge2',
-        apiKey: 'nXTHpm3Qbb6MZX5ieYvVFA'
-    });
+        const nav = new mapboxgl.NavigationControl();
+        map.addControl(nav, 'bottom-left');
 
-    const nav = new mapboxgl.NavigationControl();
-    map.addControl(nav, 'bottom-left');
+        document.getElementById('js-duration-span').innerHTML = initialDuration;
 
-    document.getElementById('js-duration-span').innerHTML = initialDuration;
+        for (let i = 0; i < continents.length; i++){
+            continentArr[i] = [continents[i], contSource[i], conticeSource[i]]
+        }
 
-    for (let i = 0; i < continents.length; i++){
-        continentArr[i] = [continents[i], contSource[i], conticeSource[i]]
-    }
+        // Sets pollen data source by name
+        let taxaSource = new carto.source.Dataset(continentArr[0][1]);
 
+        // Creates Carto viz object for taxa of interest
+        const taxaViz = new carto.Viz(`
+            @duration: ${initialDuration}
+            @palette: [#339999, #fad620, #ff5233, #000075, #336699, #996699, #ff9b19, #C7003A, #511849, #ADD55C];
+            @animation: animation(linear($time), @duration, fade(@duration*0.05,@duration*0.025));
+            @taxa: $taxa
+            @v_histogram: viewportHistogram($taxa)
+            @opacity: opacity(ramp(@taxa,@palette), 0.45)
+            color: @opacity;
+            width: (30*(($samples / 15) ^ 0.5716));
+            filter: @animation and @taxa in ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+            strokeWidth: 0.2;
+            strokeColor: opacity(ramp(@taxa,prism),0.2);
+        `);
 
-    let taxaSource = new carto.source.Dataset(continentArr[0][1]);
+        // Creates Carto map layers for taxa and ice
+        const taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
+        let iceLayer = createIceLayer(0);
 
-    const taxaViz = new carto.Viz(`
-        @duration: ${initialDuration}
-        @palette: [#339999, #fad620, #ff5233, #000075, #336699, #996699, #ff9b19, #C7003A, #511849, #ADD55C];
-        @animation: animation(linear($time), @duration, fade(@duration*0.05,@duration*0.025));
-        @taxa: $taxa
-        @v_histogram: viewportHistogram($taxa)
-        @opacity: opacity(ramp(@taxa,@palette), 0.45)
-        color: @opacity;
-        width: (30*(($samples / 15) ^ 0.5716));
-        filter: @animation and @taxa in ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
-        strokeWidth: 0.2;
-        strokeColor: opacity(ramp(@taxa,prism),0.2);
-
-    `);
-
-    const taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
-    let iceLayer = createIceLayer(0)
-
-//     // Add layers to map
+        // Add layers to map
         taxaLayer.addTo(map);
         iceLayer.addTo(map);
 
-    const $playPauseButton = document.getElementById('js-play-pause-button');
-    const $durationRange = document.getElementById('js-duration-range');
-    const $progressRange = document.getElementById('js-progress-range');
-    const $spanDuration = document.getElementById('js-duration-span');
-    const $currentTime = document.getElementById('js-current-time');
-    const $continentSelection = document.getElementById('continent-selector')
+        // Creates Javascript objects for each html button/slider for the animation
+        const $playPauseButton = document.getElementById('js-play-pause-button');
+        const $durationRange = document.getElementById('js-duration-range');
+        const $progressRange = document.getElementById('js-progress-range');
+        const $spanDuration = document.getElementById('js-duration-span');
+        const $currentTime = document.getElementById('js-current-time');
+        const $continentSelection = document.getElementById('continent-selector')
 
-    // Save initial time range value
-    let last = $progressRange.value;
+        // Save initial time range value
+        let last = $progressRange.value;
 
-    // Listen to interaction events
-    $durationRange.addEventListener('change', () => {
-        const duration = parseInt($durationRange.value, 10);
-        // Update animation duration
-        taxaViz.variables.duration = $spanDuration.innerHTML = duration
-        iceViz.variables.duration = $spanDuration.innerHTML = duration
-    });
+        // Listen to interaction events
+        $durationRange.addEventListener('change', () => {
+            const duration = parseInt($durationRange.value, 10);
+            // Update animation duration
+            taxaViz.variables.duration = $spanDuration.innerHTML = duration
+            iceViz.variables.duration = $spanDuration.innerHTML = duration
+        });
 
-    $playPauseButton.addEventListener('click', playPause);
+        // Play & pause button functions
+        // Listens for clicks on the play/pause button
+        $playPauseButton.addEventListener('click', playPause);
 
-    function playPause() {
-        paused = taxaViz.variables.animation._paused;
-        if (paused === false) {
-            // Pause the animation
-            taxaViz.variables.animation.pause();
-            iceViz.variables.animation.pause();
-            document.getElementById("js-play-pause-button").src="img/play.png";
-        } else  {
-            // Play the animation
-            taxaViz.variables.animation.play();
-            iceViz.variables.animation.play();
-            document.getElementById("js-play-pause-button").src="img/pause.png";
-        }
-    };
+        function playPause() {
+            paused = taxaViz.variables.animation._paused;
+            if (paused === false) {
+                // Pause the animations
+                taxaViz.variables.animation.pause();
+                iceViz.variables.animation.pause();
+                document.getElementById("js-play-pause-button").src="img/play.png";
+            } else  {
+                // Play the animations
+                taxaViz.variables.animation.play();
+                iceViz.variables.animation.play();
+                document.getElementById("js-play-pause-button").src="img/pause.png";
+            }
+        };
 
-    $progressRange.addEventListener('change', () => {
-        // Update animation progress
-        taxaViz.variables.animation.setProgressPct($progressRange.value);
-        iceViz.variables.animation.setProgressPct($progressRange.value);
-        last = $progressRange.value;
-    });
-
-    // Listen to layer events
-    taxaLayer.on('updated', () => {
-        if ($progressRange.value == last) {
-            $progressRange.value = taxaViz.variables.animation.getProgressPct();
+        // Listens for and updates animation progress when the slider is clicked
+        $progressRange.addEventListener('change', () => {
+            // Update animation progress
+            taxaViz.variables.animation.setProgressPct($progressRange.value);
+            iceViz.variables.animation.setProgressPct($progressRange.value);
             last = $progressRange.value;
+        });
+
+        // Listen to layer events & updates the time bar
+        taxaLayer.on('updated', () => {
+            if ($progressRange.value == last) {
+                $progressRange.value = taxaViz.variables.animation.getProgressPct();
+                last = $progressRange.value;
+            }
+            $currentTime.innerText = parseInt(Math.round(taxaViz.variables.animation.getProgressValue()/500)*500);
+        });
+
+        // Creates taxa proportion circle legend
+        var legendSizes = [25,50,100]
+        let widthLegendList = '';
+        legendSizes.forEach(currentSize => {
+            currentWidth = 30*Math.pow((currentSize/15),0.5716)
+            widthLegendList +=
+            `<li id="legendList"><div class="circle" id="circle${currentSize}" style="width:${currentWidth}px; height:${currentWidth}px;"></div> ${currentSize}</li>`;
+        });
+        // Place list items in the content section of the title/legend box
+        document.getElementById('circ-content').innerHTML = widthLegendList;
+
+        // When layer loads, trigger legend event
+        taxaLayer.on('loaded', () => {
+            updateLegend();
+            hideLoader();
+        });
+
+        // Function to create carto viz & layer for ice sheets for North America & Europe
+        function createIceViz(){
+            var iceViz = new carto.Viz(`
+                @duration:${initialDuration}
+                @animation: animation(linear($age),@duration, fade(hold,.25))
+                color: opacity(#99daf2,1)
+                strokeWidth: 0
+                filter: @animation
+                `);
+            return iceViz
         }
-        $currentTime.innerText = parseInt(Math.round(taxaViz.variables.animation.getProgressValue()/500)*500);
-    });
-
-    var legendSizes = [25,50,100]
-    // const widthLegend =
-    let widthLegendList = '';
-    legendSizes.forEach(currentSize => {
-        currentWidth = 30*Math.pow((currentSize/15),0.5716)
-        widthLegendList +=
-        `<li id="legendList"><div class="circle" id="circle${currentSize}" style="width:${currentWidth}px; height:${currentWidth}px;"></div> ${currentSize}</li>`;
-    });
-    // Place list items in the content section of the title/legend box
-    document.getElementById('circ-content').innerHTML = widthLegendList;
-
-    const legendKeys = {
-        alder: 'Alder (<i>Alnus</i>)',
-        beech: 'Beech (<i>Fagus</i>)',
-        elm: 'Elm (<i>Ulmus</i>)',
-        grasses: 'Grasses (Poaceae)',
-        hemlock: 'Hemlock (<i>Tsuga</i>)',
-        oak: 'Oak (<i>Quercus</i>)',
-        ragweed: 'Ragweed (<i>Ambrosia</i>)',
-        sedges: 'Sedges (Cyperaceae)',
-        spruce: 'Spruce (<i>Picea</i>)',
-        pine: 'Pine (<i>Pinus</i>)',
-        sheoak: 'She-Oak (<i>Casuarina</i>)',
-        eucalyptus: 'Eucalyptus (<i>Eucalyptus</i>)',
-        celerypine: 'Celery Pine (<i>Phyllocladus</i>)',
-        cypresspine: 'Cypress-Pine (<i>Callitris</i>)',
-        southernbeech: 'Southern Beech (<i>Nothofagus</i>)'
-    }
-
-    // When layer loads, trigger legend event
-    taxaLayer.on('loaded', () => {
-        updateLegend();
-        hideLoader();
-    });
-
-
-    function createIceViz(){
-        var iceViz = new carto.Viz(`
-            @duration:${initialDuration}
-            @animation: animation(linear($age),@duration, fade(hold,.25))
-            color: opacity(#99daf2,1)
-            strokeWidth: 0
-            filter: @animation
-            `);
-        return iceViz
-    }
-
-    function createIceLayer(n){
-        continentName = continentArr[n][0]
-        if (continentName == 'northamerica' || continentName == 'europe'){
-            var iceSource = new carto.source.Dataset(continentArr[n][2]);
-            iceViz = createIceViz();
-            // newViz.push(iceViz);
-            const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
-            // newLayer.push(iceLayer);
-            return iceLayer
+        function createIceLayer(n){
+            continentName = continentArr[n][0]
+            if (continentName == 'northamerica' || continentName == 'europe'){
+                var iceSource = new carto.source.Dataset(continentArr[n][2]);
+                iceViz = createIceViz();
+                // newViz.push(iceViz);
+                const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
+                // newLayer.push(iceLayer);
+                return iceLayer
+            }
         }
-    }
 
-    // change sql query with dropdown value
-    function updateMap(taxaLayer) {
-        n = setContinent()
+        // changes visualization based on dropdown menu selection
+        function updateMap(taxaLayer) {
+            n = setContinent()
 
-        // If North America or Europe, update ice sheet
-        if (n === 0 || n === 1){
-            var iceSource = new carto.source.Dataset(continentArr[n][2]);
-            iceLayer.update(iceSource, iceViz);
-            iceLayer.show()
-        // Otherwise, hide ice sheet
-        } else {
-            iceLayer.hide()
+            // If North America or Europe, update ice sheet
+            if (n === 0 || n === 1){
+                var iceSource = new carto.source.Dataset(continentArr[n][2]);
+                iceLayer.update(iceSource, iceViz);
+                iceLayer.show()
+            // Otherwise, hide ice sheet
+            } else {
+                iceLayer.hide()
+            };
+
+            let taxaSource = new carto.source.Dataset(continentArr[n][1]);
+            taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+            taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
+            const layerPromise = taxaLayer.update(taxaSource, taxaViz);
+            currentExtent = allExtents[n];
+            map.panTo(currentExtent);
+            const promiseB = layerPromise.then(console.log("fired"));
+            const promiseC = promiseB.then(checkLegend);
+            promiseC.then(updateLegend);
         };
 
-        let taxaSource = new carto.source.Dataset(continentArr[n][1]);
-        taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
-        taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
-        console.log(taxaViz)
-        const layerPromise = taxaLayer.update(taxaSource, taxaViz);
-        currentExtent = allExtents[n];
-        map.panTo(currentExtent);
-        const promiseB = layerPromise.then(console.log("fired"));
-        const promiseC = promiseB.then(checkLegend);
-        promiseC.then(updateLegend);
-    };
-
-    function updateLegend(){
-        generateLegend();
-        checkTwo();
-    };
-
-    function generateLegend() {
-        // Request data for legend from the layer viz
-        let legend = taxaLayer.viz.color.getLegendData();
-        // Create list elements for legend
-        legend.data.reverse()
-        let legendList = legend.data.map((legend, index) => {
-            const color = rgbaToHex(legend.value);
-            const bordercol = rgbToHex(legend.value)
-            const key = legend.key.toLowerCase().replace(' ', '-');
-            const label = key + " ()"
-            const selected = taxaTypes.includes(legend.key);
-            // Use "js-checkbox" class to get all the checkbox elements from the widget
-            // Use "data-taxa-type" attribute to set the category for each checkbox
-            return `
-                <li>
-                    <input
-                        id="js-checkbox-${key}"
-                        class="js-checkbox"
-                        type="checkbox"
-                        name="categories"
-                        data-taxa-type="${legend.key}"
-                        visible="true"
-                    checked>
-                    <span class="point-mark" style="background-color:${color}; border: 1px solid ${bordercol}"></span>
-                    <label for="js-checkbox-${key}">
-                        ${legendKeys[key]}
-                    </label>
-                </li>\n`;
-        }).join('');
-        document.getElementById('content').innerHTML = legendList;
-        var items=document.getElementsByClassName('js-checkbox');
-        var length=items.length;
-        for(var i=0; i<Math.floor(length/2); i++) {
-          var temp=items[i].innerHTML;
-          items[i].innerHTML=items[length-i-1].innerHTML;
-          items[length-i-1].innerHTML=temp;
-        }
-        // 1. Get all the category checkboxes
-        const checkboxes = document.getElementsByClassName('js-checkbox');
-        // 2. Add an event listener to each category checkbox
-        for (let i in checkboxes) {
-            const checkbox = checkboxes.item(i);
-            checkbox.addEventListener('change', toggleCategory);
+        function updateLegend(){
+            generateLegend();
+            checkTwo();
         };
-    };
 
-    // Shows spruce and oak or southern beech and eucalyptus depending on continent
-    function checkTwo(){
-      var checkboxes = new Array();
-      checkboxes = document.getElementsByClassName('js-checkbox');
-      for (var i=0; i<checkboxes.length; i++)  {
-          // 1. Get the clicked checkbox element from the event
-          const checkboxElement = checkboxes[i];
-          // 2. Get the category through the "data-taxa-type" attribute
-          const category = checkboxElement.getAttribute('data-taxa-type');
-          console.log(category)
-          if ((category != 'Spruce') && (category != 'Oak') && (category != 'SouthernBeech') && (category != 'Eucalyptus')) {
-              // 3. Toggle the chosen category from the global taxaTypes array
-              const colorPosition = taxaTypes.indexOf(category)
-              const catColor = `${taxaColors[colorPosition]}`
-              const newColors = taxaColors
-              newColors.splice(colorPosition, 1)
-              taxaTypes = _toggle(taxaTypes, category);
-              // 4. Check / uncheck the checkbox element
-              checkboxElement.checked = taxaTypes.includes(category);
-              // 5. Update the filter
-              taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
+        function generateLegend() {
+            // Request data for legend from the layer viz
+            let legend = taxaLayer.viz.color.getLegendData();
+            // Create list elements for legend
+            legend.data.reverse()
+            let legendList = legend.data.map((legend, index) => {
+                const color = rgbaToHex(legend.value);
+                const bordercol = rgbToHex(legend.value)
+                const key = legend.key.toLowerCase().replace(' ', '-');
+                const label = key + " ()"
+                const selected = taxaTypes.includes(legend.key);
+                // Use "js-checkbox" class to get all the checkbox elements from the widget
+                // Use "data-taxa-type" attribute to set the category for each checkbox
+                return `
+                    <li>
+                        <input
+                            id="js-checkbox-${key}"
+                            class="js-checkbox"
+                            type="checkbox"
+                            name="categories"
+                            data-taxa-type="${legend.key}"
+                            visible="true"
+                        checked>
+                        <span class="point-mark" style="background-color:${color}; border: 1px solid ${bordercol}"></span>
+                        <label for="js-checkbox-${key}">
+                            ${legendKeys[key]}
+                        </label>
+                    </li>\n`;
+            }).join('');
+            document.getElementById('content').innerHTML = legendList;
+            var items=document.getElementsByClassName('js-checkbox');
+            var length=items.length;
+            for(var i=0; i<Math.floor(length/2); i++) {
+              var temp=items[i].innerHTML;
+              items[i].innerHTML=items[length-i-1].innerHTML;
+              items[length-i-1].innerHTML=temp;
+            }
+            // 1. Get all the category checkboxes
+            const checkboxes = document.getElementsByClassName('js-checkbox');
+            // 2. Add an event listener to each category checkbox
+            for (let i in checkboxes) {
+                const checkbox = checkboxes.item(i);
+                checkbox.addEventListener('change', toggleCategory);
+            };
+        };
 
-              taxaViz.variables.animation.setProgressPct(last);
-              iceViz.variables.animation.setProgressPct(last);
+        // Shows spruce and oak or southern beech and eucalyptus depending on continent
+        function checkTwo(){
+          var checkboxes = new Array();
+          checkboxes = document.getElementsByClassName('js-checkbox');
+          for (var i=0; i<checkboxes.length; i++)  {
+              // 1. Get the clicked checkbox element from the event
+              const checkboxElement = checkboxes[i];
+              // 2. Get the category through the "data-taxa-type" attribute
+              const category = checkboxElement.getAttribute('data-taxa-type');
+              if ((category != 'Spruce') && (category != 'Oak') && (category != 'SouthernBeech') && (category != 'Eucalyptus')) {
+                  // 3. Toggle the chosen category from the global taxaTypes array
+                  const colorPosition = taxaTypes.indexOf(category)
+                  const catColor = `${taxaColors[colorPosition]}`
+                  const newColors = taxaColors
+                  newColors.splice(colorPosition, 1)
+                  taxaTypes = _toggle(taxaTypes, category);
+                  // 4. Check / uncheck the checkbox element
+                  checkboxElement.checked = taxaTypes.includes(category);
+                  // 5. Update the filter
+                  taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
+
+                  taxaViz.variables.animation.setProgressPct(last);
+                  iceViz.variables.animation.setProgressPct(last);
+              };
           };
       };
-  };
 
-  // When checkbox is selected, turns layer for selected taxa on and off
-    function toggleCategory(event) {
-        // 1. Get the clicked checkbox element from the event
-        const checkboxElement = event.currentTarget;
-        // 2. Get the category through the "data-taxa-type" attribute
-        const category = checkboxElement.getAttribute('data-taxa-type');
+      // When checkbox is selected, turns layer for selected taxa on and off
+        function toggleCategory(event) {
+            // 1. Get the clicked checkbox element from the event
+            const checkboxElement = event.currentTarget;
+            // 2. Get the category through the "data-taxa-type" attribute
+            const category = checkboxElement.getAttribute('data-taxa-type');
 
-        // 3. Toggle the chosen category from the global taxaTypes array
-        const colorPosition = taxaTypes.indexOf(category)
-        const catColor = `${taxaColors[colorPosition]}`
-        const newColors = taxaColors
-        newColors.splice(colorPosition, 1)
-        taxaTypes = _toggle(taxaTypes, category);
-        // 4. Check / uncheck the checkbox element
-        checkboxElement.checked = taxaTypes.includes(category);
-        // 5. Update the filter
-        if (taxaTypes.length === 0) {
-            taxaLayer.hide()
-        } else {
-            if (taxaLayer.visible === false) {
-                taxaLayer.show()
+            // 3. Toggle the chosen category from the global taxaTypes array
+            const colorPosition = taxaTypes.indexOf(category)
+            const catColor = `${taxaColors[colorPosition]}`
+            const newColors = taxaColors
+            newColors.splice(colorPosition, 1)
+            taxaTypes = _toggle(taxaTypes, category);
+            // 4. Check / uncheck the checkbox element
+            checkboxElement.checked = taxaTypes.includes(category);
+            // 5. Update the filter
+            if (taxaTypes.length === 0) {
+                taxaLayer.hide()
+            } else {
+                if (taxaLayer.visible === false) {
+                    taxaLayer.show()
+                }
+                taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
             }
-            taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
+            taxaViz.variables.animation.setProgressPct(last);
+            iceViz.variables.animation.setProgressPct(last);
         }
-        taxaViz.variables.animation.setProgressPct(last);
-        iceViz.variables.animation.setProgressPct(last);
-    }
 
-    // Checks if legend data has been generated
-    function checkLegend(){
-        let legend = taxaLayer.viz.color.getLegendData();
-        return legend.data
-    };
+        // Checks if legend data has been generated
+        function checkLegend(){
+            let legend = taxaLayer.viz.color.getLegendData();
+            return legend.data
+        };
 
-    //** Helper Methods **//
-
-    // A function to convert map colors to HEX values for legend border color
-    function rgbToHex(color) {
-        return hex = ("#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1));
-    }
-
-    // A function to convert map colors to HEXA values for legend
-    function rgbaToHex(color) {
-        hex = ("#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1));
-        a = Math.round(0.60 * 255).toString(16)
-        return hex + a;
-    }
-
-    // A function to toggle an element in an array
-    function _toggle(arr, item) {
-        return arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
-    };
-
-    // Sets continent
-    function setContinent(){
-        let selectedContID = document.getElementById('standard-select');
-        let continentName = selectedContID.value
-        if (continentName == 'northamerica') {
-            n = 0
+        //** Helper Methods **//
+        // A function to convert map colors to HEX values for legend border color
+        function rgbToHex(color) {
+            return hex = ("#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1));
         }
-        else if (continentName == 'europe') {
-            n = 1
+
+        // A function to convert map colors to HEXA values for legend
+        function rgbaToHex(color) {
+            hex = ("#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1));
+            a = Math.round(0.60 * 255).toString(16)
+            return hex + a;
         }
-        else if (continentName == 'oceania') {
-            n = 2
+
+        // A function to toggle an element in an array
+        function _toggle(arr, item) {
+            return arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
+        };
+
+        // Sets continent
+        function setContinent(){
+            let selectedContID = document.getElementById('standard-select');
+            let continentName = selectedContID.value
+            if (continentName == 'northamerica') {
+                n = 0
+            }
+            else if (continentName == 'europe') {
+                n = 1
+            }
+            else if (continentName == 'oceania') {
+                n = 2
+            }
+            return n
+        };
+
+        // Opens and closes sidebar
+        function openCloseNav() {
+            let selectedButton = document.getElementById("infoSideBar");
+            let sidebarWidth = selectedButton.style.width
+            if (sidebarWidth === '0px' || !sidebarWidth) {
+                document.getElementById("infoSideBar").style.width = "350px";
+                document.getElementById("infoSideBar").style.padding = "32px";
+                document.getElementById("main").style.marginRight = "300px";
+                document.getElementById("legend-box").style.marginRight = "350px";
+            } else  {
+                document.getElementById("infoSideBar").style.width = "0";
+                document.getElementById("infoSideBar").style.padding = "0";
+                document.getElementById("main").style.marginRight = "0";
+                document.getElementById("legend-box").style.marginRight = "0";
+            }
+        };
+
+        // Hides loader after layer is loaded
+        function hideLoader() {
+            document.getElementById('loader').style.opacity = '0';
         }
-        return n
-    };
-
-    // Opens and closes sidebar
-    function openCloseNav() {
-        let selectedButton = document.getElementById("infoSideBar");
-        let sidebarWidth = selectedButton.style.width
-        if (sidebarWidth === '0px' || !sidebarWidth) {
-            document.getElementById("infoSideBar").style.width = "350px";
-            document.getElementById("infoSideBar").style.padding = "32px";
-            document.getElementById("main").style.marginRight = "300px";
-            document.getElementById("legend-box").style.marginRight = "350px";
-        } else  {
-            document.getElementById("infoSideBar").style.width = "0";
-            document.getElementById("infoSideBar").style.padding = "0";
-            document.getElementById("main").style.marginRight = "0";
-            document.getElementById("legend-box").style.marginRight = "0"
-        }
-    };
-
-    // Hides loader after layer is loaded
-    function hideLoader() {
-        document.getElementById('loader').style.opacity = '0';
-    }
-
-
     </script>
-
 </body>
 
 </html>
