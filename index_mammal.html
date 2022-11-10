@@ -152,18 +152,16 @@
     }
 
 
-    let taxaSource = new carto.source.Dataset(continentArr[0][1]);
+    let taxaSource = new carto.source.Dataset('mammal');
 
     const taxaViz = new carto.Viz(`
         @duration: ${initialDuration}
         @palette: [#339999, #fad620, #ff5233, #000075, #336699, #996699, #ff9b19, #C7003A, #511849, #ADD55C];
-        @animation: animation(linear($time), @duration, fade(@duration*0.05,@duration*0.025));
+        @animation: animation(linear($age), @duration, fade(@duration*0.05,@duration*0.025));
         @taxa: $taxa
-        @v_histogram: viewportHistogram($taxa)
         @opacity: opacity(ramp(@taxa,@palette), 0.45)
         color: @opacity;
-        width: (30*(($samples / 15) ^ 0.5716));
-        filter: @animation and @taxa in ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+        filter: @animation
         strokeWidth: 0.2;
         strokeColor: opacity(ramp(@taxa,prism),0.2);
 

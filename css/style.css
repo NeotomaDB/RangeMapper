@@ -94,11 +94,11 @@ select:focus + .focus {
 }
 
 #legend-box {
-  position: fixed;
+  position: absolute;
   right: 15px;
   bottom: 1px;
-  height: 175px;
-  width: 200px;
+  height: 145px;
+  width: 180px;
   font-family: sans-serif;
   background: var(--main-bg-color);
   opacity: 80%;
@@ -108,6 +108,7 @@ select:focus + .focus {
 #legend-head-text {
   font-weight: 700;
   text-align: center;
+  font-size: 15.5px;
 }
 
 #circ-box {
@@ -116,9 +117,7 @@ select:focus + .focus {
 
 #circ-content {
   list-style-type:none;
-  /* align-items: right; */
   font-weight: 300;
-  /* justify-content: center; */
   display: flex;
   flex-direction: column-reverse;
   text-align: right;
@@ -138,27 +137,30 @@ select:focus + .focus {
 }
 
 #circle50{
-  left: 36px;
+  left: 32px;
 }
 
 #circle25{
-  left: 50px;
+  left: 42px;
 }
 
 #logo-div {
-  display: flex;
-  margin-top:-1%;
-  padding: 1px;
+  float: right;
+  position: relative;
 }
 
 #neotoma-logo {
-  position: fixed;
-  width: 5%;
-  width: 65px;
-  height: 55px;
-  right: 25px;
-  bottom: 35px;
-  transition: margin-right .5s;
+
+  /* width: 5%; */
+  width: 55px;
+  /* float: right; */
+  position: inherit;
+    /* padding: 10px; */
+  /* height: 55px; */
+
+  bottom: 15px;
+  /* transition: margin-right .5s; */
+
 }
 
 /* The sidebar menu */
