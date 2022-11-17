@@ -117,7 +117,7 @@
         var contSource = ['northamericapollen', `europepollen`, `oceaniapollen`];
         var conticeSource = ['na_ice', 'europe_ice', ''];
         var taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech'];
-        var taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#996699', '#ff9b19', '#C7003A', '#ADD55C', '#511849'];
+        var taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#C7003A', '#ff9b19', '#996699','#ADD55C', '#511849'];
         var allExtents = [[-115, 50], [20, 57], [145, -27]];
         var continentArr = [];
         var currentExtent = allExtents[0];
@@ -169,7 +169,7 @@
         // Creates Carto viz object for taxa of interest
         const taxaViz = new carto.Viz(`
             @duration: ${initialDuration}
-            @palette: [#339999, #fad620, #ff5233, #000075, #336699, #996699, #ff9b19, #C7003A, #511849, #ADD55C];
+            @palette: [#339999, #fad620, #ff5233, #000075, #336699, #C7003A, #ff9b19, #996699,  #511849, #ADD55C];
             @animation: animation(linear($time), @duration, fade(@duration*0.05,@duration*0.025));
             @taxa: $taxa
             @v_histogram: viewportHistogram($taxa)
@@ -302,7 +302,7 @@
             };
 
             let taxaSource = new carto.source.Dataset(continentArr[n][1]);
-            taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+            taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Pine', 'Ragweed', 'Sedges', 'Spruce', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
             taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
             const layerPromise = taxaLayer.update(taxaSource, taxaViz);
             currentExtent = allExtents[n];
