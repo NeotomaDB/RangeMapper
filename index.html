@@ -261,7 +261,7 @@
             hideLoader();
         });
 
-        // Function to create carto viz & layer for ice sheets for North America & Europe
+        // Function to create carto viz object for ice sheets for North America & Europe
         function createIceViz(){
             var iceViz = new carto.Viz(`
                 @duration:${initialDuration}
@@ -272,6 +272,9 @@
                 `);
             return iceViz
         }
+
+        // Function to create carto layer for ice sheets for North America & Europe
+
         function createIceLayer(n){
             continentName = continentArr[n][0]
             if (continentName == 'northamerica' || continentName == 'europe'){
@@ -380,9 +383,6 @@
                   checkboxElement.checked = taxaTypes.includes(category);
                   // 5. Update the filter
                   taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
-
-                  taxaViz.variables.animation.setProgressPct(last);
-                  iceViz.variables.animation.setProgressPct(last);
               };
           };
       };
