@@ -17,30 +17,6 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="infoSideBar">
-
-          <div>
-              <header>
-                  <h1>Acknowledgements</h1>
-                  <a class="closebtn" onclick="openCloseNav()">&times;</a>
-              </header>
-              <p>Range Mapper
-
-                  Range Mapper was created by Adrian George, Sydney Widell, Rob Roth, and Jack Williams at the University of Wisconsin-Madison Geography Department and Cartography Lab. The dynamic visualizations are based on
-                  fossil pollen recovered from lake and bog sediments going back to the last Ice Age. Data were obtained from the <a href="http://www.neotomadb.org">Neotoma Paleoecology Database</a>
-                   and its constituent databases: the North American Pollen Database, the European Pollen Database and Alpine Pollen Database, and the Indo-Pacific Pollen Database. The work of data contributors, data stewards,
-                   and the Neotoma community is gratefully acknowledged. Ice sheet data is from Dalton et al (2020) and Hughes et al (2016) - see full citations below.
-
-                  This work would not have been possible without funding support from NSF (Grant EAR-1550707), the University of Wisconsin–Madison Graduate School, and the Minnie Riess Detling Trust.</p>
-                  <p><b>Code Source:</b> To view our code and make your own maps using data from the Neotoma Paleoecology Database, visit our <a href="https://github.com/NeotomaDB/RangeMapper">GitHub repository</a>. </p>
-                  <p><b>Citation:</b> George, A.K., Roth, R.E., Widell, S., and Williams, J.W.. (in revision). Range Mapper: An Adaptable Process for Making and Using Interactive, Animated Web Maps of Late-Quaternary Open Paleoecological Data. Open Quaternary.</p>
-
-                  <p><b>Ice Sheet Citations:</b> Dalton, A.S., Margold, M., Stokes, C.R., Tarasov, L., Dyke, A.S., Adams, R.S., Allard, S., Arends, H.E., Atkinson, N., Attig, J.W., et al. (2020). An updated radiocarbon-based ice margin chronology for
-                  the last deglaciation of the North American Ice Sheet Complex. Quaternary Science Reviews 234, 106223.</p>
-
-                  <p>Hughes, A.L.C., Gyllencreutz, R., Lohne, Ø.S., Mangerud, J., and Svendsen, J.I. (2016). The last Eurasian ice sheets – a chronological database and time-slice reconstruction, DATED-1. Boreas 45, 1–45.</p>
-             </div>
-    </div>
     <div id="main">
         <div id="map"></div>
         <aside class="toolbox" id="animation-toolbox">
@@ -79,7 +55,7 @@
                     </div>
                 </section>
                 <hr/>
-                <!-- Add legend data -->
+                <!-- Taxa legend data -->
                 <section>
                     <div id="controls">
                         <ul id="content" class="taxa-content"></ul>
@@ -87,22 +63,41 @@
                 </section>
             </div>
         </aside>
-        <!-- Legend -->
-        <div>
-            <div class="box" id="legend-box">
-                <header id="legend-head-text">
-                    <div>Percent Abundance</div>
-                </header>
-                <!-- Add legend data -->
-                <!-- <section class="legend-section"> -->
-                <div id="circ-box">
-                    <ul id="circ-content" class="legend-content"> </ul>
-                </div>
-                <div id="logo-div">
-                    <img id="neotoma-logo" src="img/neotomalogo.png" alt="neotoma paleoecology database logo">
-                </div>
+        <!-- Percent abundance legend -->
+        <div class="box" id="legend-box">
+            <header id="legend-head-text">
+                <div>Percent Abundance</div>
+            </header>
+            <div id="circ-box">
+                <ul id="circ-content" class="legend-content"> </ul>
+            </div>
+            <div id="logo-div">
+                <img id="neotoma-logo" src="img/neotomalogo.png" alt="neotoma paleoecology database logo">
             </div>
         </div>
+    </div>
+    <div id="infoSideBar">
+          <div>
+              <header>
+                  <h1>Acknowledgements</h1>
+                  <a class="closebtn" onclick="openCloseNav()">&times;</a>
+              </header>
+              <p>Range Mapper
+
+                  Range Mapper was created by Adrian George, Sydney Widell, Rob Roth, and Jack Williams at the University of Wisconsin-Madison Geography Department and Cartography Lab. The dynamic visualizations are based on
+                  fossil pollen recovered from lake and bog sediments going back to the last Ice Age. Data were obtained from the <a href="http://www.neotomadb.org">Neotoma Paleoecology Database</a>
+                   and its constituent databases: the North American Pollen Database, the European Pollen Database and Alpine Pollen Database, and the Indo-Pacific Pollen Database. The work of data contributors, data stewards,
+                   and the Neotoma community is gratefully acknowledged. Ice sheet data is from Dalton et al (2020) and Hughes et al (2016) - see full citations below.
+
+                  This work would not have been possible without funding support from NSF (Grant EAR-1550707), the University of Wisconsin–Madison Graduate School, and the Minnie Riess Detling Trust.</p>
+                  <p><b>Code Source:</b> To view our code and make your own maps using data from the Neotoma Paleoecology Database, visit our <a href="https://github.com/NeotomaDB/RangeMapper">GitHub repository</a>. </p>
+                  <p><b>Citation:</b> George, A.K., Roth, R.E., Widell, S., and Williams, J.W.. (in revision). Range Mapper: An Adaptable Process for Making and Using Interactive, Animated Web Maps of Late-Quaternary Open Paleoecological Data. Open Quaternary.</p>
+
+                  <p><b>Ice Sheet Citations:</b> Dalton, A.S., Margold, M., Stokes, C.R., Tarasov, L., Dyke, A.S., Adams, R.S., Allard, S., Arends, H.E., Atkinson, N., Attig, J.W., et al. (2020). An updated radiocarbon-based ice margin chronology for
+                  the last deglaciation of the North American Ice Sheet Complex. Quaternary Science Reviews 234, 106223.</p>
+
+                  <p>Hughes, A.L.C., Gyllencreutz, R., Lohne, Ø.S., Mangerud, J., and Svendsen, J.I. (2016). The last Eurasian ice sheets – a chronological database and time-slice reconstruction, DATED-1. Boreas 45, 1–45.</p>
+             </div>
     </div>
     <div id="loader">
         <div class="CDB-LoaderIcon CDB-LoaderIcon--big">
@@ -113,23 +108,20 @@
     </div>
     <script>
         const s = carto.expressions;
-        const continents = ['northamerica', 'europe', 'oceania'];
-        const contSource = ['northamericapollen', `europepollen`, `oceaniapollen`];
-        const conticeSource = ['na_ice', 'europe_ice', ''];
+        const allTaxaSource = ['northamericapollen', `europepollen`, `oceaniapollen`];
+        const allIceSource = ['na_ice', 'europe_ice', ''];
+        const allExtents = [[-115, 50], [20, 57], [145, -27]];
         const allTaxaTypes =  ['alder', 'beech', 'elm', 'grasses', 'hemlock', 'oak', 'ragweed', 'sedges', 'spruce', 'pine', 'sheoak', 'eucalyptus', 'celerypine', 'cypresspine', 'southernbeech'];
         const legendText = ['Alder (<i>Alnus</i>)', 'Beech (<i>Fagus</i>)', 'Elm (<i>Ulmus</i>)', 'Grasses (Poaceae)', 'Hemlock (<i>Tsuga</i>)', 'Oak (<i>Quercus</i>)', 'Ragweed (<i>Ambrosia</i>)', 'Sedges (Cyperaceae)', 'Spruce (<i>Picea</i>)', 'Pine (<i>Pinus</i>)', 'She-Oak (<i>Casuarina</i>)', 'Eucalyptus (<i>Eucalyptus</i>)', 'Celery Pine (<i>Phyllocladus</i>)', 'Cypress-Pine (<i>Callitris</i>)', 'Southern Beech (<i>Nothofagus</i>)']
         const taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#996699', '#ff9b19', '#C7003A', '#ADD55C', '#511849'];
-        const allExtents = [[-115, 50], [20, 57], [145, -27]];
-        const continentArr = [];
-        var currentExtent = allExtents[0];
-        const initialDuration = 31.5;
-
-        // Loop to create taxa legend dictionary to connect the taxa names used for plotting the data (allTaxaTypes) with the names you want on the legend (legendText)
+        // Loop creates taxa legend dictionary to connect the taxa names for plotting the data (allTaxaTypes) with the legend labels (legendText)
         const legendKeys = {};
         for (const x of allTaxaTypes) {
           legendKeys[x] = legendText[allTaxaTypes.indexOf(x)];
         }
 
+        let  currentExtent = allExtents[0];
+        let initialDuration = 31.5;
         // Creates map container and sets map location & zoom
         var map = new mapboxgl.Map({
             container: 'map',
@@ -137,23 +129,17 @@
             center: currentExtent,
             zoom: 3
         });
+        const nav = new mapboxgl.NavigationControl(); // Add zoom buttons
+        map.addControl(nav, 'bottom-left');
 
         carto.setDefaultAuth({
             username: 'aegeorge2',
             apiKey: 'nXTHpm3Qbb6MZX5ieYvVFA'
         });
-
-        const nav = new mapboxgl.NavigationControl();
-        map.addControl(nav, 'bottom-left');
-
         document.getElementById('js-duration-span').innerHTML = initialDuration;
 
-        for (let i = 0; i < continents.length; i++){
-            continentArr[i] = [continents[i], contSource[i], conticeSource[i]]
-        }
-
         // Sets pollen data source by name
-        let taxaSource = new carto.source.Dataset(continentArr[0][1]);
+        let taxaSource = new carto.source.Dataset(allTaxaSource[0]);
         var taxaTypes  = allTaxaTypes
 
         // Creates Carto viz object for taxa of interest
@@ -168,7 +154,7 @@
             width: (30*(($samples / 15) ^ 0.5716));
             filter: @animation;
             strokeWidth: 0.2;
-            strokeColor: opacity(ramp(@taxa,prism),0.2);
+            strokeColor: opacity(ramp(@taxa,@palette),0.2);
         `);
 
         // Creates Carto map layers for taxa and ice
@@ -186,7 +172,6 @@
         const $spanDuration = document.getElementById('js-duration-span');
         const $currentTime = document.getElementById('js-current-time');
         const $continentSelection = document.getElementById('continent-selector')
-
         // Save initial time range value
         let last = $progressRange.value;
 
@@ -201,7 +186,6 @@
         // Play & pause button functions
         // Listens for clicks on the play/pause button
         $playPauseButton.addEventListener('click', playPause);
-
         function playPause() {
             paused = taxaViz.variables.animation._paused;
             if (paused === false) {
@@ -216,7 +200,6 @@
                 document.getElementById("js-play-pause-button").src="img/pause.png";
             }
         };
-
         // Listens for and updates animation progress when the slider is clicked
         $progressRange.addEventListener('change', () => {
             // Update animation progress
@@ -224,7 +207,6 @@
             iceViz.variables.animation.setProgressPct($progressRange.value);
             last = $progressRange.value;
         });
-
         // Listen to layer events & updates the time bar
         taxaLayer.on('updated', () => {
             if ($progressRange.value == last) {
@@ -251,52 +233,47 @@
             hideLoader();
         });
 
-        // Function to create carto viz object for ice sheets for North America & Europe
+        // Function to create carto viz object for North American & European ice sheets
         function createIceViz(){
             var iceViz = new carto.Viz(`
                 @duration:${initialDuration}
                 @animation: animation(linear($age),@duration, fade(hold,.25))
-                color: opacity(#99daf2,1)
+                color: #99daf2
                 strokeWidth: 0
                 filter: @animation
                 `);
             return iceViz
         }
-
-        // Function to create carto viz & layer for ice sheets for North America & Europe
+        // Function to create carto layer for ice sheets
         function createIceLayer(n){
-            continentName = continentArr[n][0]
-            if (continentName == 'northamerica' || continentName == 'europe'){
-                var iceSource = new carto.source.Dataset(continentArr[n][2]);
+            // If North America (0) or Europe (1), create ice sheet
+            if (n === 0 || n === 1){
+                var iceSource = new carto.source.Dataset(allIceSource[n]);
                 iceViz = createIceViz();
-                // newViz.push(iceViz);
                 const iceLayer = new carto.Layer('icesheets', iceSource, iceViz);
-                // newLayer.push(iceLayer);
                 return iceLayer
             }
         }
 
-        // changes visualization based on dropdown menu selection
+        // Fuction to change visualization based on dropdown menu selection
         function updateMap(taxaLayer) {
             n = setContinent()
-
             // If North America or Europe, update ice sheet
             if (n === 0 || n === 1){
-                var iceSource = new carto.source.Dataset(continentArr[n][2]);
+                var iceSource = new carto.source.Dataset(allIceSource[n]);
                 iceLayer.update(iceSource, iceViz);
                 iceLayer.show()
             // Otherwise, hide ice sheet
             } else {
                 iceLayer.hide()
             };
-
-            let taxaSource = new carto.source.Dataset(continentArr[n][1]);
+            // Update taxaSource & layer
+            let taxaSource = new carto.source.Dataset(allTaxaSource[n]);
             taxaTypes =  allTaxaTypes
             taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
             const layerPromise = taxaLayer.update(taxaSource, taxaViz);
             currentExtent = allExtents[n];
-            map.panTo(currentExtent);
-            const promiseB = layerPromise.then(console.log("fired"));
+            const promiseB = layerPromise.then(map.panTo(currentExtent));
             const promiseC = promiseB.then(checkLegend);
             promiseC.then(updateLegend);
         };
@@ -305,7 +282,7 @@
             generateLegend();
             checkTwo();
         };
-
+        // Creates HTML legend and legend listeners
         function generateLegend() {
             // Request data for legend from the layer viz
             let legend = taxaLayer.viz.color.getLegendData();
@@ -329,19 +306,10 @@
                             visible="true"
                         checked>
                         <span class="point-mark" style="background-color:${color}; border: 1px solid ${bordercol}"></span>
-                        <label for="js-checkbox-${key}">
-                            ${legendKeys[key]}
-                        </label>
+                        <label for="js-checkbox-${key}"> ${legendKeys[key]} </label>
                     </li>\n`;
             }).join('');
             document.getElementById('content').innerHTML = legendList;
-            var items=document.getElementsByClassName('js-checkbox');
-            var length=items.length;
-            for(var i=0; i<Math.floor(length/2); i++) {
-              var temp=items[i].innerHTML;
-              items[i].innerHTML=items[length-i-1].innerHTML;
-              items[length-i-1].innerHTML=temp;
-            }
             // 1. Get all the category checkboxes
             const checkboxes = document.getElementsByClassName('js-checkbox');
             // 2. Add an event listener to each category checkbox
@@ -351,28 +319,31 @@
             };
         };
 
-        // Shows spruce and oak or southern beech and eucalyptus depending on continent
+        // Show only spruce & oak or southern beech & eucalyptus based on continent
         function checkTwo(){
-          var checkboxes = new Array();
-          checkboxes = document.getElementsByClassName('js-checkbox');
-          for (var i=0; i<checkboxes.length; i++)  {
-              // 1. Get the clicked checkbox element from the event
-              const checkboxElement = checkboxes[i];
-              // 2. Get the category through the "data-taxa-type" attribute
-              const category = checkboxElement.getAttribute('data-taxa-type');
-              if ((category != 'spruce') && (category != 'oak') && (category != 'southernbeech') && (category != 'eucalyptus')) {
-                  // 3. Toggle the chosen category from the global taxaTypes array
-                  const colorPosition = taxaTypes.indexOf(category)
-                  const catColor = `${taxaColors[colorPosition]}`
-                  const newColors = taxaColors
-                  newColors.splice(colorPosition, 1)
-                  taxaTypes = _toggle(taxaTypes, category);
-                  // 4. Check / uncheck the checkbox element
-                  checkboxElement.checked = taxaTypes.includes(category);
-                  // 5. Update the filter
-                  taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
+            var checkboxes = new Array();
+            checkboxes = document.getElementsByClassName('js-checkbox');
+            for (var i=0; i<checkboxes.length; i++)  {
+                // 1. Get the clicked checkbox element from the event
+                const checkboxElement = checkboxes[i];
+                // 2. Get the category through the "data-taxa-type" attribute
+                const category = checkboxElement.getAttribute('data-taxa-type');
+                // Only removes taxa from map not listed above
+                switch(category){
+                      case 'spruce':
+                      case 'oak':
+                      case 'southernbeech':
+                      case 'eucalyptus':
+                          break;
+                      default:
+                          // 3. Toggle the chosen category from the global taxaTypes array
+                          taxaTypes = _toggle(taxaTypes, category);
+                          // 4. Check / uncheck the checkbox element
+                          checkboxElement.checked = taxaTypes.includes(category);
               };
           };
+          // 5. Update the filter
+          taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)));
       };
 
       // When checkbox is selected, turns layer for selected taxa on and off
@@ -381,12 +352,7 @@
             const checkboxElement = event.currentTarget;
             // 2. Get the category through the "data-taxa-type" attribute
             const category = checkboxElement.getAttribute('data-taxa-type');
-
             // 3. Toggle the chosen category from the global taxaTypes array
-            const colorPosition = taxaTypes.indexOf(category)
-            const catColor = `${taxaColors[colorPosition]}`
-            const newColors = taxaColors
-            newColors.splice(colorPosition, 1)
             taxaTypes = _toggle(taxaTypes, category);
             // 4. Check / uncheck the checkbox element
             checkboxElement.checked = taxaTypes.includes(category);
@@ -408,20 +374,17 @@
             let legend = taxaLayer.viz.color.getLegendData();
             return legend.data
         };
-
         //** Helper Methods **//
         // A function to convert map colors to HEX values for legend border color
         function rgbToHex(color) {
             return hex = ("#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1));
         }
-
         // A function to convert map colors to HEXA values for legend
         function rgbaToHex(color) {
             hex = ("#" + ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b).toString(16).slice(1));
             a = Math.round(0.60 * 255).toString(16)
             return hex + a;
         }
-
         // A function to toggle an element in an array
         function _toggle(arr, item) {
             return arr.includes(item) ? arr.filter(i => i !== item) : [...arr, item];
@@ -466,5 +429,4 @@
         }
     </script>
 </body>
-
 </html>
