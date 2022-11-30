@@ -22,7 +22,6 @@ select.mySelectArrow option {
     color: var(--main-bg-color);
     padding: 0 10px;
 }
-
 .select:after {
     content: '\25BC';
     position: absolute;
@@ -39,7 +38,6 @@ select.mySelectArrow option {
   position: relative;
   width: 100%;
 }
-
 select:focus + .focus {
   position: absolute;
   top: -1px;
@@ -49,7 +47,6 @@ select:focus + .focus {
   border: 2px solid var(--select-focus);
   border-radius: inherit;
 }
-
 
 #animation-section {
     display: flex;
@@ -66,19 +63,16 @@ select:focus + .focus {
     position: fixed;
     width: 16%;
 }
-
 #animation-box {
     background: var(--main-bg-color);
     padding-bottom: 5px;
     padding-left: 10px;
 }
-
 #animation-header {
     color:var(--main-text-color);
     font-family: sans-serif;
     font-weight: 700;
 }
-
 .animation-rangebar {
     color:var(--main-text-color);
     font-family: sans-serif;
@@ -114,7 +108,6 @@ select:focus + .focus {
 #circ-box {
   width: 100%;
 }
-
 #circ-content {
   list-style-type:none;
   font-weight: 300;
@@ -123,7 +116,6 @@ select:focus + .focus {
   text-align: right;
   padding-right: 10%
 }
-
 .circle {
   border-radius: 75%;
   position: absolute;
@@ -131,36 +123,23 @@ select:focus + .focus {
   bottom: 10%;
   color: var(--main-text-color);
 }
-
 #circle100{
   left: 18px;
 }
-
 #circle50{
   left: 32px;
 }
-
 #circle25{
   left: 42px;
 }
-
 #logo-div {
   float: right;
   position: relative;
 }
-
 #neotoma-logo {
-
-  /* width: 5%; */
   width: 55px;
-  /* float: right; */
   position: inherit;
-    /* padding: 10px; */
-  /* height: 55px; */
-
   bottom: 15px;
-  /* transition: margin-right .5s; */
-
 }
 
 /* The sidebar menu */
@@ -176,7 +155,6 @@ background-color: var(--main-bg-color); /* gray*/
 overflow-x: hidden; /* Disable horizontal scroll */
 transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
 }
-
 /* Position and style the close button (top right corner) */
 #infoSideBar .closebtn {
 padding: 15px 8px 8px 20px;
@@ -191,12 +169,10 @@ right: 25px;
 font-size: 36px;
 margin-left: 50px;
 }
-
 /* When you mouse over the navigation links, change their color */
 #infoSideBar .closebtn:hover {
 color: #C3D1D1;
 }
-
 #infoSideBar header h1 {
 display: inline-block;
 color: #2E3C43;
@@ -236,12 +212,11 @@ justify-content: center;
 background-color: #97A3A3;
 }
 
-/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+/* Style page content - push page content to right when you open the side navigation */
 #main {
 color: var(--main-text-color);
 transition: margin-right .5s; /* If you want a transition effect */
 }
-
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {
 #infoSideBar {padding-top: 15px;}
