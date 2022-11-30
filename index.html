@@ -113,35 +113,24 @@
     </div>
     <script>
         const s = carto.expressions;
-        var continents = ['northamerica', 'europe', 'oceania'];
-        var contSource = ['northamericapollen', `europepollen`, `oceaniapollen`];
-        var conticeSource = ['na_ice', 'europe_ice', ''];
-        var taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech'];
-        var taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#C7003A', '#ff9b19', '#996699','#ADD55C', '#511849'];
-        var allExtents = [[-115, 50], [20, 57], [145, -27]];
-        var continentArr = [];
+        const continents = ['northamerica', 'europe', 'oceania'];
+        const contSource = ['northamericapollen', `europepollen`, `oceaniapollen`];
+        const conticeSource = ['na_ice', 'europe_ice', ''];
+        const allTaxaTypes =  ['alder', 'beech', 'elm', 'grasses', 'hemlock', 'oak', 'ragweed', 'sedges', 'spruce', 'pine', 'sheoak', 'eucalyptus', 'celerypine', 'cypresspine', 'southernbeech'];
+        const legendText = ['Alder (<i>Alnus</i>)', 'Beech (<i>Fagus</i>)', 'Elm (<i>Ulmus</i>)', 'Grasses (Poaceae)', 'Hemlock (<i>Tsuga</i>)', 'Oak (<i>Quercus</i>)', 'Ragweed (<i>Ambrosia</i>)', 'Sedges (Cyperaceae)', 'Spruce (<i>Picea</i>)', 'Pine (<i>Pinus</i>)', 'She-Oak (<i>Casuarina</i>)', 'Eucalyptus (<i>Eucalyptus</i>)', 'Celery Pine (<i>Phyllocladus</i>)', 'Cypress-Pine (<i>Callitris</i>)', 'Southern Beech (<i>Nothofagus</i>)']
+        const taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#996699', '#ff9b19', '#C7003A', '#ADD55C', '#511849'];
+        const allExtents = [[-115, 50], [20, 57], [145, -27]];
+        const continentArr = [];
         var currentExtent = allExtents[0];
-        var initialDuration = 31.5;
+        const initialDuration = 31.5;
 
-        // Dictionary for taxa legend
-        const legendKeys = {
-            alder: 'Alder (<i>Alnus</i>)',
-            beech: 'Beech (<i>Fagus</i>)',
-            elm: 'Elm (<i>Ulmus</i>)',
-            grasses: 'Grasses (Poaceae)',
-            hemlock: 'Hemlock (<i>Tsuga</i>)',
-            oak: 'Oak (<i>Quercus</i>)',
-            ragweed: 'Ragweed (<i>Ambrosia</i>)',
-            sedges: 'Sedges (Cyperaceae)',
-            spruce: 'Spruce (<i>Picea</i>)',
-            pine: 'Pine (<i>Pinus</i>)',
-            sheoak: 'She-Oak (<i>Casuarina</i>)',
-            eucalyptus: 'Eucalyptus (<i>Eucalyptus</i>)',
-            celerypine: 'Celery Pine (<i>Phyllocladus</i>)',
-            cypresspine: 'Cypress-Pine (<i>Callitris</i>)',
-            southernbeech: 'Southern Beech (<i>Nothofagus</i>)'
+        // Loop to create taxa legend dictionary to connect the taxa names used for plotting the data (allTaxaTypes) with the names you want on the legend (legendText)
+        const legendKeys = {};
+        for (const x of allTaxaTypes) {
+          legendKeys[x] = legendText[allTaxaTypes.indexOf(x)];
         }
 
+        // Creates map container and sets map location & zoom
         var map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.positron,
@@ -165,25 +154,26 @@
 
         // Sets pollen data source by name
         let taxaSource = new carto.source.Dataset(continentArr[0][1]);
+        var taxaTypes  = allTaxaTypes
 
         // Creates Carto viz object for taxa of interest
         const taxaViz = new carto.Viz(`
             @duration: ${initialDuration}
-            @palette: [#339999, #fad620, #ff5233, #000075, #336699, #C7003A, #ff9b19, #996699,  #511849, #ADD55C];
+            @palette: [#339999, #fad620, #ff5233, #000075, #336699, #996699, #ff9b19, #C7003A, #511849, #ADD55C];
             @animation: animation(linear($time), @duration, fade(@duration*0.05,@duration*0.025));
-            @taxa: $taxa
-            @v_histogram: viewportHistogram($taxa)
-            @opacity: opacity(ramp(@taxa,@palette), 0.45)
+            @taxa: $taxa;
+            @v_histogram: viewportHistogram($taxa);
+            @opacity: opacity(ramp(@taxa,@palette), 0.45);
             color: @opacity;
             width: (30*(($samples / 15) ^ 0.5716));
-            filter: @animation and @taxa in ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Ragweed', 'Sedges', 'Spruce', 'Pine', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+            filter: @animation;
             strokeWidth: 0.2;
             strokeColor: opacity(ramp(@taxa,prism),0.2);
         `);
 
         // Creates Carto map layers for taxa and ice
         const taxaLayer = new carto.Layer('layer', taxaSource, taxaViz);
-        let iceLayer = createIceLayer(0);
+        var iceLayer = createIceLayer(0);
 
         // Add layers to map
         taxaLayer.addTo(map);
@@ -273,8 +263,7 @@
             return iceViz
         }
 
-        // Function to create carto layer for ice sheets for North America & Europe
-
+        // Function to create carto viz & layer for ice sheets for North America & Europe
         function createIceLayer(n){
             continentName = continentArr[n][0]
             if (continentName == 'northamerica' || continentName == 'europe'){
@@ -302,7 +291,7 @@
             };
 
             let taxaSource = new carto.source.Dataset(continentArr[n][1]);
-            taxaTypes =  ['Alder', 'Beech', 'Elm', 'Grasses', 'Hemlock', 'Oak', 'Pine', 'Ragweed', 'Sedges', 'Spruce', 'SheOak', 'Eucalyptus', 'CeleryPine', 'CypressPine', 'SouthernBeech']
+            taxaTypes =  allTaxaTypes
             taxaViz.filter.blendTo(s.and(s.var('animation'),s.in(s.prop('taxa'), taxaTypes)))
             const layerPromise = taxaLayer.update(taxaSource, taxaViz);
             currentExtent = allExtents[n];
@@ -324,9 +313,8 @@
             legend.data.reverse()
             let legendList = legend.data.map((legend, index) => {
                 const color = rgbaToHex(legend.value);
-                const bordercol = rgbToHex(legend.value)
-                const key = legend.key.toLowerCase().replace(' ', '-');
-                const label = key + " ()"
+                const bordercol = rgbToHex(legend.value);
+                const key = legend.key; //.toLowerCase().replace(' ', '-');
                 const selected = taxaTypes.includes(legend.key);
                 // Use "js-checkbox" class to get all the checkbox elements from the widget
                 // Use "data-taxa-type" attribute to set the category for each checkbox
@@ -372,7 +360,7 @@
               const checkboxElement = checkboxes[i];
               // 2. Get the category through the "data-taxa-type" attribute
               const category = checkboxElement.getAttribute('data-taxa-type');
-              if ((category != 'Spruce') && (category != 'Oak') && (category != 'SouthernBeech') && (category != 'Eucalyptus')) {
+              if ((category != 'spruce') && (category != 'oak') && (category != 'southernbeech') && (category != 'eucalyptus')) {
                   // 3. Toggle the chosen category from the global taxaTypes array
                   const colorPosition = taxaTypes.indexOf(category)
                   const catColor = `${taxaColors[colorPosition]}`

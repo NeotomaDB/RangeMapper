@@ -96,9 +96,9 @@ setTaxa <- function(x){
 setCommonNames <- function(x){
   i <- setContinent(continent)
   all_taxa <- list(
-    c("Alder", "Ragweed", "Sedges", "Beech", "Spruce", "Pine", "Grasses", "Oak", "Hemlock", "Elm"), 
-    c("Alder", "Beech", "Spruce", "Oak"), 
-    c("SheOak", "Eucalyptus", "CeleryPine", "CypressPine", "SouthernBeech"))
+    c("alder", "ragweed", "sedges", "beech", "spruce", "pine", "grasses", "oak", "hemlock", "elm"), 
+    c("alder", "beech", "spruce", "oak"), 
+    c("sheoak", "eucalyptus", "celerypine", "cypresspine", "southernbeech"))
     # Set taxa
   taxa <- all_taxa[[i]]
   return(taxa)
@@ -114,8 +114,8 @@ file_path <- "~/github/RangeMapper/Data/"
 
 # Set your taxa, location bounding box, and time period of interest
 # Pick continent
-continent <- "NorthAmerica"
-# continent <- "Europe"
+# continent <- "NorthAmerica"
+continent <- "Europe"
 # continent <- "Oceania"
 location <- setLocation()
 countries <- setCountries()
@@ -251,6 +251,7 @@ if (!paste0(continent,"Pollen.csv") %in% list.files(file_path)) {
       group_by(time, lat, long, datasetid, variablename) %>%
       summarize(samples = mean(prop)*100) %>%
       arrange(time, lat)
+  
   
   # Change Latin names to common names & reduce dataset to info needed for mapping 
   final <- samp_binned %>%
