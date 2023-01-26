@@ -115,8 +115,8 @@ file_path <- "~/github/RangeMapper/Data/"
 # Set your taxa, location bounding box, and time period of interest
 # Pick continent
 # continent <- "NorthAmerica"
-continent <- "Europe"
-# continent <- "Oceania"
+# continent <- "Europe"
+continent <- "Oceania"
 location <- setLocation()
 countries <- setCountries()
 taxa <- setTaxa()
@@ -260,6 +260,6 @@ if (!paste0(continent,"Pollen.csv") %in% list.files(file_path)) {
     select(time, lat, long, samples, taxa) 
     
   # Write CSV file
-  write.csv(final, file = paste0(file_path, continent,"Pollen.csv")) 
+  write.csv(final, file = paste0(file_path, continent,"Pollen.csv"), row.names=FALSE) 
 }
 ```

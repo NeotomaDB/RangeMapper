@@ -183,7 +183,7 @@ if (!'CartoInput.csv' %in% list.files(paste0(file_path))) {
   print(head(final))
   
   # Writes CSV file
-  write.csv(final, file = paste0(file_path, "Pollen.csv")) 
+  write.csv(final, file = paste0(file_path, "Pollen.csv"), row.names=FALSE) 
 }
 ```
 

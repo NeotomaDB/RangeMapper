@@ -82,9 +82,7 @@
                   <h1>Acknowledgements</h1>
                   <a class="closebtn" onclick="openCloseNav()">&times;</a>
               </header>
-              <p>Range Mapper
-
-                  Range Mapper was created by Adrian George, Sydney Widell, Rob Roth, and Jack Williams at the University of Wisconsin-Madison Geography Department and Cartography Lab. The dynamic visualizations are based on
+              <p>Range Mapper was created by Adrian George, Sydney Widell, Rob Roth, and Jack Williams at the University of Wisconsin-Madison Geography Department and Cartography Lab. The dynamic visualizations are based on
                   fossil pollen recovered from lake and bog sediments going back to the last Ice Age. Data were obtained from the <a href="http://www.neotomadb.org">Neotoma Paleoecology Database</a>
                    and its constituent databases: the North American Pollen Database, the European Pollen Database and Alpine Pollen Database, and the Indo-Pacific Pollen Database. The work of data contributors, data stewards,
                    and the Neotoma community is gratefully acknowledged. Ice sheet data is from Dalton et al (2020) and Hughes et al (2016) - see full citations below.
@@ -119,10 +117,12 @@
         for (const x of allTaxaTypes) {
           legendKeys[x] = legendText[allTaxaTypes.indexOf(x)];
         }
-
+        // Create variable for center coordinates of map 
         let  currentExtent = allExtents[0];
+        // Create variable for initial length of animation
         let initialDuration = 31.5;
-        // Creates map container and sets map location & zoom
+
+        // Create map container and sets map location & zoom
         var map = new mapboxgl.Map({
             container: 'map',
             style: carto.basemaps.positron,
@@ -132,6 +132,7 @@
         const nav = new mapboxgl.NavigationControl(); // Add zoom buttons
         map.addControl(nav, 'bottom-left');
 
+        // input CARTO username and apiKey
         carto.setDefaultAuth({
             username: 'aegeorge2',
             apiKey: 'nXTHpm3Qbb6MZX5ieYvVFA'

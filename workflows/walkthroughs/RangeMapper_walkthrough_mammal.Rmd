@@ -51,28 +51,28 @@ Finally, set your own file path in the last line of code.
 
 # Set your location using a bounding box. # [USER INPUT]
 # You can also use names of countries. See RangeMapper_methods.Rmd in the Methods folder for an example.
-location <- list(geoJSON = '{"type": "Polygon",
+location <- list(geoJSON = '{"type": "Polygon", 
             "coordinates": [[
-                [-97.4, 41.7],
-                [-97.4, 49.4],
-                [-82.4, 49.4],
-                [-82.4, 41.7],
-                [-97.4, 41.7]]]}',
-        bbox = c(-97.4, 41.7, -82.4, 49.4))
+                [-169, 24],
+                [-169, 75],
+                [-52, 75],
+                [-52, 24],
+                [-169, 24]]]}',
+        bbox = c(-169, 24, -52, 75))
 location$sf <- geojsonsf::geojson_sf(location$geoJSON)
 
 # Set taxa names to search in Neotoma
 taxa <- c('Mammuthus', 'Mammut americanum') # [USER INPUT]
 
 # Set common names (or names you want on the map legend) for your taxa here
-common_name <- c('Woolly mammoth', 'American mastodon') # [USER INPUT]
+common_name <- c('woollymammoth', 'americanmastodon') # [USER INPUT]
 
 # Set the time period [USER INPUT]
 age_young <- 10000
-age_old <- 50000
+age_old <- 27000
 
 # set the location on your computer where you want to save your files
-file_path <- "" # [USER INPUT]
+file_path <- "~/github/RangeMapper/workflows/walkthroughs/" # [USER INPUT]
 ```
 
 ## Appending and downloading your lists
@@ -95,7 +95,7 @@ if (!'MammalRecords.RDS' %in% list.files(paste0(file_path))) {
   downloads <- new('sites')
 
   # downloads all datasets
-  for (i in 1:length(filter_datasets)) {
+  for (i in 1491:length(filter_datasets)) {
       downloads <- c(downloads, get_downloads(filter_datasets[i]))
   }
   
@@ -151,15 +151,16 @@ In this section, you will create the final csv.
 if (!'CartoInput.csv' %in% list.files(paste0(file_path))) { 
   # Change Latin names to common names & reduce dataset to info needed for mapping 
   final <- samp_harmonized %>%
-    mutate(taxa = factor(x = variablename, taxa, common_name)) %>%
-    group_by(age, lat, long, element, taxa) %>%
-    select(age, lat, long, element, taxa) 
+    mutate(taxa = factor(x = variablename, taxa, common_name),
+           time = - (round(age / 500, 0) * 500)) %>%
+    group_by(time, lat, long, element, taxa) %>%
+    select(time, lat, long, element, taxa) 
     
   # Now, the sample table looks like this
   print(head(final))
   
   # Writes CSV file
-  write.csv(final, file = paste0(file_path, "Mammal.csv")) 
+  write.csv(final, file = paste0(file_path, "Mammal.csv"), row.names=FALSE) 
 }
 ```
 

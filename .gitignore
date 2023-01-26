@@ -8,3 +8,7 @@ db_connect_remote.json
 creds.json
 .Rhistory
 .Rproj.user
+
+*.config
+
+RangeMapper.Rproj
