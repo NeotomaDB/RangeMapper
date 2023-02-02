@@ -16,10 +16,7 @@ Welcome to Range Mapper, a repository that allows researchers, web developers, s
 We welcome user contributions to this project. All contributors are expected to follow the code of conduct. Contributors should fork this project and make a pull request indicating the nature of the changes and the intended utility. If, in any place instructions are not clear or more details are required please feel free to contact us by either [raising a GitHub Issue for this repository](https://github.com/NeotomaDB/RangeMapper/issues/new), or emailing Adrian George at aegeorge2@wisc.edu. 
 
 ### Development
-Adrian George 
-Sydney Widell
-Jack Williams
-Robert Roth
+The development team is made up of Adrian George, Sydney Widell, Jack Williams, and Robert Roth
 
 ### Required Files and Services
 We used R to perform our Neotoma Query and to sort the data we retrieved. If R is not installed on your machine, you may download the latest version [here](https://www.r-project.org/). An RMD filed [here](link) will provide a step-by-step guide to the rest of our R code. 
