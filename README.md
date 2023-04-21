@@ -2,13 +2,13 @@
 title: "Range Mapper Repository"
 author: "Williams Lab"
 affiliation: "University of Wisconsin - Madison"
-date: "4/3/2020"
+date: "2/10/2023"
 output: html_document
 ---
 
 ## Introduction
 
-Welcome to Range Mapper, a repository that allows researchers, web developers, students and other users to extract taxa-specific, spatio-temporal data from the Neotoma Paleoecology Database Collective [@williams2017neotoma]. This code also establishes a channel between Neotoma and [CARTO](https://carto.com), an online mapping platform where Neotoma data can be visualized and transformed using the [CARTO VL](https://carto.com/developers/carto-vl/) Javascript library.
+Welcome to [Range Mapper](https://geography.wisc.edu/RangeMapper), a set of online interactive and animated visualizations of plant taxon range shifts since the Last Glacial Maximum, and the workflows that allows researchers, web developers, students and other users to extract and visualize taxa-specific, spatio-temporal data from the Neotoma Paleoecology Database Collective [@williams2017neotoma]. This code also establishes a channel between Neotoma and [CARTO](https://carto.com), an online mapping platform where Neotoma data can be visualized and transformed using the [CARTO VL](https://carto.com/developers/carto-vl/) Javascript library.
 
 
 ### Providing Feedback and Contribution
