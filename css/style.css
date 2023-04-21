@@ -1,145 +1,179 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 :root {
-    --main-bg-color: #D9E9E9E9;
-    --main-text-color: #494E6B;
-    --taxa-1: #900C3F;
-    --select-border: #777;
-    --select-focus: blue;
-    --select-arrow: var(--select-border);
+  --main-bg-color: #D9E9E9E9;
+  --main-text-color: #494E6B;
+  --select-border: #777;
+  --select-focus: blue;
+  --select-arrow: var(--select-border);
 }
 
 select.mySelectArrow{
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: var(--main-text-color);
-    color: #fff;
-    font-weight: 500;
-    width: 100%;
-    padding: 10px 20px;
-    font-size: 18px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: var(--main-text-color);
+  color: #fff;
+  font-weight: 500;
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 18px;
 }
 select.mySelectArrow option {
-    color: var(--main-bg-color);
-    padding: 0 10px;
+  color: var(--main-bg-color);
+  padding: 0 10px;
 }
 .select:after {
-    content: '\25BC';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    font-size: 25px;
-    color: #fff;
-    padding: 11px 15px;
-    pointer-events: none;
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 25px;
+  color: #fff;
+  padding: 11px 15px;
+  pointer-events: none;
 }
 .select {
-  /* // ...existing styles */
-  position: relative;
-  width: 100%;
+/* // ...existing styles */
+position: relative;
+width: 100%;
 }
 select:focus + .focus {
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  right: -1px;
-  bottom: -1px;
-  border: 2px solid var(--select-focus);
-  border-radius: inherit;
+position: absolute;
+top: -1px;
+left: -1px;
+right: -1px;
+bottom: -1px;
+border: 2px solid var(--select-focus);
+border-radius: inherit;
 }
 
 #animation-section {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    align-content: flex-end;
-    left: 10px
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-line-pack: end;
+      align-content: flex-end;
+  left: 10px
 }
 
 /* progress bar styling */
 #animation-toolbox {
-    left: 15px;
-    position: fixed;
-    width: 16%;
+  left: 15px;
+  position: fixed;
+  width: 16%;
 }
 #animation-box {
-    background: var(--main-bg-color);
-    padding-bottom: 5px;
-    padding-left: 10px;
+  background: var(--main-bg-color);
+  padding-bottom: 5px;
+  padding-left: 10px;
 }
 #animation-header {
-    color:var(--main-text-color);
-    font-family: sans-serif;
-    font-weight: 700;
+  color:var(--main-text-color);
+  font-family: sans-serif;
+  font-weight: 700;
 }
 .animation-rangebar {
-    color:var(--main-text-color);
-    font-family: sans-serif;
-    font-weight: 300;
-    font-size: 15px;
-    margin-top: 5px;
-    margin-bottom:5px
+  color:var(--main-text-color);
+  font-family: sans-serif;
+  font-weight: 300;
+  font-size: 15px;
+  margin-top: 5px;
+  margin-bottom:5px
 }
 
 .taxa-content {
-    font-weight: 500;
-    color:var(--main-text-color);
+  font-weight: 500;
+  color:var(--main-text-color);
 }
 
 #legend-box {
-  position: absolute;
-  right: 15px;
-  bottom: 1px;
-  height: 145px;
-  width: 180px;
-  font-family: sans-serif;
-  background: var(--main-bg-color);
-  opacity: 80%;
-  transition: margin-right .5s;
+position: absolute;
+right: 15px;
+bottom: 1px;
+height: 175px;
+width: 185px;
+font-family: sans-serif;
+background: var(--main-bg-color);
+opacity: 80%;
+-webkit-transition: margin-right .5s;
+-o-transition: margin-right .5s;
+transition: margin-right .5s;
+-webkit-appearance: none;
+-moz-appearance: none;
+appearance: none;
 }
 
 #legend-head-text {
-  font-weight: 700;
-  text-align: center;
-  font-size: 15.5px;
+font-weight: 700;
+text-align: center;
 }
 
 #circ-box {
-  width: 100%;
+width: 100%;
 }
 #circ-content {
-  list-style-type:none;
-  font-weight: 300;
-  display: flex;
-  flex-direction: column-reverse;
-  text-align: right;
-  padding-right: 10%
+list-style-type:none;
+font-weight: 300;
+font-size: 110%;
+display: -webkit-box;
+display: -ms-flexbox;
+display: flex;
+-webkit-box-orient: vertical;
+-webkit-box-direction: reverse;
+    -ms-flex-direction: column-reverse;
+        flex-direction: column-reverse;
+text-align: right;
+padding-right: 10%;
+
 }
 .circle {
-  border-radius: 75%;
-  position: absolute;
-  border: 1px var(--main-text-color) solid;
-  bottom: 10%;
-  color: var(--main-text-color);
+border-radius: 75%;
+position: absolute;
+border: 1px var(--main-text-color) solid;
+bottom: 25%;
+color: var(--main-text-color);
 }
 #circle100{
-  left: 18px;
+left: 18px;
 }
 #circle50{
-  left: 32px;
+left: 32px;
 }
 #circle25{
-  left: 42px;
+left: 42px;
 }
 #logo-div {
-  float: right;
-  position: relative;
+float: right;
+position: relative;
 }
 #neotoma-logo {
-  width: 55px;
-  position: inherit;
-  bottom: 15px;
+width: 50px;
+position: inherit;
+bottom: 0px;
+}
+
+#database-logo {
+width: 40px;
+position: inherit;
+bottom: 5px;
+right: -5px;
 }
 
 /* The sidebar menu */
@@ -153,6 +187,8 @@ right: 0;
 padding-top: 10px;
 background-color: var(--main-bg-color); /* gray*/
 overflow-x: hidden; /* Disable horizontal scroll */
+-webkit-transition: 0.5s;
+-o-transition: 0.5s;
 transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
 }
 /* Position and style the close button (top right corner) */
@@ -162,6 +198,8 @@ text-decoration: none;
 font-size: 20px;
 color: var(--main-text-color);
 display: block;
+-webkit-transition: 0.3s;
+-o-transition: 0.3s;
 transition: 0.3s;
 position: absolute;
 top: 0;
@@ -175,7 +213,7 @@ color: #C3D1D1;
 }
 #infoSideBar header h1 {
 display: inline-block;
-color: #2E3C43;
+color: var(--main-text-color);
 line-height: 20px;
 font-family: 'Montserrat', Arial, Helvetica, sans-serif;
 font-size: 18px;
@@ -186,7 +224,7 @@ width: calc(100% - 24px);
 
 #infoSideBar p {
 display: inline-block;
-color: #2E3C43;
+color: var(--main-text-color);
 font-family: 'Montserrat', Arial, Helvetica, sans-serif;
 font-size: 14px;
 }
@@ -203,9 +241,15 @@ width: 25px;
 font-size: 37px;
 color: var(--main-text-color);
 border-radius: 50%;
+display: -webkit-box;
+display: -ms-flexbox;
 display: flex;
-align-items: center;
-justify-content: center;
+-webkit-box-align: center;
+    -ms-flex-align: center;
+        align-items: center;
+-webkit-box-pack: center;
+    -ms-flex-pack: center;
+        justify-content: center;
 }
 
 .openbtn:hover {
@@ -214,8 +258,10 @@ background-color: #97A3A3;
 
 /* Style page content - push page content to right when you open the side navigation */
 #main {
-color: var(--main-text-color);
-transition: margin-right .5s; /* If you want a transition effect */
+  color: var(--main-text-color);
+  -webkit-transition: margin-right .5s;
+  -o-transition: margin-right .5s;
+  transition: margin-right .5s; /* If you want a transition effect */
 }
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
 @media screen and (max-height: 450px) {

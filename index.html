@@ -26,7 +26,6 @@
                 </div>
                 <header>
                     <h1 id="animation-header"> Range Mapper</h1>
-
                 </header>
                 <hr/>
                 <div class="select">
@@ -73,6 +72,8 @@
             </div>
             <div id="logo-div">
                 <img id="neotoma-logo" src="img/neotomalogo.png" alt="neotoma paleoecology database logo">
+                <img id="database-logo" src="img/CABAH_logo.png" style="opacity:0%" alt="constituent database logo">
+
             </div>
         </div>
     </div>
@@ -112,6 +113,7 @@
         const allTaxaTypes =  ['alder', 'beech', 'elm', 'grasses', 'hemlock', 'oak', 'ragweed', 'sedges', 'spruce', 'pine', 'sheoak', 'eucalyptus', 'celerypine', 'cypresspine', 'southernbeech'];
         const legendText = ['Alder (<i>Alnus</i>)', 'Beech (<i>Fagus</i>)', 'Elm (<i>Ulmus</i>)', 'Grasses (Poaceae)', 'Hemlock (<i>Tsuga</i>)', 'Oak (<i>Quercus</i>)', 'Ragweed (<i>Ambrosia</i>)', 'Sedges (Cyperaceae)', 'Spruce (<i>Picea</i>)', 'Pine (<i>Pinus</i>)', 'She-Oak (<i>Casuarina</i>)', 'Eucalyptus (<i>Eucalyptus</i>)', 'Celery Pine (<i>Phyllocladus</i>)', 'Cypress-Pine (<i>Callitris</i>)', 'Southern Beech (<i>Nothofagus</i>)']
         const taxaColors = ['#339999', '#fad620', '#ff5233', '#000075', '#336699', '#996699', '#ff9b19', '#C7003A', '#ADD55C', '#511849'];
+        const databaseLogos = ["img/CABAH_logo.png","img/epd_logo.png","img/CABAH_logo.png"]
         // Loop creates taxa legend dictionary to connect the taxa names for plotting the data (allTaxaTypes) with the legend labels (legendText)
         const legendKeys = {};
         for (const x of allTaxaTypes) {
@@ -259,15 +261,26 @@
         // Fuction to change visualization based on dropdown menu selection
         function updateMap(taxaLayer) {
             n = setContinent()
+            // If Oceania, hide ice sheet & add CABAH logo
+            if (n === 2){
+                iceLayer.hide()
             // If North America or Europe, update ice sheet
-            if (n === 0 || n === 1){
+            } else {
                 var iceSource = new carto.source.Dataset(allIceSource[n]);
                 iceLayer.update(iceSource, iceViz);
                 iceLayer.show()
-            // Otherwise, hide ice sheet
-            } else {
-                iceLayer.hide()
             };
+            
+            // Update logos
+            // If North America, make logo transparent
+            if (n === 0){
+                document.getElementById("database-logo").style.opacity = "0%";
+            // If Europe or Oceania, update logo
+            } else {
+                document.getElementById("database-logo").src=databaseLogos[n];
+                document.getElementById("database-logo").style.opacity = "100%";
+            };
+
             // Update taxaSource & layer
             let taxaSource = new carto.source.Dataset(allTaxaSource[n]);
             taxaTypes =  allTaxaTypes
