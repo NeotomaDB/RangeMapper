@@ -6,6 +6,12 @@ date: "4/21/2023"
 output: html_document
 ---
 
+<!-- badges: start -->
+
+[![lifecycle](https://img.shields.io/badge/lifecycle-stable-orange.svg)](https://doi.org/10.5334/oq.114)
+
+<!-- badges: end -->
+
 ## Introduction
 
 Welcome to [Range Mapper](https://geography.wisc.edu/RangeMapper), a set of online interactive and animated visualizations of plant taxon range shifts since the Last Glacial Maximum, and the workflows that allows researchers, web developers, students and other users to extract and visualize taxa-specific, spatio-temporal data from the Neotoma Paleoecology Database Collective [@williams2017neotoma]. This code also establishes a channel between Neotoma and [CARTO](https://carto.com), an online mapping platform where Neotoma data can be visualized and transformed using the [CARTO VL](https://carto.com/developers/carto-vl/) Javascript library.
